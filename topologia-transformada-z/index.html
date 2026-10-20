@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Transformada Z como Topología Energética 3D</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- KaTeX CSS & JS para fórmulas matemáticas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" 
+          onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+  <!-- Prism.js para resaltado de sintaxis de Python -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            space: {
+              950: '#030712',
+              900: '#070B19',
+              850: '#0C1329',
+              800: '#0F172A',
+              700: '#1E293B',
+              600: '#334155'
+            },
+            cyanGlow: '#00F5D4',
+            magentaGlow: '#F72585',
+            amberGlow: '#FFD60A',
+            purpleGlow: '#7B2CBF'
+          },
+          fontFamily: {
+            sans: ['Segoe UI', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['Consolas', 'Fira Code', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Glows y detalles futuristas */
+    .glow-cyan {
+      box-shadow: 0 0 25px rgba(0, 245, 212, 0.25);
+    }
+    .glow-magenta {
+      box-shadow: 0 0 25px rgba(247, 37, 133, 0.25);
+    }
+    .border-glass {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(14px);
+    }
+    /* Scrollbar personalizada */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #070B19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+  </style>
+</head>
+<body class="bg-space-900 text-slate-200 antialiased font-sans selection:bg-cyanGlow selection:text-space-950">
+
+  <!-- BARRA DE NAVEGACIÓN SUPERIOR -->
+  <header class="sticky top-0 z-50 border-b border-slate-800/80 bg-space-900/85 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyanGlow via-purpleGlow to-magentaGlow p-[1.5px] flex items-center justify-center">
+          <div class="w-full h-full bg-space-900 rounded-[7px] flex items-center justify-center text-cyanGlow font-bold text-sm">
+            Z
+          </div>
+        </div>
+        <div>
+          <span class="font-bold text-slate-100 tracking-wide text-sm sm:text-base">Transformada Z</span>
+          <span class="text-xs px-2 py-0.5 ml-2 rounded-full bg-cyan-950/80 border border-cyanGlow/30 text-cyanGlow hidden sm:inline-block">Topología 3D</span>
+        </div>
+      </div>
+      
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-400">
+        <a href="#fundamento" class="hover:text-cyanGlow transition-colors">1. Fundamento Físico</a>
+        <a href="#arquitectura" class="hover:text-cyanGlow transition-colors">2. Arquitectura 3D</a>
+        <a href="#visor-3d" class="text-cyanGlow flex items-center gap-1.5 hover:brightness-125 transition">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyanGlow opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-cyanGlow"></span>
+          </span>
+          Visor WebGL
+        </a>
+        <a href="#script" class="hover:text-cyanGlow transition-colors">3. Script Python</a>
+        <a href="#intuicion" class="hover:text-cyanGlow transition-colors">4. Intuición</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <a href="transformada_z_experiencia_3d.html" target="_blank" 
+           class="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-cyan-500/20 to-purple-500/20 hover:from-cyan-500/30 hover:to-purple-500/30 border border-cyanGlow/40 text-cyanGlow text-xs font-semibold flex items-center gap-1.5 transition">
+          <span>Abrir Visor Completo</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="relative overflow-hidden pt-12 pb-16 border-b border-slate-800/60 bg-gradient-to-b from-space-950 via-space-900 to-space-900">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,245,212,0.12),rgba(255,255,255,0))] pointer-events-none"></div>
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-slate-700/80 bg-space-850/80 text-xs text-slate-300 mb-6">
+        <span class="w-2 h-2 rounded-full bg-cyanGlow"></span>
+        <span>Visualización Científica e Ingeniería de Señales</span>
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-6 leading-tight">
+        La <span class="bg-gradient-to-r from-cyanGlow via-sky-400 to-magentaGlow bg-clip-text text-transparent">Transformada Z</span> como Topología Energética
+      </h1>
+      <p class="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+        La <strong>Transformada Z</strong> deja de ser una sumatoria algebraica abstracta cuando se interpreta como una 
+        <span class="text-cyanGlow font-semibold">topología energética sobre el plano complejo</span>. 
+        Mientras que la Transformada de Fourier de Tiempo Discreto (DTFT) está confinada a recorrer una única órbita rígida —el círculo unitario $|z| = 1$—, la Transformada Z libera el análisis al introducir la coordenada radial $r$ mediante la parametrización polar $z = r e^{j\omega}$.
+      </p>
+
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href="#visor-3d" class="px-6 py-2.5 rounded-xl bg-cyanGlow hover:bg-cyan-400 text-space-950 font-bold text-sm shadow-lg shadow-cyanGlow/20 transition-all transform hover:-translate-y-0.5">
+          Explorar Visor 3D Interactivo
+        </a>
+        <a href="#fundamento" class="px-6 py-2.5 rounded-xl border border-slate-700 bg-space-800/80 hover:bg-space-700 text-slate-200 font-semibold text-sm transition">
+          Ver Fundamentos Teóricos
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 space-y-20">
+
+    <!-- SECCIÓN 1: FUNDAMENTO GEOMÉTRICO Y FÍSICO -->
+    <section id="fundamento" class="space-y-8">
+      <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
+        <div class="w-8 h-8 rounded-lg bg-cyan-950 border border-cyanGlow/40 flex items-center justify-center text-cyanGlow font-bold">1</div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Fundamento Geométrico y Físico de la Escena 3D</h2>
+      </div>
+
+      <p class="text-slate-300 text-base sm:text-lg leading-relaxed">
+        Para traducir la señal causal $x[n] = a^n \cos(\omega_0 n) u[n]$ en una experiencia espacial intuitiva, el modelo tridimensional articula cuatro principios matemáticos:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- CARD 1: Órbita de Fourier a Cilindros -->
+        <div class="border-glass rounded-2xl p-6 space-y-4 hover:border-cyanGlow/30 transition">
+          <div class="flex items-center gap-2 text-cyanGlow font-semibold text-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            <h3>De la Órbita de Fourier a los Cilindros de Evaluación ($r$)</h3>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            Al evaluar la Transformada Z sobre un radio constante $z = r e^{j\omega}$:
+          </p>
+          <div class="bg-space-950/80 border border-slate-800 rounded-xl p-4 text-center overflow-x-auto text-cyan-200">
+            $$X(r e^{j\omega}) = \sum_{n=0}^{\infty} \left( x[n] r^{-n} \right) e^{-j\omega n} = \mathcal{F}\left\{ x[n] r^{-n} \right\}$$
+          </div>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            Geométricamente, cada valor de $r$ levanta un <strong class="text-slate-200">cilindro concéntrico</strong> perpendicular al plano complejo. La intersección de ese cilindro con la superficie espectral traza la Transformada de Fourier de la señal amortiguada o amplificada por el factor exponencial $r^{-n}$. Cuando $r = 1$, el cilindro colapsa sobre la <strong class="text-amberGlow">órbita luminosa del círculo unitario</strong>, recuperando exactamente la DTFT.
+          </p>
+        </div>
+
+        <!-- CARD 2: ROC y Estabilidad -->
+        <div class="border-glass rounded-2xl p-6 space-y-4 hover:border-emerald-500/30 transition">
+          <div class="flex items-center gap-2 text-emerald-400 font-semibold text-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <h3>Región de Convergencia (ROC) y Estabilidad Dinámica</h3>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            La serie converge únicamente cuando $\sum_{n=0}^{\infty} |a/r|^n < \infty$, lo que exige:
+          </p>
+          <div class="bg-space-950/80 border border-slate-800 rounded-xl p-4 text-center overflow-x-auto text-emerald-300 font-mono text-base">
+            $$|z| > |a|$$
+          </div>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            En la escena 3D, el interior $|z| \le |a|$ aparece como un núcleo crítico de divergencia (carmesí) y el exterior $|z| > |a|$ como una plataforma translúcida esmeralda. El sistema es <strong class="text-slate-200">BIBO estable</strong> si y solo si la órbita luminosa del círculo unitario ($r = 1$) queda contenida dentro de la zona translúcida de la ROC (cuando $|a| < 1$).
+          </p>
+        </div>
+
+      </div>
+
+      <!-- CARD EXPANDIDA: Polos como Pozos Gravitacionales y Ceros como Repulsores -->
+      <div class="border-glass rounded-2xl p-6 sm:p-8 space-y-6 hover:border-magentaGlow/30 transition">
+        <div class="flex items-center gap-2 text-magentaGlow font-semibold text-lg sm:text-xl">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <h3>Polos como Pozos Gravitacionales y Ceros como Fuentes de Repulsión</h3>
+        </div>
+        
+        <p class="text-slate-300 leading-relaxed text-sm sm:text-base">
+          La representación racional de $x[n] = a^n \cos(\omega_0 n) u[n]$ para $|z| > |a|$ es:
+        </p>
+
+        <div class="bg-space-950/80 border border-slate-800 rounded-xl p-4 sm:p-5 text-center overflow-x-auto text-cyan-200 text-base sm:text-lg">
+          $$X(z) = \frac{1 - a \cos(\omega_0) z^{-1}}{1 - 2a \cos(\omega_0) z^{-1} + a^2 z^{-2}} = \frac{z\left(z - a\cos\omega_0\right)}{\left(z - a e^{j\omega_0}\right)\left(z - a e^{-j\omega_0}\right)}$$
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div class="p-4 rounded-xl bg-space-850 border border-slate-800">
+            <span class="text-xs font-bold uppercase tracking-wider text-cyanGlow">Ceros del Sistema</span>
+            <p class="text-sm text-slate-300 mt-1 font-semibold">$z_1 = 0$ y $z_2 = a\cos\omega_0$</p>
+            <p class="text-xs text-slate-400 mt-1">Ubicados sobre el eje real. El cero en $z_2$ es la proyección ortogonal exacta de los polos.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-space-850 border border-slate-800">
+            <span class="text-xs font-bold uppercase tracking-wider text-magentaGlow">Polos Conjugados</span>
+            <p class="text-sm text-slate-300 mt-1 font-semibold">$p_{1,2} = a e^{\pm j\omega_0}$</p>
+            <p class="text-xs text-slate-400 mt-1">Ubicados a una distancia radial $r = |a|$ y ángulos $\pm \omega_0 = \pm \pi/3$ ($\pm 60^\circ$).</p>
+          </div>
+        </div>
+
+        <p class="text-slate-300 text-sm sm:text-base leading-relaxed pt-2">
+          Si definimos el <strong class="text-amberGlow">potencial logarítmico gravitacional</strong> $\Phi(z) = -\ln|X(z)|$:
+        </p>
+
+        <div class="bg-space-950/80 border border-slate-800 rounded-xl p-4 sm:p-5 text-center overflow-x-auto text-amber-200 text-base sm:text-lg">
+          $$\Phi(z) = \sum_{k=1}^{2} \ln|z - p_k| - \sum_{i=1}^{2} \ln|z - z_i|$$
+        </div>
+
+        <p class="text-slate-400 text-sm leading-relaxed">
+          Esta función satisface la ecuación de Laplace ($\nabla^2 \Phi = 0$) fuera de las singularidades, comportándose exactamente como un campo gravitacional o electrostático bidimensional:
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex items-start gap-3 p-4 rounded-xl bg-space-950/60 border border-purple-500/20">
+            <div class="text-purple-400 font-bold text-lg mt-0.5">1.</div>
+            <div class="text-xs sm:text-sm text-slate-300">
+              <strong class="text-purple-300">En los polos ($z \to p_k$):</strong> $\Phi(z) \to -\infty$, deformando la malla del plano complejo hacia abajo en profundos <strong class="text-white">pozos gravitacionales</strong> que concentran la energía resonante del sistema.
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-4 rounded-xl bg-space-950/60 border border-cyan-500/20">
+            <div class="text-cyan-400 font-bold text-lg mt-0.5">2.</div>
+            <div class="text-xs sm:text-sm text-slate-300">
+              <strong class="text-cyan-300">En los ceros ($z \to z_i$):</strong> $\Phi(z) \to +\infty$, actuando como <strong class="text-white">domos y fuentes de repulsión</strong> desde donde emergen las líneas de flujo vectorial ($\vec{F} = -\nabla \Phi$) que empujan las trayectorias hacia los polos.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VISOR 3D EMBEBIDO EN VIVO -->
+    <section id="visor-3d" class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-3 h-3 rounded-full bg-cyanGlow animate-pulse"></span>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Experiencia 3D WebGL Interactiva</h2>
+          </div>
+          <p class="text-slate-400 text-sm mt-1">Renderizado acelerado por GPU vía Plotly WebGL. Gira, acércate y cambia de perspectiva en vivo.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="document.getElementById('plotly-frame').contentWindow.location.reload();" 
+                  class="px-3 py-1.5 rounded-lg bg-space-800 hover:bg-space-700 border border-slate-700 text-slate-300 text-xs font-medium flex items-center gap-1.5 transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Reiniciar Escena
+          </button>
+          <a href="transformada_z_experiencia_3d.html" target="_blank"
+             class="px-3.5 py-1.5 rounded-lg bg-cyanGlow/20 hover:bg-cyanGlow/30 border border-cyanGlow/40 text-cyanGlow text-xs font-semibold flex items-center gap-1.5 transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+            Pantalla Completa
+          </a>
+        </div>
+      </div>
+
+      <!-- CONTENEDOR DEL VISOR 3D -->
+      <div class="relative w-full rounded-2xl overflow-hidden border border-cyanGlow/30 glow-cyan bg-[#070B19]" style="height: 720px;">
+        <iframe id="plotly-frame" src="transformada_z_experiencia_3d.html" class="w-full h-full border-0" title="Visualizador 3D Transformada Z"></iframe>
+      </div>
+
+      <!-- MINI GUÍA DE INTERACCIÓN -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-slate-400">
+        <div class="p-3 rounded-xl bg-space-850/60 border border-slate-800/80 flex items-center gap-2.5">
+          <span class="text-cyanGlow font-bold">🖱️ Clic Izq + Arrastrar</span>
+          <span>Rotación orbital 3D</span>
+        </div>
+        <div class="p-3 rounded-xl bg-space-850/60 border border-slate-800/80 flex items-center gap-2.5">
+          <span class="text-cyanGlow font-bold">🔍 Rueda / Pinch</span>
+          <span>Zoom dinámico</span>
+        </div>
+        <div class="p-3 rounded-xl bg-space-850/60 border border-slate-800/80 flex items-center gap-2.5">
+          <span class="text-cyanGlow font-bold">🔘 Botones de Cámara</span>
+          <span>4 perspectivas físicas</span>
+        </div>
+        <div class="p-3 rounded-xl bg-space-850/60 border border-slate-800/80 flex items-center gap-2.5">
+          <span class="text-cyanGlow font-bold">🎚️ Deslizador Inferior</span>
+          <span>Variar polo $a$ (0.55 a 1.06)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: ARQUITECTURA VISUAL DE LA ESCENA -->
+    <section id="arquitectura" class="space-y-6">
+      <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
+        <div class="w-8 h-8 rounded-lg bg-cyan-950 border border-cyanGlow/40 flex items-center justify-center text-cyanGlow font-bold">2</div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Arquitectura Visual de la Escena</h2>
+      </div>
+
+      <div class="overflow-hidden rounded-2xl border border-slate-800 bg-space-850/60">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-300">
+            <thead class="bg-space-950/80 text-xs uppercase font-semibold text-slate-400 border-b border-slate-800">
+              <tr>
+                <th scope="col" class="py-4 px-6 text-cyanGlow">Elemento Matemático</th>
+                <th scope="col" class="py-4 px-6">Primitiva Geométrica 3D</th>
+                <th scope="col" class="py-4 px-6">Codificación Visual y Física</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/60">
+              <tr class="hover:bg-space-800/40 transition">
+                <td class="py-4 px-6 font-semibold text-slate-100 flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+                  Plano Complejo ($z = \sigma + j\Omega$)
+                </td>
+                <td class="py-4 px-6 text-slate-300">Plataforma polar-cartesiana interactiva en $Z = 0$</td>
+                <td class="py-4 px-6 text-slate-400">Retícula oscura de alto contraste con anillos radiales y rayos de fase cada $30^\circ$.</td>
+              </tr>
+              <tr class="hover:bg-space-800/40 transition">
+                <td class="py-4 px-6 font-semibold text-slate-100 flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-magentaGlow"></span>
+                  Transformación Temporal $x[n] \to X(z)$
+                </td>
+                <td class="py-4 px-6 text-slate-300">Pasarela discreta 3D + filamentos de proyección</td>
+                <td class="py-4 px-6 text-slate-400">Muestras $x[n] = a^n\cos(\omega_0 n)$ elevadas en el espacio que proyectan haces de fase hacia la órbita unitaria.</td>
+              </tr>
+              <tr class="hover:bg-space-800/40 transition">
+                <td class="py-4 px-6 font-semibold text-slate-100 flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-purpleGlow"></span>
+                  Pozos Gravitacionales (Polos $p_{1,2}$)
+                </td>
+                <td class="py-4 px-6 text-slate-300">Superficie de potencial $\Phi(z) = -\ln|X(z)|$ + vórtices</td>
+                <td class="py-4 px-6 text-slate-400">Embudos profundos bajo el plano en $a e^{\pm j\omega_0}$ que curvan el espacio-frecuencia.</td>
+              </tr>
+              <tr class="hover:bg-space-800/40 transition">
+                <td class="py-4 px-6 font-semibold text-slate-100 flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-cyanGlow"></span>
+                  Fuentes de Repulsión (Ceros $z_{1,2}$)
+                </td>
+                <td class="py-4 px-6 text-slate-300">Cúpulas de potencial + campo vectorial 3D (<code class="text-xs bg-space-950 px-1 py-0.5 rounded text-cyan-300">Cone</code>)</td>
+                <td class="py-4 px-6 text-slate-400">Nodos emisores en $z=0$ y $z=a\cos\omega_0$ con vectores divergentes que repelen el flujo hacia los polos.</td>
+              </tr>
+              <tr class="hover:bg-space-800/40 transition">
+                <td class="py-4 px-6 font-semibold text-slate-100 flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-orange-400"></span>
+                  Superficie de Resonancia $\|X(z)\|$
+                </td>
+                <td class="py-4 px-6 text-slate-300">Malla paramétrica con iluminación Fresnel</td>
+                <td class="py-4 px-6 text-slate-400">Paisaje translúcido superior que muestra la ganancia espectral sobre todo el plano complejo.</td>
+              </tr>
+              <tr class="hover:bg-space-800/40 transition">
+                <td class="py-4 px-6 font-semibold text-slate-100 flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-pink-400"></span>
+                  Cilindros de Evaluación ($r$)
+                </td>
+                <td class="py-4 px-6 text-slate-300">Superficies cilíndricas concéntricas + curvas de corte</td>
+                <td class="py-4 px-6 text-slate-400">Cilindros en $r \in \{a+0.05, 1.0, 1.35\}$ coronados por la respuesta de frecuencia ponderada $\|X(r e^{j\omega})\|$.</td>
+              </tr>
+              <tr class="hover:bg-space-800/40 transition">
+                <td class="py-4 px-6 font-semibold text-slate-100 flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-amberGlow"></span>
+                  Círculo Unitario ($r = 1$, DTFT)
+                </td>
+                <td class="py-4 px-6 text-slate-300">Anillo multicapa con efecto <em>bloom</em> neón</td>
+                <td class="py-4 px-6 text-slate-400">Órbita dorada/cian tanto en el plano base como sobre la cresta tridimensional $\|X(e^{j\omega})\|$.</td>
+              </tr>
+              <tr class="hover:bg-space-800/40 transition">
+                <td class="py-4 px-6 font-semibold text-slate-100 flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                  Región de Convergencia ($r > a$)
+                </td>
+                <td class="py-4 px-6 text-slate-300">Corona anular translúcida coloreada</td>
+                <td class="py-4 px-6 text-slate-400">Disco verde esmeralda para la ROC convergente ($r > a$) y disco carmesí para la región inestable ($r \le a$).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: SCRIPT EN PYTHON -->
+    <section id="script" class="space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-cyan-950 border border-cyanGlow/40 flex items-center justify-center text-cyanGlow font-bold">3</div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Script Completo en Python (WebGL 3D Interactivo)</h2>
+        </div>
+        <a href="z_transform_3d_experience.py" download="z_transform_3d_experience.py"
+           class="px-3.5 py-1.5 rounded-lg bg-space-800 hover:bg-space-700 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-2 transition">
+          <svg class="w-4 h-4 text-cyanGlow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Descargar Script .py
+        </a>
+      </div>
+
+      <p class="text-slate-300 leading-relaxed text-sm sm:text-base">
+        El siguiente código utiliza <code class="text-cyanGlow bg-space-950 px-1.5 py-0.5 rounded">numpy</code> y <code class="text-cyanGlow bg-space-950 px-1.5 py-0.5 rounded">plotly</code> para generar la escena tridimensional acelerada por GPU (WebGL) directamente en el navegador, sin requerir configuraciones complejas de drivers gráficos locales. Incluye controles interactivos de cámara, conmutadores de capas físicas (Modo Híbrido, Campo Gravitacional Puro y Escaneo de Cilindros $r$) y un deslizador dinámico para variar el radio de los polos $a$ y observar en vivo el cruce de estabilidad sobre el círculo unitario.
+      </p>
+
+      <!-- INSTALACIÓN DE DEPENDENCIAS -->
+      <div class="space-y-2">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Instalación de dependencias</h4>
+        <div class="bg-space-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between text-sm font-mono text-cyan-300">
+          <code>pip install numpy plotly</code>
+          <button onclick="navigator.clipboard.writeText('pip install numpy plotly'); alert('¡Comando copiado!');" class="text-xs text-slate-400 hover:text-white px-2 py-1 rounded bg-space-850 hover:bg-space-800 transition">Copiar</button>
+        </div>
+      </div>
+
+      <!-- VISOR DE CÓDIGO PYTHON -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span class="font-mono">z_transform_3d_experience.py</span>
+          <button onclick="navigator.clipboard.writeText(document.getElementById('python-source').innerText); alert('¡Código copiado al portapapeles!');" class="text-cyanGlow hover:text-cyan-300 transition">Copiar código completo</button>
+        </div>
+        <div class="relative rounded-2xl overflow-hidden border border-slate-800 bg-[#0d1117] max-h-[500px] overflow-y-auto">
+          <pre class="p-4 sm:p-6 text-xs sm:text-sm font-mono leading-relaxed"><code id="python-source" class="language-python">"""
+Experiencia Visual Científica 3D: La Transformada Z como Extensión Geométrica de Fourier
+========================================================================================
+Modela la señal discreta causal x[n] = a^n * cos(w0 * n) * u[n] y su topología en el
+plano complejo Z mediante:
+  1. Plataforma interactiva del plano complejo con coordenadas polares.
+  2. Región de Convergencia (ROC |z| > |a|) translúcida vs. zona de divergencia.
+  3. Polos como pozos gravitacionales y ceros como fuentes de repulsión (Potencial de Laplace
+     y campo vectorial 3D de gradiente).
+  4. Superficie espectral |X(z)| con sombreado Fresnel e iluminación especular.
+  5. Cilindros concéntricos de evaluación radial (z = r * e^{j*w}) y curvas de corte.
+  6. Órbita luminosa del Círculo Unitario (r = 1, Transformada de Fourier DTFT).
+  7. Pasarela temporal 3D que conecta visualmente x[n] con el dominio Z.
+
+Autor: Diseño de Visualización Científica en Ingeniería
+"""
+
+from dataclasses import dataclass
+from typing import Dict, List, Tuple
+import numpy as np
+import plotly.graph_objects as go
+
+
+# ======================================================================================
+# 1. CONFIGURACIÓN DE PARÁMETROS CIENTÍFICOS Y ESTÉTICOS
+# ======================================================================================
+@dataclass(frozen=True)
+class ZTransformConfig:
+    """Parámetros matemáticos y geométricos de la simulación."""
+    a_default: float = 0.78          # Radio de los polos por defecto (sistema estable < 1)
+    omega_0: float = np.pi / 3.0     # Frecuencia natural discreta (60 grados)
+    r_max: float = 1.65              # Radio máximo del plano complejo renderizado
+    grid_radial: int = 110           # Resolución radial de las superficies
+    grid_angular: int = 180          # Resolución angular de las superficies
+    n_samples: int = 22              # Número de muestras discretas de x[n] a visualizar
+    mag_cap: float = 4.2             # Techo suave para truncar singularidades de |X(z)|
+    well_depth: float = -3.2         # Profundidad máxima de los pozos gravitacionales
+    eval_radii: Tuple[float, ...] = (0.86, 1.00, 1.30)  # Cilindros r de evaluación
+
+
+# ======================================================================================
+# 2. MOTOR MATEMÁTICO DE LA TRANSFORMADA Z Y TEORÍA DE POTENCIAL
+# ======================================================================================
+class SignalMathematics:
+    """Núcleo analítico para x[n] = a^n cos(w0 n) u[n] y su topología en el dominio Z."""
+
+    @staticmethod
+    def discrete_signal(n: np.ndarray, a: float, omega_0: float) -> np.ndarray:
+        """Evalúa la secuencia temporal causal x[n] = a^n cos(omega_0 * n)."""
+        return (a ** n) * np.cos(omega_0 * n)
+
+    @staticmethod
+    def poles_and_zeros(a: float, omega_0: float) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Retorna las coordenadas complejas exactas de los polos y ceros.
+        X(z) = z * (z - a*cos(w0)) / ((z - a*e^{j*w0}) * (z - a*e^{-j*w0}))
+        """
+        zeros = np.array([0.0 + 0.0j, a * np.cos(omega_0) + 0.0j])
+        poles = np.array([
+            a * np.exp(1j * omega_0),
+            a * np.exp(-1j * omega_0)
+        ])
+        return poles, zeros
+
+    @staticmethod
+    def evaluate_xz(z: np.ndarray, a: float, omega_0: float, eps: float = 1e-3) -> np.ndarray:
+        """Evalúa la función racional compleja X(z) regularizando las singularidades."""
+        numerator = z * (z - a * np.cos(omega_0))
+        p1 = a * np.exp(1j * omega_0)
+        p2 = a * np.exp(-1j * omega_0)
+        denom = (z - p1) * (z - p2)
+        denom_safe = np.where(np.abs(denom) < eps, eps * np.exp(1j * np.angle(denom)), denom)
+        return numerator / denom_safe
+
+    @staticmethod
+    def magnitude_surface(z: np.ndarray, a: float, omega_0: float, cap: float) -> np.ndarray:
+        """Calcula la superficie de magnitud |X(z)| con saturación suave en los polos."""
+        xz = SignalMathematics.evaluate_xz(z, a, omega_0)
+        mag = np.abs(xz)
+        return cap * np.tanh(mag / cap)
+
+    @staticmethod
+    def gravitational_potential(
+        z: np.ndarray, a: float, omega_0: float, well_depth: float
+    ) -> np.ndarray:
+        """Calcula el potencial gravitacional logarítmico: Phi(z) = sum(ln|z - p_k|) - sum(ln|z - z_i|)."""
+        poles, zeros = SignalMathematics.poles_and_zeros(a, omega_0)
+        eps = 0.045
+        pole_potential = sum(np.log(np.abs(z - p) + eps) for p in poles)
+        zero_potential = sum(np.log(np.abs(z - zr) + eps) for zr in zeros)
+        raw_phi = 0.85 * (pole_potential - 0.65 * zero_potential)
+        return np.clip(raw_phi - 0.35, well_depth, 0.75)
+
+    @staticmethod
+    def repulsion_attraction_field(
+        x_grid: np.ndarray, y_grid: np.ndarray, a: float, omega_0: float
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """Calcula el campo vectorial 3D de fuerza F = -grad(Phi)."""
+        z = x_grid + 1j * y_grid
+        poles, zeros = SignalMathematics.poles_and_zeros(a, omega_0)
+        eps2 = 0.03
+        fx, fy = np.zeros_like(x_grid), np.zeros_like(y_grid)
+
+        for zr in zeros:
+            dx, dy = x_grid - zr.real, y_grid - zr.imag
+            dist2 = dx**2 + dy**2 + eps2
+            fx += 0.75 * dx / dist2
+            fy += 0.75 * dy / dist2
+
+        for p in poles:
+            dx, dy = x_grid - p.real, y_grid - p.imag
+            dist2 = dx**2 + dy**2 + eps2
+            fx -= 1.25 * dx / dist2
+            fy -= 1.25 * dy / dist2
+
+        fz = np.zeros_like(fx)
+        for p in poles:
+            dist_p = np.hypot(x_grid - p.real, y_grid - p.imag)
+            fz -= 1.4 * np.exp(-(dist_p**2) / 0.08)
+
+        norm = np.sqrt(fx**2 + fy**2 + fz**2) + 1e-6
+        scale = np.tanh(norm * 0.4) / norm
+        return fx * scale, fy * scale, fz * scale
+
+# (Para el código completo, usa el botón de descarga superior)</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 4: CLAVES PARA EXPLORAR LA INTUICIÓN -->
+    <section id="intuicion" class="space-y-6">
+      <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
+        <div class="w-8 h-8 rounded-lg bg-cyan-950 border border-cyanGlow/40 flex items-center justify-center text-cyanGlow font-bold">4</div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Claves para Explorar la Intuición Matemática en la Escena</h2>
+      </div>
+
+      <div class="space-y-6">
+        
+        <!-- CLAVE 1 -->
+        <div class="border-glass rounded-2xl p-6 sm:p-7 space-y-3 hover:border-cyanGlow/40 transition">
+          <div class="flex items-center gap-3 text-cyanGlow font-bold text-lg">
+            <span class="w-7 h-7 rounded-full bg-cyan-950 border border-cyanGlow/50 flex items-center justify-center text-xs">1</span>
+            <h3>La dualidad entre Magnitud Superior y Gravedad Inferior</h3>
+          </div>
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed pl-10">
+            Al iniciar la escena, verás dos paisajes acoplados al plano $Z = 0$:
+          </p>
+          <ul class="space-y-2 text-sm text-slate-300 pl-10 list-disc list-outside">
+            <li>
+              <strong class="text-white">Hacia arriba ($Z > 0$):</strong> La superficie espectral $|X(z)|$ se eleva en picos agudos sobre $p_{1,2} = a e^{\pm j\omega_0}$.
+            </li>
+            <li>
+              <strong class="text-white">Hacia abajo ($Z < 0$):</strong> El botón <span class="px-2 py-0.5 rounded bg-space-850 border border-slate-700 font-semibold text-cyan-300 text-xs">"Vista Subterránea (Pozos Gravitacionales)"</span> invierte el ángulo de cámara para revelar el potencial armónico $\Phi(z) = -\ln|X(z)|$, donde los polos curvan la malla hacia profundos embudos gravitacionales y los ceros ($z_1 = 0$ y $z_2 = a\cos\omega_0$) expulsan vectores tridimensionales de repulsión.
+            </li>
+          </ul>
+        </div>
+
+        <!-- CLAVE 2 -->
+        <div class="border-glass rounded-2xl p-6 sm:p-7 space-y-3 hover:border-amberGlow/40 transition">
+          <div class="flex items-center gap-3 text-amberGlow font-bold text-lg">
+            <span class="w-7 h-7 rounded-full bg-amber-950/60 border border-amberGlow/50 flex items-center justify-center text-xs">2</span>
+            <h3>Por qué la Transformada de Fourier es un corte cilíndrico particular</h3>
+          </div>
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed pl-10">
+            Observa los <strong class="text-white">tres cilindros concéntricos translúcidos</strong>. Cuando el cilindro amarillo/cian ($r = 1$) corta la montaña espectral cerca de los polos en $\pm 60^\circ$ ($\omega_0 = \pi/3$), la curva luminosa de la DTFT $|X(e^{j\omega})|$ exhibe dos picos de resonancia pronunciados. El cilindro exterior ($r = 1.32$), al estar más lejos de los pozos gravitacionales, produce una respuesta de frecuencia mucho más suave y amortiguada.
+          </p>
+        </div>
+
+        <!-- CLAVE 3 -->
+        <div class="border-glass rounded-2xl p-6 sm:p-7 space-y-3 hover:border-magentaGlow/40 transition">
+          <div class="flex items-center gap-3 text-magentaGlow font-bold text-lg">
+            <span class="w-7 h-7 rounded-full bg-pink-950/60 border border-magentaGlow/50 flex items-center justify-center text-xs">3</span>
+            <h3>El cruce de estabilidad en tiempo real</h3>
+          </div>
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed pl-10">
+            Utiliza el deslizador inferior <span class="px-2 py-0.5 rounded bg-space-850 border border-slate-700 font-semibold text-pink-300 text-xs">"Dinámica Radial de Polos"</span> para mover $a$ desde $0.55$ hasta $1.06$:
+          </p>
+          <ul class="space-y-2 text-sm text-slate-300 pl-10 list-disc list-outside">
+            <li>
+              En <strong class="text-emerald-400">$a = 0.55$</strong>, la señal $x[n]$ en la pasarela temporal decae rápidamente, los pozos están lejos del círculo unitario y la DTFT es suave.
+            </li>
+            <li>
+              En <strong class="text-amber-400">$a = 0.92$</strong>, los polos rozan el interior del círculo unitario; la órbita de Fourier pasa justo por el borde de los pozos gravitacionales, disparando una resonancia aguda.
+            </li>
+            <li>
+              En <strong class="text-rose-500 font-semibold">$a = 1.06$</strong>, la zona carmesí de divergencia ($|z| \le a$) engulle al círculo unitario: $x[n]$ crece sin cota en la pasarela temporal y la Transformada de Fourier deja de converger aunque la Transformada Z siga existiendo en la región exterior $|z| > 1.06$.
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-800/80 bg-space-950 py-10 mt-20 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 space-y-2">
+      <p class="text-slate-400">Página Web Interactiva — Visualización Científica de la Transformada Z y Fourier</p>
+      <p>Cerebro Docente de Control II • Universidad Distrital / Unibarranquilla</p>
+    </div>
+  </footer>
+
+</body>
+</html>

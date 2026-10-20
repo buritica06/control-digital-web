@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEC36 - Semana 1: Arquitectura de Lazo, Muestreo y Cuantificación 3D</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- KaTeX CSS & JS para formulación matemática impecable -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" 
+          onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+  <!-- Three.js + OrbitControls desde CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            space: {
+              950: '#030712',
+              900: '#070B19',
+              850: '#0C1329',
+              800: '#0F172A',
+              700: '#1E293B',
+              600: '#334155'
+            },
+            cyanGlow: '#00F5D4',
+            emeraldGlow: '#10B981',
+            amberGlow: '#FFD60A',
+            magentaGlow: '#F72585',
+            purpleGlow: '#7B2CBF'
+          },
+          fontFamily: {
+            sans: ['Inter', 'Segoe UI', 'system-ui', 'sans-serif'],
+            mono: ['Fira Code', 'Consolas', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .glow-cyan { box-shadow: 0 0 25px rgba(0, 245, 212, 0.22); }
+    .glow-amber { box-shadow: 0 0 25px rgba(255, 214, 10, 0.22); }
+    .glow-magenta { box-shadow: 0 0 25px rgba(247, 37, 133, 0.22); }
+    .glow-emerald { box-shadow: 0 0 25px rgba(16, 185, 129, 0.22); }
+    .border-glass {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(12px);
+    }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #070B19; }
+    ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    .slider-track::-webkit-slider-thumb {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #00F5D4;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00F5D4;
+    }
+  </style>
+</head>
+<body class="bg-space-900 text-slate-200 antialiased font-sans selection:bg-cyanGlow selection:text-space-950">
+
+  <!-- =================================================================================== -->
+  <!-- BARRA DE NAVEGACIÓN SUPERIOR INSTITUCIONAL -->
+  <!-- =================================================================================== -->
+  <header class="sticky top-0 z-50 border-b border-slate-800/80 bg-space-900/90 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyanGlow via-purpleGlow to-magentaGlow p-[1.5px] flex items-center justify-center">
+          <div class="w-full h-full bg-space-900 rounded-[10px] flex items-center justify-center text-cyanGlow font-black text-sm">
+            IUB
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-white tracking-wide text-sm sm:text-base">MEC36 — Control II</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyanGlow/30 text-cyanGlow font-semibold">Semana 1</span>
+          </div>
+          <p class="text-[11px] text-slate-400">Ingeniería Mecatrónica · Prof. Ricardo Buriticá</p>
+        </div>
+      </div>
+      
+      <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-300">
+        <a href="#visor-3d" class="text-cyanGlow hover:brightness-125 flex items-center gap-1.5 transition">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyanGlow opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-cyanGlow"></span>
+          </span>
+          Laboratorio 3D
+        </a>
+        <a href="#arquitectura" class="hover:text-cyanGlow transition-colors">Arquitectura de Lazo</a>
+        <a href="#discretizacion" class="hover:text-cyanGlow transition-colors">Doble Discretización</a>
+        <a href="#caso-estudio" class="hover:text-cyanGlow transition-colors">Caso Sensor (100 bar)</a>
+        <a href="#tecnologias" class="hover:text-cyanGlow transition-colors">MCU vs DSP vs FPGA</a>
+        <a href="#codigo" class="hover:text-cyanGlow transition-colors">Simulación Python</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <a href="muestreo_cuantizacion_3d.html" target="_blank" class="hidden sm:flex px-3 py-1.5 rounded-lg bg-purple-950/80 hover:bg-purple-900 border border-purple-500/40 text-purple-300 text-xs font-semibold items-center gap-1.5 transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          <span>Visor Plotly 3D</span>
+        </a>
+        <a href="#visor-3d" class="px-3.5 py-1.5 rounded-lg bg-cyanGlow/20 hover:bg-cyanGlow/30 border border-cyanGlow/40 text-cyanGlow text-xs font-bold transition flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"/></svg>
+          <span>Laboratorio WebGL 3D</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- =================================================================================== -->
+  <!-- HERO SECTION CONTEXTUAL -->
+  <!-- =================================================================================== -->
+  <section class="relative overflow-hidden pt-12 pb-14 border-b border-slate-800/60 bg-gradient-to-b from-space-950 via-space-900 to-space-900">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_75%_65%_at_50%_-15%,rgba(0,245,212,0.12),rgba(255,255,255,0))] pointer-events-none"></div>
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-slate-700/80 bg-space-850/80 text-xs text-slate-300 mb-5">
+        <span class="w-2 h-2 rounded-full bg-cyanGlow"></span>
+        <span>Resultado de Aprendizaje: <strong class="text-white">MEC36-RA1</strong> · Diferenciar Elementos y Tecnologías del Control Digital</span>
+      </div>
+
+      <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight mb-5 leading-tight">
+        Introducción al <span class="bg-gradient-to-r from-cyanGlow via-sky-400 to-magentaGlow bg-clip-text text-transparent">Control Digital</span>:
+        <br class="hidden sm:inline"> Arquitectura, Muestreo y Cuantificación
+      </h1>
+
+      <p class="text-base sm:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed">
+        El salto del control analógico continuo al control automático por computador impone una <strong class="text-cyanGlow">doble discretización</strong>: en el <span class="text-emeraldGlow font-semibold">tiempo</span> (muestreo periódico cada $T$ segundos) y en la <span class="text-magentaGlow font-semibold">amplitud</span> (cuantificación en palabras binarias de $n$ bits). Explora en 3D la anatomía física y matemática que gobierna esta frontera entre el mundo continuo y el dominio digital.
+      </p>
+
+      <div class="mt-8 flex flex-wrap justify-center gap-3 text-xs sm:text-sm">
+        <div class="px-4 py-2 rounded-xl bg-space-850 border border-slate-700/80 flex items-center gap-2">
+          <span class="text-cyanGlow font-bold">⏱️ Duración:</span> 240 min (Sesión Teórico-Práctica)
+        </div>
+        <div class="px-4 py-2 rounded-xl bg-space-850 border border-slate-700/80 flex items-center gap-2">
+          <span class="text-amberGlow font-bold">📚 Bibliografía Base:</span> Ogata (Cap. 1), Franklin (Cap. 1-2), Fadali (Cap. 1-3)
+        </div>
+        <div class="px-4 py-2 rounded-xl bg-space-850 border border-slate-700/80 flex items-center gap-2">
+          <span class="text-magentaGlow font-bold">🎯 Bloom:</span> Nivel 1 a 4 (Recordar a Analizar)
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================================== -->
+  <!-- SECCIÓN CENTRAL: VISOR Y LABORATORIO 3D EN TIEMPO REAL -->
+  <!-- =================================================================================== -->
+  <section id="visor-3d" class="py-12 border-b border-slate-800/80 bg-space-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <!-- ENCABEZADO DEL LABORATORIO 3D -->
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-3 h-3 rounded-full bg-cyanGlow animate-ping"></span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Gemelo Virtual 3D: Muestreo, Cuantificación y Lazo Cerrado
+            </h2>
+          </div>
+          <p class="text-slate-400 text-sm mt-1">
+            Motor WebGL 3D nativo a 60 FPS. Modifica los parámetros en vivo para observar cómo se deforma la malla espacial y el ruido de cuantificación.
+          </p>
+        </div>
+
+        <!-- SELECTOR DE MODO 3D -->
+        <div class="flex flex-wrap items-center gap-2 bg-space-850 p-1.5 rounded-xl border border-slate-800">
+          <button id="btnModeLattice" onclick="setMode('lattice')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-cyanGlow text-space-950 transition shadow-md shadow-cyanGlow/20">
+            📊 Malla 3D de Discretización
+          </button>
+          <button id="btnModePipeline" onclick="setMode('pipeline')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition">
+            🔄 Arquitectura del Lazo Físico
+          </button>
+          <button id="btnModeNyquist" onclick="setMode('nyquist')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition">
+            ⚡ Teorema de Nyquist y Aliasing
+          </button>
+        </div>
+      </div>
+
+      <!-- CONTENEDOR PRINCIPAL DEL VISOR Y PANEL LATERAL -->
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        <!-- CANVAS 3D (3 COLUMNAS) -->
+        <div class="lg:col-span-3 relative rounded-2xl overflow-hidden border border-cyanGlow/30 glow-cyan bg-[#050814] flex flex-col" style="min-height: 620px;">
+          
+          <!-- BARRA SUPERIOR SOBRE EL CANVAS -->
+          <div class="absolute top-3 left-3 right-3 z-10 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+            <div class="flex items-center gap-2 bg-space-900/85 backdrop-blur-md border border-slate-700/80 px-3 py-1.5 rounded-xl pointer-events-auto">
+              <span class="w-2.5 h-2.5 rounded-full bg-emeraldGlow animate-pulse"></span>
+              <span id="canvasModeLabel" class="text-xs font-bold text-cyanGlow uppercase tracking-wider">Malla Espacio-Temporal 3D</span>
+            </div>
+
+            <!-- VISTAS PREDEFINIDAS DE CÁMARA -->
+            <div class="flex items-center gap-1 bg-space-900/85 backdrop-blur-md border border-slate-700/80 p-1 rounded-xl pointer-events-auto text-xs">
+              <span class="text-[11px] text-slate-400 px-2 font-semibold">Cámara:</span>
+              <button onclick="setCameraView('iso')" class="px-2 py-1 rounded bg-space-800 hover:bg-space-700 text-slate-200 font-medium transition" title="Isométrica General">Iso 3D</button>
+              <button onclick="setCameraView('side')" class="px-2 py-1 rounded bg-space-800 hover:bg-space-700 text-slate-200 font-medium transition" title="Vista Lateral: Tiempo vs Amplitud">Tiempo (T)</button>
+              <button onclick="setCameraView('front')" class="px-2 py-1 rounded bg-space-800 hover:bg-space-700 text-slate-200 font-medium transition" title="Vista Frontal: Cuantificación">Cuantificación (Q)</button>
+              <button onclick="setCameraView('top')" class="px-2 py-1 rounded bg-space-800 hover:bg-space-700 text-slate-200 font-medium transition" title="Vista Superior">Planta</button>
+              <button onclick="resetCamera()" class="px-2 py-1 rounded bg-cyan-950 text-cyanGlow font-bold hover:brightness-125 transition">↺ Reset</button>
+            </div>
+          </div>
+
+          <!-- LIENZO THREE.JS -->
+          <div id="threejs-container" class="w-full flex-1 relative cursor-grab active:cursor-grabbing"></div>
+
+          <!-- LEYENDA FLOTANTE INFERIOR -->
+          <div class="absolute bottom-3 left-3 right-3 z-10 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+            <div class="flex flex-wrap items-center gap-3 bg-space-900/90 backdrop-blur-md border border-slate-800 px-3 py-1.5 rounded-xl text-[11px] pointer-events-auto">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-cyanGlow"></span>
+                <span class="text-slate-300">Señal Continua $x(t)$</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-emeraldGlow"></span>
+                <span class="text-slate-300">Muestras $x(kT)$</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-amberGlow"></span>
+                <span class="text-slate-300">Retención ZOH $u_{zoh}(t)$</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-magentaGlow"></span>
+                <span class="text-slate-300">Túnel Ruido $\pm Q/2$</span>
+              </div>
+            </div>
+
+            <div class="bg-space-900/90 backdrop-blur-md border border-slate-800 px-3 py-1.5 rounded-xl text-[11px] text-slate-400 pointer-events-auto">
+              <span>🖱️ Arrastrar = Rotar | ⚙️ Rueda = Zoom | ⇧ + Arrastrar = Desplazar</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- PANEL DE CONTROL Y TELEMETRÍA (1 COLUMNA) -->
+        <div class="space-y-4 flex flex-col justify-between">
+          
+          <!-- CONTROLES PARAMÉTRICOS -->
+          <div class="border-glass rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-cyanGlow flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                Parámetros de Discretización
+              </span>
+              <button onclick="loadIndustrialPreset()" class="text-[11px] px-2 py-0.5 rounded bg-amberGlow/20 text-amberGlow border border-amberGlow/40 font-semibold hover:brightness-125 transition">
+                ★ Preset 12-bits
+              </button>
+            </div>
+
+            <!-- SLIDER: RESOLUCIÓN EN BITS (n) -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderBits" class="text-slate-300 font-semibold">Resolución ADC ($n$ bits):</label>
+                <span id="labelBits" class="font-mono text-cyanGlow font-bold">12 bits</span>
+              </div>
+              <input id="sliderBits" type="range" min="2" max="16" value="12" step="1" 
+                     class="w-full h-1.5 bg-space-800 rounded-lg appearance-none cursor-pointer slider-track accent-cyanGlow">
+              <div class="flex justify-between text-[10px] text-slate-500">
+                <span>2 bits (4 niv)</span>
+                <span>8 bits (256)</span>
+                <span>12 bits (4096)</span>
+                <span>16 bits</span>
+              </div>
+            </div>
+
+            <!-- SLIDER: FRECUENCIA DE MUESTREO (fs) -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderFs" class="text-slate-300 font-semibold">Frecuencia Muestreo ($f_s$):</label>
+                <span id="labelFs" class="font-mono text-emeraldGlow font-bold">40 Hz (T = 25 ms)</span>
+              </div>
+              <input id="sliderFs" type="range" min="4" max="120" value="40" step="1" 
+                     class="w-full h-1.5 bg-space-800 rounded-lg appearance-none cursor-pointer slider-track accent-emeraldGlow">
+              <div class="flex justify-between text-[10px] text-slate-500">
+                <span>4 Hz (Aliasing)</span>
+                <span>20 Hz</span>
+                <span>40 Hz (Recomendado)</span>
+                <span>120 Hz</span>
+              </div>
+            </div>
+
+            <!-- SLIDER: FRECUENCIA DE LA SEÑAL CONTINUA -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderFsig" class="text-slate-300 font-semibold">Frecuencia Señal ($f_{sen}$):</label>
+                <span id="labelFsig" class="font-mono text-amberGlow font-bold">2.0 Hz</span>
+              </div>
+              <input id="sliderFsig" type="range" min="0.5" max="10.0" value="2.0" step="0.25" 
+                     class="w-full h-1.5 bg-space-800 rounded-lg appearance-none cursor-pointer slider-track accent-amberGlow">
+              <div class="flex justify-between text-[10px] text-slate-500">
+                <span>0.5 Hz</span>
+                <span>2.0 Hz</span>
+                <span>5.0 Hz</span>
+                <span>10.0 Hz</span>
+              </div>
+            </div>
+
+            <!-- TOGGLES DE RENDER -->
+            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800 text-xs">
+              <label class="flex items-center gap-2 cursor-pointer text-slate-300">
+                <input id="chkShowZOH" type="checkbox" checked class="rounded border-slate-700 bg-space-850 text-cyanGlow focus:ring-0">
+                <span>Retención ZOH</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-slate-300">
+                <input id="chkShowNoise" type="checkbox" checked class="rounded border-slate-700 bg-space-850 text-magentaGlow focus:ring-0">
+                <span>Banda $\pm Q/2$</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-slate-300">
+                <input id="chkShowMesh" type="checkbox" checked class="rounded border-slate-700 bg-space-850 text-slate-400 focus:ring-0">
+                <span>Rejilla Cuántica</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-slate-300">
+                <input id="chkAnimate" type="checkbox" checked class="rounded border-slate-700 bg-space-850 text-emeraldGlow focus:ring-0">
+                <span>Animación Onda</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- PANEL HUD DE TELEMETRÍA DINÁMICA DE INGENIERÍA -->
+          <div class="border-glass rounded-2xl p-5 space-y-3 bg-space-850/80">
+            <span class="text-xs font-bold uppercase tracking-wider text-emeraldGlow flex items-center gap-1.5 border-b border-slate-800 pb-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+              Telemetría Cuántica en Vivo
+            </span>
+
+            <div class="space-y-2 text-xs">
+              <div class="flex justify-between items-center p-2 rounded-lg bg-space-950/60 border border-slate-800">
+                <span class="text-slate-400">Niveles ($2^n$):</span>
+                <span id="hudLevels" class="font-mono text-cyanGlow font-bold">4096</span>
+              </div>
+
+              <div class="flex justify-between items-center p-2 rounded-lg bg-space-950/60 border border-slate-800">
+                <span class="text-slate-400">Paso LSB ($Q$):</span>
+                <span id="hudQ" class="font-mono text-white font-bold">2.441 mV</span>
+              </div>
+
+              <div class="flex justify-between items-center p-2 rounded-lg bg-space-950/60 border border-slate-800">
+                <span class="text-slate-400">Ruido RMS ($\sigma_q = Q/\sqrt{12}$):</span>
+                <span id="hudSigma" class="font-mono text-magentaGlow font-bold">0.705 mV</span>
+              </div>
+
+              <div class="flex justify-between items-center p-2 rounded-lg bg-space-950/60 border border-slate-800">
+                <span class="text-slate-400">Relación SQNR ($6.02n + 1.76$):</span>
+                <span id="hudSQNR" class="font-mono text-amberGlow font-bold">74.00 dB</span>
+              </div>
+
+              <div class="flex justify-between items-center p-2 rounded-lg bg-space-950/60 border border-slate-800">
+                <span class="text-slate-400">Criterio Shannon-Nyquist:</span>
+                <span id="hudNyquist" class="font-mono font-bold px-2 py-0.5 rounded text-[11px] bg-emerald-950 text-emerald-400 border border-emerald-500/30">
+                  ✓ Seguro ($f_s > 2f_{max}$)
+                </span>
+              </div>
+
+              <div class="flex justify-between items-center p-2 rounded-lg bg-space-950/60 border border-slate-800">
+                <span class="text-slate-400">Retardo de Fase ZOH ($\approx T/2$):</span>
+                <span id="hudZOHDelay" class="font-mono text-slate-300 font-semibold">12.50 ms</span>
+              </div>
+            </div>
+
+            <!-- MODAL DINÁMICO DE INFORMACIÓN DE BLOQUE (SE ACTIVA AL CLIC EN PIPELINE) -->
+            <div id="blockInfoCard" class="hidden p-3 rounded-xl bg-space-900 border border-cyanGlow/40 space-y-1.5 transition-all">
+              <div class="flex justify-between items-center">
+                <span id="blockTitle" class="text-xs font-bold text-cyanGlow uppercase">Planta Continua</span>
+                <button onclick="closeBlockCard()" class="text-slate-500 hover:text-white text-xs">✕</button>
+              </div>
+              <p id="blockDesc" class="text-[11px] text-slate-300 leading-tight">Proceso físico continuo gobernado por ecuaciones diferenciales.</p>
+              <div id="blockEq" class="text-[11px] text-amberGlow font-mono bg-space-950 p-1 rounded text-center">$$G_p(s) = \frac{K}{\tau s + 1}$$</div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =================================================================================== -->
+  <!-- CONTENIDO PEDAGÓGICO RIGUROSO Y EXPLICACIÓN A DETALLE -->
+  <!-- =================================================================================== -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-20">
+
+    <!-- SECCIÓN 1: ARQUITECTURA DEL LAZO DE CONTROL DIGITAL -->
+    <section id="arquitectura" class="space-y-6">
+      <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
+        <div class="w-8 h-8 rounded-lg bg-cyan-950 border border-cyanGlow/40 flex items-center justify-center text-cyanGlow font-bold">1</div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Arquitectura General del Lazo de Control Digital</h2>
+      </div>
+
+      <p class="text-slate-300 text-base sm:text-lg leading-relaxed">
+        Un lazo de control digital sustituye el clásico controlador analógico por un algoritmo programable ejecutado en un procesador digital. Como los procesos físicos operan en tiempo continuo y los algoritmos en tiempo discreto, el lazo requiere una arquitectura estructural híbrida con siete bloques funcionales en cascada:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        
+        <!-- BLOQUE 1 -->
+        <div class="border-glass rounded-2xl p-5 space-y-3 hover:border-cyanGlow/40 transition">
+          <div class="flex items-center gap-2 text-cyanGlow font-bold text-sm uppercase">
+            <span class="w-6 h-6 rounded-md bg-cyan-950 flex items-center justify-center text-xs">1</span>
+            <h3>Planta o Proceso Físico</h3>
+          </div>
+          <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+            Sistema físico continuo gobernado por leyes físicas (mecánicas, hidráulicas, térmicas) descritas mediante ecuaciones diferenciales en el dominio continuo $t$. Su salida es la variable continua $y(t)$.
+          </p>
+        </div>
+
+        <!-- BLOQUE 2 -->
+        <div class="border-glass rounded-2xl p-5 space-y-3 hover:border-emeraldGlow/40 transition">
+          <div class="flex items-center gap-2 text-emeraldGlow font-bold text-sm uppercase">
+            <span class="w-6 h-6 rounded-md bg-emerald-950 flex items-center justify-center text-xs">2</span>
+            <h3>Sensor y Filtro Antialiasing</h3>
+          </div>
+          <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+            El sensor transduce la variable física a voltaje o corriente. El <strong class="text-slate-200">filtro antialiasing</strong> es un filtro pasobajo analógico obligatorio que atenúa frecuencias mayores a la frecuencia de Nyquist ($f_N = f_s/2$) antes del digitalizador.
+          </p>
+        </div>
+
+        <!-- BLOQUE 3 -->
+        <div class="border-glass rounded-2xl p-5 space-y-3 hover:border-amberGlow/40 transition">
+          <div class="flex items-center gap-2 text-amberGlow font-bold text-sm uppercase">
+            <span class="w-6 h-6 rounded-md bg-amber-950 flex items-center justify-center text-xs">3</span>
+            <h3>Muestreador y Retenedor (S/H)</h3>
+          </div>
+          <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+            El circuito <em>Sample & Hold</em> captura el valor de voltaje instantáneo de la señal cada periodo $T$ y lo almacena en un condensador de retención de baja fuga mientras el convertidor realiza la conversión.
+          </p>
+        </div>
+
+        <!-- BLOQUE 4 -->
+        <div class="border-glass rounded-2xl p-5 space-y-3 hover:border-purpleGlow/40 transition">
+          <div class="flex items-center gap-2 text-purple-400 font-bold text-sm uppercase">
+            <span class="w-6 h-6 rounded-md bg-purple-950 flex items-center justify-center text-xs">4</span>
+            <h3>Convertidor ADC ($n$ bits)</h3>
+          </div>
+          <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+            Mapea el voltaje analógico retenido a una palabra binaria discreta de $n$ bits mediante arquitecturas como aproximaciones sucesivas (SAR) o Flash, introduciendo el error de cuantificación $e_q[k]$.
+          </p>
+        </div>
+
+        <!-- BLOQUE 5 -->
+        <div class="border-glass rounded-2xl p-5 space-y-3 hover:border-cyanGlow/40 transition">
+          <div class="flex items-center gap-2 text-cyan-300 font-bold text-sm uppercase">
+            <span class="w-6 h-6 rounded-md bg-cyan-950 flex items-center justify-center text-xs">5</span>
+            <h3>Controlador Digital (MCU/DSP)</h3>
+          </div>
+          <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+            Algoritmo determinista que resta la muestra medida de la referencia $e[k] = r[k] - y[k]$ y resuelve la ecuación en diferencias de la ley de control (PID discreto, realimentación de estados) para generar $u[k]$.
+          </p>
+        </div>
+
+        <!-- BLOQUE 6 -->
+        <div class="border-glass rounded-2xl p-5 space-y-3 hover:border-magentaGlow/40 transition">
+          <div class="flex items-center gap-2 text-magentaGlow font-bold text-sm uppercase">
+            <span class="w-6 h-6 rounded-md bg-magenta-950 flex items-center justify-center text-xs">6</span>
+            <h3>DAC y Retenedor ZOH</h3>
+          </div>
+          <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+            El convertidor digital-analógico transforma $u[k]$ en voltaje y el <strong class="text-slate-200">ZOH</strong> sostiene ese voltaje constante durante todo el intervalo $kT \le t < (k+1)T$, entregándolo al actuador físico.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: LA DOBLE DISCRETIZACIÓN -->
+    <section id="discretizacion" class="space-y-8">
+      <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
+        <div class="w-8 h-8 rounded-lg bg-cyan-950 border border-cyanGlow/40 flex items-center justify-center text-cyanGlow font-bold">2</div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">La Doble Discretización: Tiempo y Amplitud</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- COLUMNA A: DISCRETIZACIÓN TEMPORAL Y ZOH -->
+        <div class="border-glass rounded-2xl p-6 space-y-4">
+          <div class="flex items-center gap-2 text-emeraldGlow font-bold text-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <h3>1. Discretización en el Tiempo (Muestreo y ZOH)</h3>
+          </div>
+          
+          <p class="text-slate-300 text-sm leading-relaxed">
+            El muestreo transforma la señal continua $x(t)$ en una secuencia temporal $x[k] = x(kT)$. En el dominio de Laplace, el tren de impulsos modulados se acopla con el **Retenedor de Orden Cero (ZOH)**, cuya función de transferencia fundamental es [1]:
+          </p>
+
+          <div class="bg-space-950/80 border border-slate-800 rounded-xl p-4 text-center text-emerald-300 font-mono text-base">
+            $$G_{ZOH}(s) = \frac{1 - e^{-sT}}{s}$$
+          </div>
+
+          <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+            Al evaluar su respuesta frecuencial en régimen permanente ($s = j\omega$):
+          </p>
+
+          <div class="bg-space-950/80 border border-slate-800 rounded-xl p-3 text-center text-slate-300 text-sm">
+            $$|G_{ZOH}(j\omega)| = T \cdot \text{sinc}\left(\frac{\omega T}{2\pi}\right), \quad \angle G_{ZOH}(j\omega) = -\frac{\omega T}{2}$$
+          </div>
+
+          <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+            > <strong class="text-amberGlow">Implicación Crítica en Estabilidad:</strong> El ZOH introduce inevitablemente un <strong class="text-slate-200">retraso de fase equivalente a medio periodo de muestreo ($\theta = -\omega T / 2$)</strong>. Este retardo devora el margen de fase del sistema, pudiendo desestabilizar un lazo que era perfectamente estable en tiempo continuo.
+          </p>
+        </div>
+
+        <!-- COLUMNA B: DISCRETIZACIÓN EN AMPLITUD Y RUIDO -->
+        <div class="border-glass rounded-2xl p-6 space-y-4">
+          <div class="flex items-center gap-2 text-magentaGlow font-bold text-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+            <h3>2. Discretización en Amplitud (Cuantificación y Ruido)</h3>
+          </div>
+
+          <p class="text-slate-300 text-sm leading-relaxed">
+            El convertidor ADC mapea el rango de voltaje continuo $V_{FS}$ (escala completa) en un número finito de $2^n$ niveles cuánticos. El **tamaño de paso elemental o LSB ($Q$)** es:
+          </p>
+
+          <div class="bg-space-950/80 border border-slate-800 rounded-xl p-4 text-center text-magentaGlow font-mono text-base">
+            $$Q = \frac{V_{FS}}{2^n - 1} \approx \frac{V_{FS}}{2^n}$$
+          </div>
+
+          <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+            El error instantáneo $e_q(t) = x(t) - x_q(t)$ está acotado en $[ -Q/2, +Q/2 ]$. Modelado como una variable aleatoria uniformemente distribuida, su potencia o varianza es [2]:
+          </p>
+
+          <div class="bg-space-950/80 border border-slate-800 rounded-xl p-3 text-center text-slate-300 text-sm">
+            $$\sigma_q^2 = \int_{-Q/2}^{Q/2} e_q^2 \cdot \frac{1}{Q} \, de_q = \frac{Q^2}{12} \implies \sigma_q = \frac{Q}{\sqrt{12}}$$
+          </div>
+
+          <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+            La relación señal a ruido de cuantificación máxima teórica para una senoidal a fondo de escala viene dada por:
+          </p>
+
+          <div class="bg-space-950/80 border border-slate-800 rounded-xl p-3 text-center text-amberGlow text-sm font-semibold">
+            $$\text{SQNR} \approx 6.02 \cdot n + 1.76 \quad [\text{dB}]$$
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: CASO DE ESTUDIO INDUSTRIAL MECATRÓNICO -->
+    <section id="caso-estudio" class="border-glass rounded-3xl p-6 sm:p-10 space-y-8 bg-gradient-to-br from-space-850/90 to-space-900/90 border-cyanGlow/20">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-amberGlow">Caso de Estudio Aplicado</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">
+            Dimensionamiento de ADC para Transductor de Presión Neumática
+          </h2>
+        </div>
+        <span class="px-3 py-1 rounded-full bg-cyan-950 text-cyanGlow border border-cyanGlow/30 text-xs font-bold self-start">
+          Línea Mecatrónica 100 bar
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        
+        <!-- EXPLICACIÓN ANALÍTICA PASO A PASO -->
+        <div class="space-y-4 text-slate-300 text-sm leading-relaxed">
+          <p>
+            En una línea mecatrónica de distribución neumática automatizada, se requiere controlar con alta precisión la presión de una cámara de sellado mediante un transductor piezoeléctrico con las siguientes especificaciones:
+          </p>
+
+          <ul class="space-y-2 text-xs sm:text-sm list-disc list-inside text-slate-300">
+            <li><strong>Rango físico de presión:</strong> $0 \text{ a } 100 \text{ bar}$.</li>
+            <li><strong>Salida eléctrica del sensor:</strong> $0 \text{ a } 10 \text{ V}$ normalizado.</li>
+            <li><strong>Sensibilidad mínima requerida:</strong> $\Delta P \le 0.05 \text{ bar}$.</li>
+          </ul>
+
+          <div class="space-y-3 pt-2">
+            <div class="p-3.5 rounded-xl bg-space-950/80 border border-slate-800">
+              <strong class="text-cyanGlow text-xs block">Paso 1: Cálculo de niveles discretos mínimos requeridos</strong>
+              <div class="text-xs sm:text-sm mt-1 text-slate-200">
+                $$N_{niveles} = \frac{P_{max} - P_{min}}{\Delta P_{req}} = \frac{100 - 0}{0.05} = 2000 \text{ niveles}$$
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-space-950/80 border border-slate-800">
+              <strong class="text-cyanGlow text-xs block">Paso 2: Determinación teórica del número de bits</strong>
+              <div class="text-xs sm:text-sm mt-1 text-slate-200">
+                $$2^n \ge 2000 \implies n \ge \frac{\ln(2000)}{\ln(2)} \approx 10.966 \implies n \ge 11 \text{ bits}$$
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">Como los convertidores comerciales de instrumentación son de $8, 10, 12, 14 \text{ o } 16$ bits, se selecciona un <strong class="text-amberGlow">ADC comercial estándar de 12 bits</strong> ($4096$ niveles).</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-space-950/80 border border-slate-800">
+              <strong class="text-cyanGlow text-xs block">Paso 3: Verificación de especificación y resolución real</strong>
+              <div class="text-xs sm:text-sm mt-1 text-slate-200">
+                $$Q = \frac{10\text{ V}}{4096} = 2.4414\text{ mV} \iff \Delta P_{real} = \frac{100\text{ bar}}{4096} = 0.0244\text{ bar}$$
+              </div>
+              <p class="text-[11px] text-emerald-400 mt-1">✓ Satisface plenamente el requerimiento ($\Delta P_{real} = 0.0244 < 0.05\text{ bar}$) con un margen de seguridad superior al $50\%$.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CALCULADORA INTERACTIVA DE INGENIERÍA -->
+        <div class="p-6 rounded-2xl bg-space-950/90 border border-slate-700/80 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-cyanGlow">Calculadora Interactiva de ADC</span>
+            <span class="text-[11px] text-slate-400">Modifica los valores para recalcular</span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="text-slate-400">Presión Máxima ($P_{max}$ en bar):</label>
+              <input id="calcPmax" type="number" value="100" class="w-full mt-1 p-2 rounded-lg bg-space-850 border border-slate-700 text-white font-mono" oninput="recalcCaseStudy()">
+            </div>
+
+            <div>
+              <label class="text-slate-400">Voltaje Fondo Escala ($V_{FS}$ en Voltios):</label>
+              <input id="calcVfs" type="number" value="10" class="w-full mt-1 p-2 rounded-lg bg-space-850 border border-slate-700 text-white font-mono" oninput="recalcCaseStudy()">
+            </div>
+
+            <div>
+              <label class="text-slate-400">Variación Mínima Deseada ($\Delta P_{des}$ en bar):</label>
+              <input id="calcDeltaP" type="number" step="0.01" value="0.05" class="w-full mt-1 p-2 rounded-lg bg-space-850 border border-slate-700 text-white font-mono" oninput="recalcCaseStudy()">
+            </div>
+          </div>
+
+          <!-- RESULTADOS DINÁMICOS -->
+          <div class="p-4 rounded-xl bg-space-900 border border-cyanGlow/30 space-y-2 text-xs">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Niveles mínimos requeridos:</span>
+              <span id="resNiveles" class="font-mono text-cyanGlow font-bold">2000 niveles</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Bits teóricos mínimos:</span>
+              <span id="resBitsTeoricos" class="font-mono text-white font-bold">11 bits (10.97)</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Bits comerciales adoptados:</span>
+              <span id="resBitsComerciales" class="font-mono text-amberGlow font-bold">12 bits (4096 niveles)</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Paso de voltaje LSB ($Q$):</span>
+              <span id="resQVolt" class="font-mono text-white font-bold">2.441 mV</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Resolución de presión real:</span>
+              <span id="resPReal" class="font-mono text-emeraldGlow font-bold">0.0244 bar</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Ruido RMS de cuantificación:</span>
+              <span id="resSigmaRMS" class="font-mono text-magentaGlow font-bold">0.7048 mV</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Relación SQNR teórica:</span>
+              <span id="resSQNR" class="font-mono text-amberGlow font-bold">74.00 dB</span>
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-400 italic">
+            * Cumple con la directriz del componente actitudinal: dimensionamiento honesto y sin sobrecostes innecesarios en la industria mecatrónica.
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- SECCIÓN 4: COMPARATIVA DE TECNOLOGÍAS DE PROCESAMIENTO DIGITAL -->
+    <section id="tecnologias" class="space-y-6">
+      <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
+        <div class="w-8 h-8 rounded-lg bg-cyan-950 border border-cyanGlow/40 flex items-center justify-center text-cyanGlow font-bold">3</div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Comparativa de Tecnologías de Procesamiento Digital</h2>
+      </div>
+
+      <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+        El algoritmo de control en tiempo discreto debe ejecutarse con estricto determinismo temporal. La elección del dispositivo de hardware define los límites de frecuencia de muestreo $f_s$, latencia computacional y costo industrial:
+      </p>
+
+      <div class="overflow-hidden rounded-2xl border border-slate-800 bg-space-850/60">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm text-slate-300">
+            <thead class="bg-space-950/80 text-[11px] uppercase font-bold text-slate-400 border-b border-slate-800">
+              <tr>
+                <th class="py-3.5 px-4 text-cyanGlow">Tecnología</th>
+                <th class="py-3.5 px-4">Determinismo Temporal</th>
+                <th class="py-3.5 px-4">Lenguaje / Paradigma</th>
+                <th class="py-3.5 px-4">Rango Típico $f_s$</th>
+                <th class="py-3.5 px-4">Costo Aprox.</th>
+                <th class="py-3.5 px-4">Idoneidad en Mecatrónica</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/60">
+              <tr class="hover:bg-space-800/40 transition">
+                <td class="py-3 px-4 font-bold text-white flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-cyanGlow"></span>
+                  Microcontrolador (ARM Cortex-M4/M7)
+                </td>
+                <td class="py-3 px-4 text-emerald-400 font-medium">Alto (Interrupciones de hardware e impulsos DMA)</td>
+                <td class="py-3 px-4">C / C++ embebido</td>
+                <td class="py-3 px-4 font-mono text-cyanGlow">1 kHz – 100 kHz</td>
+                <td class="py-3 px-4">$2 – $15 USD</td>
+                <td class="py-3 px-4 text-slate-300">Excelente para servocontrol de robots, drones y actuadores mecatrónicos embebidos.</td>
+              </tr>
+              <tr class="hover:bg-space-800/40 transition">
+                <td class="py-3 px-4 font-bold text-white flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-purpleGlow"></span>
+                  DSP (Digital Signal Processor)
+                </td>
+                <td class="py-3 px-4 text-emerald-400 font-medium">Muy Alto (Unidades aritméticas MAC en un ciclo)</td>
+                <td class="py-3 px-4">C / Ensamblador optimizado</td>
+                <td class="py-3 px-4 font-mono text-purple-300">10 kHz – 500 kHz</td>
+                <td class="py-3 px-4">$10 – $50 USD</td>
+                <td class="py-3 px-4 text-slate-300">Óptimo para control vectorial FOC de motores síncronos y filtrado digital en tiempo real.</td>
+              </tr>
+              <tr class="hover:bg-space-800/40 transition">
+                <td class="py-3 px-4 font-bold text-white flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-magentaGlow"></span>
+                  FPGA (Field Programmable Gate Array)
+                </td>
+                <td class="py-3 px-4 text-cyan-300 font-bold">Ultra Alto (Concurrencia nativa en hardware, nanosegundos)</td>
+                <td class="py-3 px-4">VHDL / Verilog</td>
+                <td class="py-3 px-4 font-mono text-magentaGlow">> 1 MHz</td>
+                <td class="py-3 px-4">$30 – $200 USD</td>
+                <td class="py-3 px-4 text-slate-300">Control de convertidores de potencia de alta frecuencia y robótica quirúrgica de ultra alta respuesta.</td>
+              </tr>
+              <tr class="hover:bg-space-800/40 transition">
+                <td class="py-3 px-4 font-bold text-white flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-amberGlow"></span>
+                  PLC Industrial
+                </td>
+                <td class="py-3 px-4 text-amber-400 font-medium">Medio (Ciclo de escaneo cíclico estructurado)</td>
+                <td class="py-3 px-4">IEC 61131-3 (Ladder, Texto Estructurado)</td>
+                <td class="py-3 px-4 font-mono text-amberGlow">10 Hz – 1 kHz</td>
+                <td class="py-3 px-4">$200 – $2000 USD</td>
+                <td class="py-3 px-4 text-slate-300">Automatización de líneas de producción de planta, cintas transportadoras y procesos continuos lentos.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 5: IMPLEMENTACIÓN COMPUTACIONAL EN PYTHON -->
+    <section id="codigo" class="space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-cyan-950 border border-cyanGlow/40 flex items-center justify-center text-cyanGlow font-bold">4</div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Implementación Computacional en Python</h2>
+        </div>
+        <button onclick="copyPythonCode()" id="btnCopyCode" class="text-xs px-3 py-1.5 rounded-lg bg-space-800 hover:bg-space-700 border border-slate-700 text-cyanGlow font-semibold flex items-center gap-1.5 transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <span id="copyText">Copiar Script</span>
+        </button>
+      </div>
+
+      <div class="relative rounded-2xl overflow-hidden border border-slate-800 bg-space-950 p-5 font-mono text-xs sm:text-sm text-slate-300 overflow-x-auto">
+        <pre><code id="pythonCodeContent" class="language-python">import numpy as np
+
+def simular_muestreo_y_cuantizacion(v_min=0.0, v_max=10.0, bits=12, f_senal=2.0, f_muestreo=100.0, duracion=1.0):
+    """
+    Simulación numérica de adquisición de señal continua, muestreo periódico y cuantificación ADC.
+    Módulo: MEC36 - Control II | Universidad de Barranquilla (IUB)
+    """
+    # 1. Base temporal continua fina
+    t_continuo = np.linspace(0, duracion, 5000)
+    x_continuo = 5.0 + 4.0 * np.sin(2 * np.pi * f_senal * t_continuo)
+    
+    # 2. Muestreo periódico a periodo T = 1 / f_muestreo
+    T = 1.0 / f_muestreo
+    t_muestras = np.arange(0, duracion, T)
+    x_muestras = 5.0 + 4.0 * np.sin(2 * np.pi * f_senal * t_muestras)
+    
+    # 3. Cuantificación a 'n' bits
+    niveles = 2 ** bits
+    q = (v_max - v_min) / niveles
+    codigos_adc = np.clip(np.round((x_muestras - v_min) / q), 0, niveles - 1).astype(int)
+    x_cuantizado = v_min + codigos_adc * q
+    
+    # 4. Error de cuantificación experimental vs teórico
+    error_q = x_muestras - x_cuantizado
+    rms_error = np.sqrt(np.mean(error_q ** 2))
+    rms_teorico = q / np.sqrt(12)
+    sqnr = 6.02 * bits + 1.76
+    
+    print("=" * 60)
+    print(f"📊 RESULTADOS DE ADQUISICIÓN ADC ({bits} BITS):")
+    print(f"   Paso cuántico (LSB) Q : {q * 1000:.4f} mV")
+    print(f"   Error RMS Experimental: {rms_error * 1000:.4f} mV")
+    print(f"   Error RMS Teórico     : {rms_teorico * 1000:.4f} mV")
+    print(f"   Relación SQNR Teórica : {sqnr:.2f} dB")
+    print("=" * 60)
+
+if __name__ == "__main__":
+    simular_muestreo_y_cuantizacion(bits=12)</code></pre>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 6: EVALUACIÓN FORMATIVA CONCEPTUAL -->
+    <section class="border-glass rounded-3xl p-6 sm:p-8 space-y-6">
+      <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
+        <span class="text-xs font-bold uppercase tracking-wider text-emeraldGlow">Autoevaluación Formativa</span>
+        <h2 class="text-xl sm:text-2xl font-bold text-white">Preguntas de Verificación Conceptual</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        
+        <!-- PREGUNTA 1 -->
+        <div class="p-5 rounded-2xl bg-space-850/80 border border-slate-800 space-y-3">
+          <span class="text-xs font-bold text-cyanGlow">Pregunta 1</span>
+          <p class="text-xs sm:text-sm text-slate-200">
+            ¿Por qué el retenedor de orden cero (ZOH) puede comprometer la estabilidad en lazo cerrado?
+          </p>
+          <button onclick="toggleAnswer(1)" class="text-xs text-cyanGlow font-semibold hover:underline">Ver justificación pedagógica ▼</button>
+          <div id="ans1" class="hidden text-xs text-slate-400 p-2.5 rounded-lg bg-space-950 border border-slate-800">
+            Porque el ZOH introduce un retraso de fase neto de aproximadamente medio periodo de muestreo ($\theta \approx -\omega T / 2$), reduciendo drásticamente el margen de fase del sistema continuo.
+          </div>
+        </div>
+
+        <!-- PREGUNTA 2 -->
+        <div class="p-5 rounded-2xl bg-space-850/80 border border-slate-800 space-y-3">
+          <span class="text-xs font-bold text-amberGlow">Pregunta 2</span>
+          <p class="text-xs sm:text-sm text-slate-200">
+            Si se aumenta la resolución del convertidor en 2 bits adicionales, ¿cuánto mejora el SQNR?
+          </p>
+          <button onclick="toggleAnswer(2)" class="text-xs text-amberGlow font-semibold hover:underline">Ver justificación pedagógica ▼</button>
+          <div id="ans2" class="hidden text-xs text-slate-400 p-2.5 rounded-lg bg-space-950 border border-slate-800">
+            Mejora exactamente $\Delta \text{SQNR} = 6.02 \times 2 \approx 12.04\text{ dB}$, y el tamaño del paso de voltaje $Q$ se reduce a la cuarta parte ($1/4$).
+          </div>
+        </div>
+
+        <!-- PREGUNTA 3 -->
+        <div class="p-5 rounded-2xl bg-space-850/80 border border-slate-800 space-y-3">
+          <span class="text-xs font-bold text-magentaGlow">Pregunta 3</span>
+          <p class="text-xs sm:text-sm text-slate-200">
+            ¿Cuál es la función específica del filtro antialiasing y en qué punto del lazo debe ubicarse?
+          </p>
+          <button onclick="toggleAnswer(3)" class="text-xs text-magentaGlow font-semibold hover:underline">Ver justificación pedagógica ▼</button>
+          <div id="ans3" class="hidden text-xs text-slate-400 p-2.5 rounded-lg bg-space-950 border border-slate-800">
+            Es un filtro analógico pasobajo que debe ubicarse <em>antes</em> del muestreador ADC para eliminar componentes de frecuencia superiores a $f_s/2$, evitando que se traslapen irreversiblemente en la banda base.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =================================================================================== -->
+  <!-- PIE DE PÁGINA INSTITUCIONAL -->
+  <!-- =================================================================================== -->
+  <footer class="border-t border-slate-800/80 bg-space-950 py-10 text-center text-xs text-slate-400 space-y-2">
+    <div class="flex items-center justify-center gap-2">
+      <span class="font-bold text-white">Institución Universitaria de Barranquilla (IUB)</span>
+      <span>·</span>
+      <span>Facultad de Ingeniería</span>
+    </div>
+    <p>Asignatura: MEC36 — Control II · Programa: Ingeniería Mecatrónica</p>
+    <p class="text-slate-500">Diseñado con Three.js, WebGL, Tailwind CSS y KaTeX · Despliegue Automatizado</p>
+  </footer>
+
+  <!-- =================================================================================== -->
+  <!-- MOTOR JAVASCRIPT DE RENDERIZADO THREE.JS 3D Y FÍSICA -->
+  <!-- =================================================================================== -->
+  <script>
+    // --- ESTADO GLOBAL Y PARÁMETROS CIENTÍFICOS ---
+    let scene, camera, renderer, controls;
+    let currentMode = 'lattice'; // 'lattice', 'pipeline', 'nyquist'
+    let animTime = 0;
+    let isAnimating = true;
+
+    // Grupos de la Escena 3D
+    let groupLattice, groupPipeline, groupNyquist;
+    let continuousCurveMesh, samplesGroup, zohGroup, quantumMeshGroup, noiseTunnelGroup;
+    let pipelineModules = [], particlesSystem;
+    let raycaster, mouse;
+
+    // Configuración actual de los sliders
+    let config = {
+      bits: 12,
+      fs: 40.0,
+      fSignal: 2.0,
+      vMin: 0.0,
+      vMax: 10.0,
+      showZOH: true,
+      showNoise: true,
+      showMesh: true
+    };
+
+    // --- INICIALIZACIÓN DE THREE.JS ---
+    function init3D() {
+      const container = document.getElementById('threejs-container');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      // 1. Escena
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x050814);
+      scene.fog = new THREE.FogExp2(0x050814, 0.025);
+
+      // 2. Cámara
+      camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+      setCameraView('iso');
+
+      // 3. Renderizador WebGL
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.2;
+      container.appendChild(renderer.domElement);
+
+      // 4. Controles de Órbita
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.maxDistance = 60;
+      controls.minDistance = 4;
+
+      // 5. Iluminación
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+      scene.add(ambientLight);
+
+      const dirLight1 = new THREE.DirectionalLight(0x00F5D4, 1.2);
+      dirLight1.position.set(15, 25, 20);
+      scene.add(dirLight1);
+
+      const dirLight2 = new THREE.DirectionalLight(0xF72585, 0.9);
+      dirLight2.position.set(-15, -10, -15);
+      scene.add(dirLight2);
+
+      const pointLight = new THREE.PointLight(0xFFD60A, 1.0, 30);
+      pointLight.position.set(0, 10, 0);
+      scene.add(pointLight);
+
+      // 6. Raycaster para clics interactivos
+      raycaster = new THREE.Raycaster();
+      mouse = new THREE.Vector2();
+      renderer.domElement.addEventListener('pointerdown', onPointerDown);
+
+      // 7. Construcción de Grupos
+      groupLattice = new THREE.Group();
+      groupPipeline = new THREE.Group();
+      groupNyquist = new THREE.Group();
+      scene.add(groupLattice);
+      scene.add(groupPipeline);
+      scene.add(groupNyquist);
+
+      // Construcción de la Escena 1: Malla de Discretización
+      buildLatticeScene();
+
+      // Construcción de la Escena 2: Pipeline de Lazo Cerrado
+      buildPipelineScene();
+
+      // Construcción de la Escena 3: Nyquist y Aliasing
+      buildNyquistScene();
+
+      // Modo inicial
+      setMode('lattice');
+
+      // Resize listener
+      window.addEventListener('resize', onWindowResize);
+
+      // Loop de render
+      animate();
+    }
+
+    // --- ESCENA 1: CONSTRUCCIÓN DE LA MALLA 3D DE DISCRETIZACIÓN ---
+    function buildLatticeScene() {
+      // Limpiar grupo si existe
+      while (groupLattice.children.length > 0) {
+        groupLattice.remove(groupLattice.children[0]);
+      }
+
+      // 1. Grid de fondo y ejes
+      const gridHelper = new THREE.GridHelper(26, 26, 0x1E293B, 0x0C1329);
+      gridHelper.position.y = -0.1;
+      groupLattice.add(gridHelper);
+
+      // 2. Grupo de rejilla cuántica
+      quantumMeshGroup = new THREE.Group();
+      groupLattice.add(quantumMeshGroup);
+
+      // 3. Grupo de muestras
+      samplesGroup = new THREE.Group();
+      groupLattice.add(samplesGroup);
+
+      // 4. Grupo de retenedor ZOH
+      zohGroup = new THREE.Group();
+      groupLattice.add(zohGroup);
+
+      // 5. Grupo del túnel de ruido
+      noiseTunnelGroup = new THREE.Group();
+      groupLattice.add(noiseTunnelGroup);
+
+      // Actualizar geometría de curvas y datos
+      updateLatticeGeometry();
+    }
+
+    function updateLatticeGeometry() {
+      if (!groupLattice) return;
+
+      // Parámetros
+      const T = 1.0 / config.fs;
+      const duration = 1.0;
+      const xLen = 20; // Longitud espacial en X
+      const yScale = 1.0; // Escala vertical de voltaje
+      const zOffsetNoise = -4.5; // Desplazamiento Z del canal de error
+
+      // 1. Curva Continua x(t) = 5 + 4*sin(2*pi*f*t)
+      if (continuousCurveMesh) groupLattice.remove(continuousCurveMesh);
+
+      const nCurvePts = 250;
+      const curvePts = [];
+      for (let i = 0; i <= nCurvePts; i++) {
+        const t = (i / nCurvePts) * duration;
+        const xPos = (t / duration) * xLen - (xLen / 2);
+        const val = 5.0 + 3.8 * Math.sin(2 * Math.PI * config.fSignal * t + animTime);
+        const yPos = (val - 5.0) * yScale + 4.5;
+        curvePts.push(new THREE.Vector3(xPos, yPos, 0));
+      }
+
+      const curve = new THREE.CatmullRomCurve3(curvePts);
+      const tubeGeo = new THREE.TubeGeometry(curve, 180, 0.12, 12, false);
+      const tubeMat = new THREE.MeshStandardMaterial({
+        color: 0x00F5D4,
+        emissive: 0x00F5D4,
+        emissiveIntensity: 0.5,
+        roughness: 0.2,
+        metalness: 0.8
+      });
+      continuousCurveMesh = new THREE.Mesh(tubeGeo, tubeMat);
+      groupLattice.add(continuousCurveMesh);
+
+      // 2. Niveles Cuánticos Horizontales (Malla cuántica de amplitud)
+      while (quantumMeshGroup.children.length > 0) quantumMeshGroup.remove(quantumMeshGroup.children[0]);
+
+      if (config.showMesh) {
+        const levels = Math.pow(2, config.bits);
+        // Si hay muchos niveles (ej. 4096), mostramos una densidad representativa de líneas cuánticas
+        const displayedLevels = Math.min(levels, 32);
+        const qVisual = (10.0 / displayedLevels);
+
+        for (let l = 0; l <= displayedLevels; l++) {
+          const val = l * qVisual;
+          const yPos = (val - 5.0) * yScale + 4.5;
+          const lineMat = new THREE.LineBasicMaterial({
+            color: 0x1E293B,
+            transparent: true,
+            opacity: config.bits <= 4 ? 0.6 : 0.25
+          });
+          const pts = [
+            new THREE.Vector3(-xLen / 2, yPos, -1.5),
+            new THREE.Vector3(xLen / 2, yPos, -1.5),
+            new THREE.Vector3(xLen / 2, yPos, 1.5),
+            new THREE.Vector3(-xLen / 2, yPos, 1.5)
+          ];
+          const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
+          const line = new THREE.LineLoop(lineGeo, lineMat);
+          quantumMeshGroup.add(line);
+        }
+      }
+
+      // 3. Muestras Discretas x(kT) y Reconstrucción ZOH
+      while (samplesGroup.children.length > 0) samplesGroup.remove(samplesGroup.children[0]);
+      while (zohGroup.children.length > 0) zohGroup.remove(zohGroup.children[0]);
+
+      const nSamples = Math.floor(duration / T);
+      const q = 10.0 / Math.pow(2, config.bits);
+
+      const sphereGeo = new THREE.SphereGeometry(0.18, 16, 16);
+      const sphereMat = new THREE.MeshStandardMaterial({
+        color: 0x10B981,
+        emissive: 0x10B981,
+        emissiveIntensity: 0.7,
+        roughness: 0.3
+      });
+
+      const zohStepMat = new THREE.MeshStandardMaterial({
+        color: 0xFFD60A,
+        emissive: 0xFFD60A,
+        emissiveIntensity: 0.35,
+        roughness: 0.3,
+        transparent: true,
+        opacity: 0.85
+      });
+
+      for (let k = 0; k < nSamples; k++) {
+        const tk = k * T;
+        const tkNext = Math.min((k + 1) * T, duration);
+        const xPosK = (tk / duration) * xLen - (xLen / 2);
+        const xPosKNext = (tkNext / duration) * xLen - (xLen / 2);
+
+        // Muestra analógica real
+        const valReal = 5.0 + 3.8 * Math.sin(2 * Math.PI * config.fSignal * tk + animTime);
+        // Cuantificación numérica
+        const code = Math.min(Math.max(Math.round(valReal / q), 0), Math.pow(2, config.bits) - 1);
+        const valQuantized = code * q;
+
+        const yPosReal = (valReal - 5.0) * yScale + 4.5;
+        const yPosQuant = (valQuantized - 5.0) * yScale + 4.5;
+
+        // Esfera de la muestra discreta
+        const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+        sphere.position.set(xPosK, yPosReal, 0);
+        samplesGroup.add(sphere);
+
+        // Varilla de muestreo vertical (desde base hasta muestra)
+        const stemGeo = new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(xPosK, 0, 0),
+          new THREE.Vector3(xPosK, yPosReal, 0)
+        ]);
+        const stemLine = new THREE.Line(stemGeo, new THREE.LineBasicMaterial({ color: 0x10B981, transparent: true, opacity: 0.4 }));
+        samplesGroup.add(stemLine);
+
+        // Lámina vertical de instante de muestreo (cristal translúcido)
+        const sheetGeo = new THREE.PlaneGeometry(0.04, 9.5);
+        const sheetMat = new THREE.MeshBasicMaterial({ color: 0x00F5D4, transparent: true, opacity: 0.08, side: THREE.DoubleSide });
+        const sheet = new THREE.Mesh(sheetGeo, sheetMat);
+        sheet.position.set(xPosK, 4.75, 0);
+        samplesGroup.add(sheet);
+
+        // Reconstrucción ZOH (Escalón tridimensional mantenido constante)
+        if (config.showZOH) {
+          const stepWidth = xPosKNext - xPosK;
+          const stepBoxGeo = new THREE.BoxGeometry(stepWidth, 0.08, 0.35);
+          const stepBox = new THREE.Mesh(stepBoxGeo, zohStepMat);
+          stepBox.position.set(xPosK + stepWidth / 2, yPosQuant, 0.35);
+          zohGroup.add(stepBox);
+
+          // Línea vertical que conecta escalón anterior con el actual
+          if (k > 0) {
+            const prevTk = (k - 1) * T;
+            const prevVal = 5.0 + 3.8 * Math.sin(2 * Math.PI * config.fSignal * prevTk + animTime);
+            const prevQuant = Math.round(prevVal / q) * q;
+            const prevY = (prevQuant - 5.0) * yScale + 4.5;
+            const riseGeo = new THREE.BufferGeometry().setFromPoints([
+              new THREE.Vector3(xPosK, prevY, 0.35),
+              new THREE.Vector3(xPosK, yPosQuant, 0.35)
+            ]);
+            const riseLine = new THREE.Line(riseGeo, new THREE.LineBasicMaterial({ color: 0xFFD60A, linewidth: 2 }));
+            zohGroup.add(riseLine);
+          }
+        }
+      }
+
+      // 4. Canal de Ruido y Error de Cuantificación e_q(t) en Z negativo
+      while (noiseTunnelGroup.children.length > 0) noiseTunnelGroup.remove(noiseTunnelGroup.children[0]);
+
+      if (config.showNoise) {
+        // Tolerancia teórica +/- Q/2 amplificada visualmente para apreciación
+        const qVisualHalf = Math.max(q * 0.45 * yScale, 0.15);
+
+        // Pared superior (+Q/2)
+        const wallTopGeo = new THREE.PlaneGeometry(xLen, 0.8);
+        wallTopGeo.rotateX(Math.PI / 2);
+        const wallMat = new THREE.MeshBasicMaterial({ color: 0xF72585, transparent: true, opacity: 0.15, side: THREE.DoubleSide });
+        const wallTop = new THREE.Mesh(wallTopGeo, wallMat);
+        wallTop.position.set(0, 4.5 + qVisualHalf, zOffsetNoise);
+        noiseTunnelGroup.add(wallTop);
+
+        // Pared inferior (-Q/2)
+        const wallBot = new THREE.Mesh(wallTopGeo, wallMat);
+        wallBot.position.set(0, 4.5 - qVisualHalf, zOffsetNoise);
+        noiseTunnelGroup.add(wallBot);
+
+        // Traza continua del error e_q(t)
+        const errPts = [];
+        for (let i = 0; i <= nCurvePts; i++) {
+          const t = (i / nCurvePts) * duration;
+          const xPos = (t / duration) * xLen - (xLen / 2);
+          const valContinuous = 5.0 + 3.8 * Math.sin(2 * Math.PI * config.fSignal * t + animTime);
+          
+          // Muestra retenida correspondiente a este instante
+          const kIdx = Math.floor(t / T);
+          const tk = kIdx * T;
+          const valMuestra = 5.0 + 3.8 * Math.sin(2 * Math.PI * config.fSignal * tk + animTime);
+          const valQuant = Math.round(valMuestra / q) * q;
+          
+          const errInstant = (valContinuous - valQuant);
+          const yErr = 4.5 + (errInstant / (q || 1)) * qVisualHalf;
+          errPts.push(new THREE.Vector3(xPos, yErr, zOffsetNoise));
+        }
+
+        const errLineGeo = new THREE.BufferGeometry().setFromPoints(errPts);
+        const errLine = new THREE.Line(errLineGeo, new THREE.LineBasicMaterial({ color: 0xF72585, linewidth: 2 }));
+        noiseTunnelGroup.add(errLine);
+      }
+    }
+
+    // --- ESCENA 2: CONSTRUCCIÓN DEL LAZO CERRADO FÍSICO 3D (PIPELINE) ---
+    function buildPipelineScene() {
+      pipelineModules = [];
+      const boxMat = new THREE.MeshStandardMaterial({ color: 0x0F172A, roughness: 0.2, metalness: 0.8 });
+      const borderMat = new THREE.LineBasicMaterial({ color: 0x00F5D4 });
+
+      // Definición de los 6 bloques en el espacio circular del lazo
+      const blocksData = [
+        { id: 'planta', name: 'Planta Continua Gp(s)', pos: [-6, 3, 0], color: 0x00F5D4, desc: 'Proceso físico continuo regulado (Tanque neumático o motor mecatrónico).', eq: 'G_p(s) = \\frac{K}{\\tau s + 1}' },
+        { id: 'sensor', name: 'Sensor & Transductor', pos: [0, 6, 0], color: 0x10B981, desc: 'Convierte la variable física (Presión bar) en señal analógica normalizada (0-10 V).', eq: 'V(t) = K_s \\cdot P(t)' },
+        { id: 'antialiasing', name: 'Filtro Antialiasing', pos: [6, 4.5, 0], color: 0x7B2CBF, desc: 'Filtro pasobajo analógico que atenúa componentes con f > fs/2.', eq: 'H_{aa}(s) = \\frac{\\omega_c}{s + \\omega_c}' },
+        { id: 'adc', name: 'Convertidor ADC (S/H)', pos: [6, -1, 0], color: 0x00F5D4, desc: 'Muestrea a periodo T y cuantifica en palabras binarias de n bits.', eq: 'Q = \\frac{V_{FS}}{2^n}' },
+        { id: 'controlador', name: 'Controlador Digital (MCU/DSP)', pos: [0, -4, 0], color: 0xFFD60A, desc: 'Algoritmo computacional que calcula la ley de control u[k] sobre el error e[k].', eq: 'u[k] = u[k-1] + q_0 e[k] + q_1 e[k-1]' },
+        { id: 'dac', name: 'DAC + Retenedor ZOH', pos: [-6, -2, 0], color: 0xF72585, desc: 'Reconstruye la señal continua escalonada mediante retención de orden cero.', eq: 'G_{ZOH}(s) = \\frac{1 - e^{-sT}}{s}' }
+      ];
+
+      blocksData.forEach((b, idx) => {
+        const group = new THREE.Group();
+        group.position.set(...b.pos);
+
+        // Caja principal del módulo
+        const geom = new THREE.BoxGeometry(3.6, 2.2, 1.4);
+        const mat = new THREE.MeshStandardMaterial({
+          color: 0x0C1329,
+          roughness: 0.3,
+          metalness: 0.7
+        });
+        const mesh = new THREE.Mesh(geom, mat);
+        mesh.userData = b;
+        group.add(mesh);
+        pipelineModules.push(mesh);
+
+        // Marco luminoso neón
+        const edges = new THREE.EdgesGeometry(geom);
+        const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: b.color, linewidth: 2 }));
+        group.add(line);
+
+        // Cilindro decorativo o detalle técnico
+        const detailGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.4, 16);
+        const detailMat = new THREE.MeshStandardMaterial({ color: b.color, emissive: b.color, emissiveIntensity: 0.5 });
+        const detail = new THREE.Mesh(detailGeo, detailMat);
+        detail.position.y = 1.2;
+        group.add(detail);
+
+        groupPipeline.add(group);
+      });
+
+      // Líneas de conexión de flujo del lazo
+      const loopCurvePts = [
+        new THREE.Vector3(-6, 3, 0),
+        new THREE.Vector3(0, 6, 0),
+        new THREE.Vector3(6, 4.5, 0),
+        new THREE.Vector3(6, -1, 0),
+        new THREE.Vector3(0, -4, 0),
+        new THREE.Vector3(-6, -2, 0),
+        new THREE.Vector3(-6, 3, 0)
+      ];
+      const loopCurve = new THREE.CatmullRomCurve3(loopCurvePts, true);
+      const loopTubeGeo = new THREE.TubeGeometry(loopCurve, 120, 0.08, 8, true);
+      const loopTubeMat = new THREE.MeshBasicMaterial({ color: 0x334155, wireframe: true });
+      const loopTube = new THREE.Mesh(loopTubeGeo, loopTubeMat);
+      groupPipeline.add(loopTube);
+
+      // Partículas animadas fluyendo por el lazo
+      const nParticles = 40;
+      const partGeo = new THREE.BufferGeometry();
+      const partPos = new Float32Array(nParticles * 3);
+      for (let i = 0; i < nParticles; i++) {
+        const u = i / nParticles;
+        const p = loopCurve.getPoint(u);
+        partPos[i * 3] = p.x;
+        partPos[i * 3 + 1] = p.y;
+        partPos[i * 3 + 2] = p.z;
+      }
+      partGeo.setAttribute('position', new THREE.BufferAttribute(partPos, 3));
+      const partMat = new THREE.PointsMaterial({ color: 0x00F5D4, size: 0.4, transparent: true, opacity: 0.9 });
+      particlesSystem = new THREE.Points(partGeo, partMat);
+      particlesSystem.userData = { curve: loopCurve, count: nParticles };
+      groupPipeline.add(particlesSystem);
+    }
+
+    // --- ESCENA 3: TEOREMA DE NYQUIST Y ALIASING 3D ---
+    function buildNyquistScene() {
+      // Plataforma espectral
+      const grid = new THREE.GridHelper(20, 20, 0x334155, 0x1E293B);
+      groupNyquist.add(grid);
+
+      updateNyquistGeometry();
+    }
+
+    function updateNyquistGeometry() {
+      while (groupNyquist.children.length > 1) {
+        groupNyquist.remove(groupNyquist.children[groupNyquist.children.length - 1]);
+      }
+
+      const fSignal = config.fSignal;
+      const fs = config.fs;
+      const isAliasing = fs <= 2 * fSignal;
+
+      // Color de advertencia
+      const lobeColor = isAliasing ? 0xF72585 : 0x00F5D4;
+      const emissiveColor = isAliasing ? 0xF72585 : 0x00F5D4;
+
+      // Lóbulo Espectral Base en w = 0
+      createSpectralLobe(0, 3.2, 0x00F5D4, "Banda Base Original");
+
+      // Réplicas espectrales periódicas en +/- fs
+      const replicaX = (fs / 20.0) * 8.0; // Mapeo de frecuencia a coordenadas X
+      createSpectralLobe(replicaX, 2.5, lobeColor, "+fs");
+      createSpectralLobe(-replicaX, 2.5, lobeColor, "-fs");
+
+      // Si hay aliasing, generamos la zona de traslape iluminada en rojo
+      if (isAliasing) {
+        const alertBoxGeo = new THREE.BoxGeometry(4.0, 4.0, 4.0);
+        const alertBoxMat = new THREE.MeshBasicMaterial({ color: 0xF72585, transparent: true, opacity: 0.25, wireframe: true });
+        const alertBox = new THREE.Mesh(alertBoxGeo, alertBoxMat);
+        alertBox.position.set(0, 2, 0);
+        groupNyquist.add(alertBox);
+      }
+    }
+
+    function createSpectralLobe(xCenter, height, color, label) {
+      const pts = [];
+      const wSpan = 3.5;
+      for (let i = -30; i <= 30; i++) {
+        const x = (i / 30) * wSpan;
+        const y = Math.max(0, height * (1 - Math.abs(x / wSpan)));
+        pts.push(new THREE.Vector2(xCenter + x, y));
+      }
+      const shape = new THREE.Shape(pts);
+      const extrudeSettings = { depth: 1.5, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: 0.1, bevelThickness: 0.1 };
+      const geom = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+      geom.center();
+      const mat = new THREE.MeshStandardMaterial({
+        color: color,
+        emissive: color,
+        emissiveIntensity: 0.4,
+        roughness: 0.2,
+        transparent: true,
+        opacity: 0.85
+      });
+      const mesh = new THREE.Mesh(geom, mat);
+      mesh.position.set(xCenter, height / 2, 0);
+      groupNyquist.add(mesh);
+    }
+
+    // --- MANEJO DE MODOS DE VISUALIZACIÓN ---
+    function setMode(mode) {
+      currentMode = mode;
+      groupLattice.visible = (mode === 'lattice');
+      groupPipeline.visible = (mode === 'pipeline');
+      groupNyquist.visible = (mode === 'nyquist');
+
+      // Botones estilo activo
+      document.getElementById('btnModeLattice').className = mode === 'lattice' 
+        ? "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-cyanGlow text-space-950 transition shadow-md shadow-cyanGlow/20"
+        : "px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition";
+      
+      document.getElementById('btnModePipeline').className = mode === 'pipeline'
+        ? "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-cyanGlow text-space-950 transition shadow-md shadow-cyanGlow/20"
+        : "px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition";
+
+      document.getElementById('btnModeNyquist').className = mode === 'nyquist'
+        ? "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-cyanGlow text-space-950 transition shadow-md shadow-cyanGlow/20"
+        : "px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-300 hover:text-white transition";
+
+      const labels = {
+        'lattice': 'Malla Espacio-Temporal 3D (Tiempo × Amplitud × Ruido)',
+        'pipeline': 'Arquitectura Tridimensional de Lazo Cerrado',
+        'nyquist': 'Espectro Frecuencial 3D y Teorema de Nyquist-Shannon'
+      };
+      document.getElementById('canvasModeLabel').innerText = labels[mode];
+
+      if (mode === 'pipeline') setCameraView('top');
+      if (mode === 'lattice') setCameraView('iso');
+      if (mode === 'nyquist') setCameraView('front');
+    }
+
+    // --- GESTIÓN DE VISTAS DE CÁMARA ---
+    function setCameraView(view) {
+      if (!camera || !controls) return;
+      if (view === 'iso') {
+        camera.position.set(16, 14, 18);
+        controls.target.set(0, 4.5, 0);
+      } else if (view === 'side') {
+        camera.position.set(0, 5, 24);
+        controls.target.set(0, 4.5, 0);
+      } else if (view === 'front') {
+        camera.position.set(-25, 5, 0);
+        controls.target.set(0, 4.5, 0);
+      } else if (view === 'top') {
+        camera.position.set(0, 22, 0.1);
+        controls.target.set(0, 0, 0);
+      }
+      controls.update();
+    }
+
+    function resetCamera() {
+      setCameraView('iso');
+    }
+
+    // --- INTERACCIÓN Y RAYCASTING (CLIC EN PIPELINE) ---
+    function onPointerDown(event) {
+      if (currentMode !== 'pipeline') return;
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(pipelineModules);
+
+      if (intersects.length > 0) {
+        const data = intersects[0].object.userData;
+        showBlockCard(data);
+      }
+    }
+
+    function showBlockCard(data) {
+      const card = document.getElementById('blockInfoCard');
+      document.getElementById('blockTitle').innerText = data.name;
+      document.getElementById('blockDesc').innerText = data.desc;
+      document.getElementById('blockEq').innerText = `$$${data.eq}$$`;
+      card.classList.remove('hidden');
+      if (window.renderMathInElement) {
+        renderMathInElement(document.getElementById('blockEq'), { delimiters: [{left: '$$', right: '$$', display: true}] });
+      }
+    }
+
+    function closeBlockCard() {
+      document.getElementById('blockInfoCard').classList.add('hidden');
+    }
+
+    // --- ACTUALIZACIÓN DE TELEMETRÍA Y CONTROLES ---
+    function updateTelemetry() {
+      const levels = Math.pow(2, config.bits);
+      const q = (config.vMax - config.vMin) / levels;
+      const sigma = q / Math.sqrt(12);
+      const sqnr = 6.02 * config.bits + 1.76;
+      const T = 1.0 / config.fs;
+      const zohDelayMs = (T / 2.0) * 1000.0;
+      const isNyquistSafe = config.fs > 2 * config.fSignal;
+
+      // Labels de sliders
+      document.getElementById('labelBits').innerText = `${config.bits} bits (${levels} niveles)`;
+      document.getElementById('labelFs').innerText = `${config.fs} Hz (T = ${(T*1000).toFixed(1)} ms)`;
+      document.getElementById('labelFsig').innerText = `${config.fSignal.toFixed(1)} Hz`;
+
+      // HUD
+      document.getElementById('hudLevels').innerText = levels.toLocaleString();
+      document.getElementById('hudQ').innerText = `${(q * 1000).toFixed(3)} mV`;
+      document.getElementById('hudSigma').innerText = `${(sigma * 1000).toFixed(3)} mV`;
+      document.getElementById('hudSQNR').innerText = `${sqnr.toFixed(2)} dB`;
+      document.getElementById('hudZOHDelay').innerText = `${zohDelayMs.toFixed(2)} ms`;
+
+      const nyqBadge = document.getElementById('hudNyquist');
+      if (isNyquistSafe) {
+        nyqBadge.className = "font-mono font-bold px-2 py-0.5 rounded text-[11px] bg-emerald-950 text-emerald-400 border border-emerald-500/30";
+        nyqBadge.innerText = `✓ Seguro (fs > 2f)`;
+      } else {
+        nyqBadge.className = "font-mono font-bold px-2 py-0.5 rounded text-[11px] bg-red-950 text-magentaGlow border border-magentaGlow/50 animate-pulse";
+        nyqBadge.innerText = `⚠️ ALIASING ACTIVO!`;
+      }
+    }
+
+    function loadIndustrialPreset() {
+      document.getElementById('sliderBits').value = 12;
+      document.getElementById('sliderFs').value = 40;
+      document.getElementById('sliderFsig').value = 2.0;
+      config.bits = 12;
+      config.fs = 40;
+      config.fSignal = 2.0;
+      updateTelemetry();
+      updateLatticeGeometry();
+      updateNyquistGeometry();
+    }
+
+    // Calculadora interactiva del caso de estudio
+    function recalcCaseStudy() {
+      const pMax = parseFloat(document.getElementById('calcPmax').value) || 100;
+      const vFs = parseFloat(document.getElementById('calcVfs').value) || 10;
+      const deltaP = parseFloat(document.getElementById('calcDeltaP').value) || 0.05;
+
+      const nLevelsReq = Math.ceil(pMax / deltaP);
+      const nBitsTeoricos = Math.log2(nLevelsReq);
+      
+      // Selección comercial estándar (8, 10, 12, 14, 16)
+      let nBitsCom = 12;
+      const standardBits = [8, 10, 12, 14, 16];
+      for (let b of standardBits) {
+        if (b >= nBitsTeoricos) { nBitsCom = b; break; }
+      }
+
+      const levelsCom = Math.pow(2, nBitsCom);
+      const qVolt = (vFs / levelsCom) * 1000; // mV
+      const pReal = pMax / levelsCom;
+      const sigmaRMS = (qVolt / Math.sqrt(12));
+      const sqnr = 6.02 * nBitsCom + 1.76;
+
+      document.getElementById('resNiveles').innerText = `${nLevelsReq.toLocaleString()} niveles`;
+      document.getElementById('resBitsTeoricos').innerText = `${Math.ceil(nBitsTeoricos)} bits (${nBitsTeoricos.toFixed(2)})`;
+      document.getElementById('resBitsComerciales').innerText = `${nBitsCom} bits (${levelsCom.toLocaleString()} niveles)`;
+      document.getElementById('resQVolt').innerText = `${qVolt.toFixed(3)} mV`;
+      document.getElementById('resPReal').innerText = `${pReal.toFixed(4)} bar`;
+      document.getElementById('resSigmaRMS').innerText = `${sigmaRMS.toFixed(4)} mV`;
+      document.getElementById('resSQNR').innerText = `${sqnr.toFixed(2)} dB`;
+    }
+
+    // Toggle para preguntas conceptuales
+    function toggleAnswer(id) {
+      const el = document.getElementById(`ans${id}`);
+      el.classList.toggle('hidden');
+    }
+
+    // Copiar script de Python
+    function copyPythonCode() {
+      const code = document.getElementById('pythonCodeContent').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        document.getElementById('copyText').innerText = "¡Copiado!";
+        setTimeout(() => { document.getElementById('copyText').innerText = "Copiar Script"; }, 2000);
+      });
+    }
+
+    // Event listeners para sliders
+    document.getElementById('sliderBits').addEventListener('input', (e) => {
+      config.bits = parseInt(e.target.value);
+      updateTelemetry();
+      updateLatticeGeometry();
+    });
+
+    document.getElementById('sliderFs').addEventListener('input', (e) => {
+      config.fs = parseFloat(e.target.value);
+      updateTelemetry();
+      updateLatticeGeometry();
+      updateNyquistGeometry();
+    });
+
+    document.getElementById('sliderFsig').addEventListener('input', (e) => {
+      config.fSignal = parseFloat(e.target.value);
+      updateTelemetry();
+      updateLatticeGeometry();
+      updateNyquistGeometry();
+    });
+
+    document.getElementById('chkShowZOH').addEventListener('change', (e) => {
+      config.showZOH = e.target.checked;
+      if (zohGroup) zohGroup.visible = config.showZOH;
+    });
+
+    document.getElementById('chkShowNoise').addEventListener('change', (e) => {
+      config.showNoise = e.target.checked;
+      if (noiseTunnelGroup) noiseTunnelGroup.visible = config.showNoise;
+    });
+
+    document.getElementById('chkShowMesh').addEventListener('change', (e) => {
+      config.showMesh = e.target.checked;
+      if (quantumMeshGroup) quantumMeshGroup.visible = config.showMesh;
+    });
+
+    document.getElementById('chkAnimate').addEventListener('change', (e) => {
+      isAnimating = e.target.checked;
+    });
+
+    function onWindowResize() {
+      const container = document.getElementById('threejs-container');
+      if (!container || !renderer || !camera) return;
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    }
+
+    // --- LOOP DE ANIMACIÓN ---
+    function animate() {
+      requestAnimationFrame(animate);
+
+      if (isAnimating) {
+        animTime += 0.02;
+
+        // Actualizar geometría de onda en movimiento continuo
+        if (currentMode === 'lattice') {
+          updateLatticeGeometry();
+        }
+
+        // Flujo de partículas del lazo en el modo pipeline
+        if (currentMode === 'pipeline' && particlesSystem) {
+          const curve = particlesSystem.userData.curve;
+          const count = particlesSystem.userData.count;
+          const positions = particlesSystem.geometry.attributes.position.array;
+
+          for (let i = 0; i < count; i++) {
+            const u = (i / count + animTime * 0.1) % 1.0;
+            const p = curve.getPoint(u);
+            positions[i * 3] = p.x;
+            positions[i * 3 + 1] = p.y;
+            positions[i * 3 + 2] = p.z;
+          }
+          particlesSystem.geometry.attributes.position.needsUpdate = true;
+        }
+      }
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    // Inicializar al cargar
+    window.addEventListener('DOMContentLoaded', () => {
+      init3D();
+      updateTelemetry();
+      recalcCaseStudy();
+    });
+  </script>
+
+</body>
+</html>

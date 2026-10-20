@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEC36 - Control II | Plataforma de Aplicaciones y Visualizadores Web 3D | IUB</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            iub: {
+              azul: '#002F6C',
+              azulClaro: '#00A3E0',
+              amarillo: '#FFC72C',
+              gris: '#4A4A49',
+              blanco: '#FFFFFF'
+            },
+            space: {
+              950: '#060B14',
+              900: '#0B1220',
+              850: '#101B2E',
+              800: '#17243B'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Fuentes Google: Outfit e Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #060B14;
+      color: #E2E8F0;
+    }
+    h1, h2, h3, h4 {
+      font-family: 'Outfit', sans-serif;
+    }
+    code, pre {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-cyan-500/30 selection:text-cyan-200">
+
+  <!-- CABECERA PRINCIPAL INSTITUCIONAL -->
+  <header class="sticky top-0 z-50 backdrop-blur-xl bg-space-950/85 border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <a href="./" class="flex items-center gap-3 group">
+          <img src="logos/logo_iub_blanco.png" alt="Logo Institución Universitaria de Barranquilla (IUB)" class="h-11 w-auto object-contain transition-transform group-hover:scale-105" onerror="this.src='logo_iub_blanco.png'" />
+          <div class="hidden sm:block border-l border-slate-700/80 pl-3">
+            <p class="text-xs font-extrabold uppercase tracking-widest text-cyan-400">Facultad de Ingeniería</p>
+            <p class="text-xs text-slate-300 font-medium">Ingeniería Mecatrónica — MEC36</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/buritica06/control-digital-web" target="_blank" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 transition">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span class="hidden sm:inline">Repositorio GitHub</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="relative overflow-hidden pt-16 pb-14 border-b border-slate-800/60 bg-gradient-to-b from-space-950 via-space-900 to-space-950">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_75%_50%_at_50%_-10%,rgba(0,163,224,0.18),rgba(255,255,255,0))] pointer-events-none"></div>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-bold uppercase tracking-wider mb-6">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+        Plataforma Docente & Laboratorio Web Interactivo
+      </div>
+
+      <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight sm:leading-none mb-6">
+        Control II: <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-yellow-300">Sistemas Discretos & 3D</span>
+      </h1>
+      
+      <p class="max-w-3xl mx-auto text-base sm:text-lg text-slate-300 font-normal leading-relaxed mb-8">
+        Colección oficial de páginas web, simuladores interactivos, interfaces gráficas WebGL y visualizadores tridimensionales desarrollados para la asignatura <strong>MEC36 - Control II</strong> de Ingeniería Mecatrónica en la <strong>Institución Universitaria de Barranquilla (IUB)</strong>.
+      </p>
+
+      <!-- METRICAS / STATS -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto text-left">
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+          <p class="text-2xl font-black text-cyan-400">4</p>
+          <p class="text-xs text-slate-400 font-medium">Aplicaciones 3D Activas</p>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+          <p class="text-2xl font-black text-sky-400">100%</p>
+          <p class="text-xs text-slate-400 font-medium">WebGL & Three.js en Vivo</p>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+          <p class="text-2xl font-black text-yellow-400">0</p>
+          <p class="text-xs text-slate-400 font-medium">Instalación Necesaria</p>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+          <p class="text-2xl font-black text-emerald-400">IUB</p>
+          <p class="text-xs text-slate-400 font-medium">Acreditación Académica</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN DE BÚSQUEDA Y FILTRADO -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-4 w-full">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+      <div class="relative w-full sm:w-96">
+        <input type="text" id="busqueda" placeholder="Buscar por tema, palabra clave (ej. muestreo, Z, Cauchy)..." class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition" />
+        <svg class="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </div>
+      <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
+        <button onclick="filtrar('todos')" class="filtro-btn active px-3.5 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-slate-950 transition">Todos</button>
+        <button onclick="filtrar('muestreo')" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Muestreo</button>
+        <button onclick="filtrar('transformada z')" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Transformada Z</button>
+        <button onclick="filtrar('inversa')" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Inversa</button>
+        <button onclick="filtrar('topología')" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Topología 3D</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATÁLOGO DE APLICACIONES WEB -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div id="grid-apps" class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+      
+      <article class="app-card group relative flex flex-col justify-between rounded-2xl bg-slate-900/70 border border-slate-800/80 hover:border-cyan-500/50 p-6 sm:p-7 backdrop-blur-md transition-all duration-300 hover:shadow-[0_0_35px_rgba(0,163,224,0.2)] hover:-translate-y-1" data-tags="muestreo zoh cuantificación shannon-nyquist webgl 3d plotly muestreo, retenedor zoh y cuantificación 3d semana 01">
+        <div>
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-extrabold uppercase tracking-wider rounded-lg bg-iub-azul/30 text-iub-azulClaro border border-iub-azulClaro/30">
+              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+              Semana 01
+            </span>
+            <span class="text-xs font-mono text-slate-400 font-medium">/01-muestreo-y-cuantizacion/</span>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-black text-white group-hover:text-cyan-300 transition-colors mb-2 leading-snug">
+            Muestreo, Retenedor ZOH y Cuantificación 3D
+          </h3>
+          <p class="text-xs font-semibold text-yellow-400/90 uppercase tracking-wide mb-3">
+            Arquitectura de Lazo de Control Digital y Discretización Periódica
+          </p>
+          <p class="text-sm text-slate-300/90 leading-relaxed mb-6">
+            Laboratorio interactivo y visualizador 3D que modela la conversión analógica a digital (ADC), el teorema de Shannon-Nyquist, el efecto del período de muestreo (T), el retenedor de orden cero (ZOH) y el error de cuantificación con resolución configurable de 8 a 16 bits.
+          </p>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-slate-800/60">
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Muestreo</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">ZOH</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Cuantificación</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Shannon-Nyquist</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">WebGL 3D</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Plotly</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <a href="./01-muestreo-y-cuantizacion/" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400 text-white text-xs sm:text-sm font-bold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              <span>Abrir App Interactiva</span>
+            </a>
+            <a href="./01-muestreo-y-cuantizacion/muestreo_cuantizacion_3d.html" target="_blank" title="Abrir Visor 3D en pantalla completa" class="inline-flex items-center justify-center p-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 text-slate-300 hover:text-white border border-slate-700 hover:border-cyan-500/40 transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <article class="app-card group relative flex flex-col justify-between rounded-2xl bg-slate-900/70 border border-slate-800/80 hover:border-cyan-500/50 p-6 sm:p-7 backdrop-blur-md transition-all duration-300 hover:shadow-[0_0_35px_rgba(0,163,224,0.2)] hover:-translate-y-1" data-tags="transformada z roc polos y ceros teoremas three.js 3d iub hud transformada z, funciones elementales y teoremas 3d semana 02">
+        <div>
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-extrabold uppercase tracking-wider rounded-lg bg-iub-azul/30 text-iub-azulClaro border border-iub-azulClaro/30">
+              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+              Semana 02
+            </span>
+            <span class="text-xs font-mono text-slate-400 font-medium">/02-transformada-z/</span>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-black text-white group-hover:text-cyan-300 transition-colors mb-2 leading-snug">
+            Transformada Z, Funciones Elementales y Teoremas 3D
+          </h3>
+          <p class="text-xs font-semibold text-yellow-400/90 uppercase tracking-wide mb-3">
+            Fundamentos Teóricos, Región de Convergencia (ROC) y Dinámica Discreta
+          </p>
+          <p class="text-sm text-slate-300/90 leading-relaxed mb-6">
+            Visualizador 3D con Three.js y Plotly que calcula y representa geométricamente las Transformadas Z unilaterales de señales canónicas (escalón, rampa, exponencial decreciente, senoidal amortiguada) y los teoremas operacionales de retardo, valor inicial y valor final.
+          </p>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-slate-800/60">
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Transformada Z</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">ROC</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Polos y Ceros</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Teoremas</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Three.js 3D</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">IUB HUD</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <a href="./02-transformada-z/" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400 text-white text-xs sm:text-sm font-bold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              <span>Abrir App Interactiva</span>
+            </a>
+            <a href="./02-transformada-z/transformada_z_semana02_3d.html" target="_blank" title="Abrir Visor 3D en pantalla completa" class="inline-flex items-center justify-center p-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 text-slate-300 hover:text-white border border-slate-700 hover:border-cyan-500/40 transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <article class="app-card group relative flex flex-col justify-between rounded-2xl bg-slate-900/70 border border-slate-800/80 hover:border-cyan-500/50 p-6 sm:p-7 backdrop-blur-md transition-all duration-300 hover:shadow-[0_0_35px_rgba(0,163,224,0.2)] hover:-translate-y-1" data-tags="transformada z inversa fracciones parciales división larga residuos cauchy three.js hud transformada z inversa: fracciones parciales y métodos numéricos 3d semana 03">
+        <div>
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-extrabold uppercase tracking-wider rounded-lg bg-iub-azul/30 text-iub-azulClaro border border-iub-azulClaro/30">
+              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+              Semana 03
+            </span>
+            <span class="text-xs font-mono text-slate-400 font-medium">/03-transformada-z-inversa/</span>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-black text-white group-hover:text-cyan-300 transition-colors mb-2 leading-snug">
+            Transformada Z Inversa: Fracciones Parciales y Métodos Numéricos 3D
+          </h3>
+          <p class="text-xs font-semibold text-yellow-400/90 uppercase tracking-wide mb-3">
+            Descomposición de Heaviside, División Larga y Residuos de Cauchy
+          </p>
+          <p class="text-sm text-slate-300/90 leading-relaxed mb-6">
+            Entorno computacional interactivo para la recuperación analítica y numérica de secuencias en el tiempo x[k] a partir de funciones racionales X(z). Incluye cálculo paso a paso, visualizador orbital Three.js del plano complejo Z y análisis de estabilidad.
+          </p>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-slate-800/60">
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Transformada Z Inversa</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Fracciones Parciales</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">División Larga</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Residuos Cauchy</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Three.js HUD</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <a href="./03-transformada-z-inversa/" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400 text-white text-xs sm:text-sm font-bold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              <span>Abrir App Interactiva</span>
+            </a>
+            <a href="./03-transformada-z-inversa/transformada_z_inversa_semana03_3d.html" target="_blank" title="Abrir Visor 3D en pantalla completa" class="inline-flex items-center justify-center p-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 text-slate-300 hover:text-white border border-slate-700 hover:border-cyan-500/40 transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <article class="app-card group relative flex flex-col justify-between rounded-2xl bg-slate-900/70 border border-slate-800/80 hover:border-cyan-500/50 p-6 sm:p-7 backdrop-blur-md transition-all duration-300 hover:shadow-[0_0_35px_rgba(0,163,224,0.2)] hover:-translate-y-1" data-tags="topología energética mapeo s a z círculo unitario superficie 3d plotly 3d topología energética 3d de la transformada z tópico avanzado">
+        <div>
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-extrabold uppercase tracking-wider rounded-lg bg-iub-azul/30 text-iub-azulClaro border border-iub-azulClaro/30">
+              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+              Tópico Avanzado
+            </span>
+            <span class="text-xs font-mono text-slate-400 font-medium">/topologia-transformada-z/</span>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-black text-white group-hover:text-cyan-300 transition-colors mb-2 leading-snug">
+            Topología Energética 3D de la Transformada Z
+          </h3>
+          <p class="text-xs font-semibold text-yellow-400/90 uppercase tracking-wide mb-3">
+            Mapeo del Plano Complejo S al Plano Z y Círculo Unitario
+          </p>
+          <p class="text-sm text-slate-300/90 leading-relaxed mb-6">
+            Superficie tridimensional inmersiva de la magnitud |X(z)| y fase de la Transformada Z. Permite explorar visualmente el Círculo Unitario (|z|=1), las trayectorias de polos/ceros y la relación directa con la estabilidad de sistemas en tiempo discreto.
+          </p>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-slate-800/60">
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Topología Energética</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Mapeo S a Z</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Círculo Unitario</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Superficie 3D</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Plotly 3D</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <a href="./topologia-transformada-z/" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400 text-white text-xs sm:text-sm font-bold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              <span>Abrir App Interactiva</span>
+            </a>
+            <a href="./topologia-transformada-z/transformada_z_experiencia_3d.html" target="_blank" title="Abrir Visor 3D en pantalla completa" class="inline-flex items-center justify-center p-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 text-slate-300 hover:text-white border border-slate-700 hover:border-cyan-500/40 transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <!-- PIE DE PÁGINA INSTITUCIONAL -->
+  <footer class="mt-auto border-t border-slate-800/80 bg-space-950 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+      <div class="flex items-center gap-4">
+        <img src="logos/logo_iub_blanco.png" alt="IUB" class="h-10 w-auto object-contain" onerror="this.src='logo_iub_blanco.png'" />
+        <div>
+          <p class="text-sm font-bold text-white">Institución Universitaria de Barranquilla (IUB)</p>
+          <p class="text-xs text-slate-400">Facultad de Ingeniería — Programa de Ingeniería Mecatrónica</p>
+          <p class="text-xs text-slate-500">MEC36: Control II | Docente: Ricardo Buriticá</p>
+        </div>
+      </div>
+      <p class="text-xs text-slate-500 font-mono">
+        Repositorio sincronizado automáticamente &bull; 2026
+      </p>
+    </div>
+  </footer>
+
+  <!-- SCRIPT DE BÚSQUEDA Y FILTRADO DINÁMICO -->
+  <script>
+    const input = document.getElementById('busqueda');
+    const cards = document.querySelectorAll('.app-card');
+    const filtroBtns = document.querySelectorAll('.filtro-btn');
+
+    function actualizarFiltro() {
+      const query = input.value.toLowerCase().trim();
+      cards.forEach(card => {
+        const tags = card.getAttribute('data-tags');
+        if (tags.includes(query)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    input.addEventListener('input', actualizarFiltro);
+
+    function filtrar(categoria) {
+      filtroBtns.forEach(btn => {
+        btn.classList.remove('bg-cyan-500', 'text-slate-950');
+        btn.classList.add('bg-slate-800', 'text-slate-300');
+      });
+      event.target.classList.add('bg-cyan-500', 'text-slate-950');
+      event.target.classList.remove('bg-slate-800', 'text-slate-300');
+
+      if (categoria === 'todos') {
+        input.value = '';
+      } else {
+        input.value = categoria;
+      }
+      actualizarFiltro();
+    }
+  </script>
+</body>
+</html>

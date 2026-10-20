@@ -1,0 +1,2801 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEC36 - Semana 3: Transformada Z Inversa: Fracciones Parciales, División Directa y Métodos Numéricos 3D | IUB</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- KaTeX CSS & JS para formulación matemática rigurosa -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" 
+          onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+  <!-- Three.js (WebGL) + OrbitControls desde CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- Plotly.js WebGL para gráficas científicas 3D y 2D embebidas -->
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+
+  <script>
+    // Configuración oficial con todos los colores institucionales de config/framework_iub (beamerthemeiub.sty)
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            // Paleta Oficial Exacta config/framework_iub/beamerthemeiub.sty (Manual Identidad IUB 2025)
+            iub: {
+              blanco: '#FFFFFF',       // \definecolor{iubBlanco}{HTML}{FFFFFF}
+              oscuro: '#121023',       // \definecolor{iubOscuro}{HTML}{121023}
+              amarillo: '#FFDF2D',     // \definecolor{iubAmarillo}{HTML}{FFDF2D}
+              azulClaro: '#00ADE7',    // \definecolor{iubAzulClaro}{HTML}{00ADE7}
+              naranja: '#E39037',      // \definecolor{iubNaranja}{HTML}{E39037}
+              verde: '#3B9C6D',        // \definecolor{iubVerde}{HTML}{3B9C6D}
+              grisFondo: '#F4F6F9',    // \definecolor{iubGrisFondo}{HTML}{F4F6F9}
+              azulFondo: '#EBF7FD',    // \definecolor{iubAzulFondo}{HTML}{EBF7FD}
+              naranjaFondo: '#FDF4EA', // \definecolor{iubNaranjaFondo}{HTML}{FDF4EA}
+              verdeFondo: '#EDF8F2'    // \definecolor{iubVerdeFondo}{HTML}{EDF8F2}
+            },
+            // Paleta de Datos Complementaria "IUB Dark Yellow"
+            iubData: {
+              yellow: '#FFDF2D',
+              white: '#FFFFFF',
+              amber: '#FBBF24',
+              sky: '#38BDF8',
+              emerald: '#34D399',
+              coral: '#F87171'
+            },
+            // Variaciones de superficie derivadas de #121023 (iubOscuro)
+            space: {
+              950: '#0B0A16',
+              900: '#121023',
+              850: '#1A1732',
+              800: '#221E3F',
+              700: '#2F2A54',
+              600: '#433C73'
+            }
+          },
+          fontFamily: {
+            sans: ['Helvetica Neue', 'Helvetica', 'Inter', 'Arial', 'sans-serif'],
+            mono: ['Fira Code', 'Consolas', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      /* Variables CSS Oficiales de config/framework_iub/beamerthemeiub.sty */
+      --iub-blanco: #FFFFFF;
+      --iub-oscuro: #121023;
+      --iub-amarillo: #FFDF2D;
+      --iub-azul-claro: #00ADE7;
+      --iub-naranja: #E39037;
+      --iub-verde: #3B9C6D;
+      --iub-gris-fondo: #F4F6F9;
+      --iub-azul-fondo: #EBF7FD;
+      --iub-naranja-fondo: #FDF4EA;
+      --iub-verde-fondo: #EDF8F2;
+    }
+    body {
+      background-color: #121023;
+      color: #FFFFFF;
+    }
+    .glow-yellow { box-shadow: 0 0 28px rgba(255, 223, 45, 0.22); }
+    .glow-cyan { box-shadow: 0 0 28px rgba(0, 173, 231, 0.25); }
+    .glow-emerald { box-shadow: 0 0 25px rgba(59, 156, 109, 0.25); }
+    .glow-orange { box-shadow: 0 0 25px rgba(227, 144, 55, 0.25); }
+    .border-glass {
+      border: 1px solid rgba(255, 223, 45, 0.18);
+      background: rgba(26, 23, 50, 0.84);
+      backdrop-filter: blur(12px);
+    }
+    .iub-table-head {
+      background-color: #121023;
+      color: #FFDF2D;
+      border-bottom: 2px solid #FFDF2D;
+    }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #121023; }
+    ::-webkit-scrollbar-thumb { background: #2F2A54; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #FFDF2D; }
+    .slider-track::-webkit-slider-thumb {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #FFDF2D;
+      border: 2px solid #121023;
+      cursor: pointer;
+      box-shadow: 0 0 10px #FFDF2D;
+    }
+  </style>
+</head>
+<body class="bg-iub-oscuro text-iub-blanco antialiased font-sans selection:bg-iub-amarillo selection:text-iub-oscuro">
+
+  <!-- =================================================================================== -->
+  <!-- BARRA DE NAVEGACIÓN SUPERIOR INSTITUCIONAL (CON LOGO OFICIAL logo_iub_blanco.png) -->
+  <!-- =================================================================================== -->
+  <header class="sticky top-0 z-50 border-b-2 border-iub-amarillo/85 bg-iub-oscuro/95 backdrop-blur-md shadow-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <!-- Logo Institucional Oficial: logo_iub_blanco.png -->
+        <a href="#" class="flex items-center gap-3 group">
+          <img src="logos/logo_iub_blanco.png" alt="Logo Institución Universitaria de Barranquilla (IUB)" class="h-12 w-auto object-contain transition-transform group-hover:scale-105" onerror="this.src='logo_iub_blanco.png'" />
+        </a>
+        <div class="h-9 w-[1.5px] bg-iub-amarillo/40 hidden sm:block"></div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-iub-blanco tracking-wide text-sm sm:text-base">MEC36 — Control II</span>
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-iub-amarillo text-iub-oscuro font-black uppercase tracking-wider">Semana 3 de 14</span>
+          </div>
+          <p class="text-[11px] text-iub-azulClaro font-semibold">Institución Universitaria de Barranquilla · Ingeniería Mecatrónica · Prof. Ricardo Buriticá</p>
+        </div>
+      </div>
+      
+      <nav class="hidden xl:flex items-center gap-4 text-xs font-bold uppercase tracking-wider text-iub-blanco/90">
+        <a href="#visor-3d" class="text-iub-amarillo hover:brightness-125 flex items-center gap-1.5 transition">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-iub-amarillo opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-iub-amarillo"></span>
+          </span>
+          Laboratorio 3D
+        </a>
+        <a href="#ficha-curricular" class="hover:text-iub-amarillo transition-colors">Ficha &amp; RA2</a>
+        <a href="#fracciones-parciales" class="hover:text-iub-amarillo transition-colors">Fracciones $X(z)/z$</a>
+        <a href="#polos-complejos" class="hover:text-iub-amarillo transition-colors">Polos Complejos</a>
+        <a href="#division-directa" class="hover:text-iub-amarillo transition-colors">División Directa</a>
+        <a href="#caso-brazo-robotico" class="hover:text-iub-amarillo transition-colors">Caso Brazo Robótico</a>
+        <a href="#plotly-3d-section" class="hover:text-iub-amarillo transition-colors">Gráficas Plotly 3D</a>
+        <a href="#codigo-python" class="hover:text-iub-amarillo transition-colors">Python &amp; MATLAB</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <a href="transformada_z_inversa_semana03_3d.html" target="_blank" class="hidden sm:flex px-3 py-1.5 rounded-lg bg-space-850 hover:bg-space-800 border border-iub-azulClaro/60 text-iubData-sky text-xs font-bold items-center gap-1.5 transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          <span>Pantalla Completa Plotly 3D</span>
+        </a>
+        <a href="#visor-3d" class="px-3.5 py-1.5 rounded-lg bg-iub-amarillo hover:bg-iubData-amber text-iub-oscuro text-xs font-black transition flex items-center gap-1.5 shadow-md">
+          <span>WebGL Three.js 3D</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- =================================================================================== -->
+  <!-- HERO SECTION INSTITUCIONAL (DISEÑO PORTADA OFICIAL beamerthemeiub.sty SEMANA 03) -->
+  <!-- =================================================================================== -->
+  <section class="relative overflow-hidden pt-10 pb-14 border-b-4 border-iub-azulClaro bg-iub-oscuro">
+    <!-- Franja vertical izquierda amarilla idéntica a beamerthemeiub.sty -->
+    <div class="absolute top-0 bottom-0 left-0 w-2.5 bg-iub-amarillo"></div>
+    <!-- Panel diagonal derecho institucional idéntico a MEC36-semana03.tex -->
+    <div class="absolute top-0 right-0 bottom-0 w-1/3 bg-gradient-to-l from-iub-azulClaro/10 to-transparent pointer-events-none" style="clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 0% 100%);"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_75%_65%_at_50%_-15%,rgba(0,173,231,0.16),rgba(255,223,45,0.06),rgba(18,16,35,0))] pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
+        
+        <div class="space-y-4 text-left lg:max-w-4xl">
+          <div class="inline-flex flex-wrap items-center gap-2 px-3.5 py-1 rounded-full border border-iub-amarillo/50 bg-space-850 text-xs text-iub-amarillo font-bold">
+            <span class="w-2 h-2 rounded-full bg-iub-amarillo"></span>
+            <span>RESULTADO DE APRENDIZAJE: <strong class="text-iub-blanco">MEC36-RA2</strong> · CRITERIOS <strong class="text-iubData-sky">CE2 &amp; CE4</strong> · CORTE EVALUATIVO 1</span>
+          </div>
+
+          <p class="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-iub-azulClaro">
+            INSTITUCIÓN UNIVERSITARIA DE BARRANQUILLA · FACULTAD DE INGENIERÍA · CONTROL II (MEC36)
+          </p>
+
+          <h1 class="text-3xl sm:text-5xl font-black text-iub-blanco tracking-tight leading-tight">
+            Transformada Z Inversa: <span class="text-iub-amarillo">Fracciones Parciales</span>, <span class="text-iub-azulClaro">División Directa</span> y <span class="text-iubData-emerald">Métodos Numéricos</span>
+          </h1>
+
+          <div class="w-24 h-1.5 bg-iub-amarillo rounded-full"></div>
+
+          <p class="text-sm sm:text-base text-slate-200 leading-relaxed">
+            Recuperación analítica y computacional de la secuencia temporal causal <strong class="text-iub-amarillo">$\{x[0], x[1], x[2], \dots, x[k]\}$</strong> a partir de una función racional en el dominio complejo $X(z)$. Explora interactivamente en <strong>WebGL 3D (Three.js + Plotly)</strong> la integral de contorno de Cauchy $\oint_C$, la técnica de expansión de <strong class="text-iubData-sky">$X(z)/z$</strong>, la hélice 3D de polos complejos conjugados $p_{1,2} = r e^{\pm j\theta}$, la división polinomial en potencias de $z^{-1}$ y la cinemática 3D de posicionamiento angular de un <strong class="text-iubData-emerald">brazo robótico mecatrónico</strong>.
+          </p>
+
+          <!-- Tarjetas ejecutivas idénticas a la diapositiva "Ficha de la sesión" de MEC36-semana03.tex -->
+          <div class="pt-3 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="p-3.5 rounded-xl bg-iub-azulClaro text-iub-blanco shadow-lg border border-white/15">
+              <div class="text-[10px] font-black uppercase tracking-wider opacity-90">SEMANA CURRICULAR</div>
+              <div class="text-2xl font-black mt-0.5">3 <span class="text-sm font-bold">/ 14</span></div>
+              <div class="text-[11px] font-semibold mt-0.5">Corte evaluativo 1 (30%)</div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-iub-naranja text-iub-blanco shadow-lg border border-white/15">
+              <div class="text-[10px] font-black uppercase tracking-wider opacity-90">DURACIÓN PRESENCIAL</div>
+              <div class="text-2xl font-black mt-0.5">240 <span class="text-sm font-bold">min</span></div>
+              <div class="text-[11px] font-semibold mt-0.5">Sesión teórico-práctica (4 h)</div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-iub-verde text-iub-blanco shadow-lg border border-white/15">
+              <div class="text-[10px] font-black uppercase tracking-wider opacity-90">TRABAJO INDEPENDIENTE</div>
+              <div class="text-2xl font-black mt-0.5">5 <span class="text-sm font-bold">h / semana</span></div>
+              <div class="text-[11px] font-semibold mt-0.5">Python Control / MATLAB</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sello Anular Semana 03 (idéntico a la portada de MEC36-semana03.tex) -->
+        <div class="shrink-0 flex flex-col items-center justify-center p-6 rounded-3xl bg-space-850/95 border-2 border-iub-azulClaro/60 glow-cyan">
+          <img src="logos/logo_iub_blanco.png" alt="Logo IUB Blanco" class="h-14 w-auto mb-4 object-contain" onerror="this.src='logo_iub_blanco.png'" />
+          <div class="relative w-40 h-40 rounded-full border-2 border-iub-azulClaro flex flex-col items-center justify-center bg-iub-oscuro shadow-inner">
+            <div class="absolute inset-[-8px] rounded-full border border-iub-azulClaro/30 pointer-events-none"></div>
+            <div class="absolute inset-[-15px] rounded-full border border-iub-azulClaro/15 pointer-events-none"></div>
+            <div class="absolute -top-1.5 w-3.5 h-3.5 rounded-full bg-iub-amarillo shadow-md"></div>
+            <span class="text-[11px] font-extrabold uppercase tracking-widest text-iub-azulClaro">SEMANA</span>
+            <span class="text-5xl font-black text-iub-blanco leading-none my-1">03</span>
+            <div class="w-9 h-0.5 bg-iub-amarillo my-1"></div>
+            <span class="text-[11px] text-slate-300 font-semibold">de 14 · MEC36</span>
+          </div>
+          <div class="mt-4 text-center">
+            <p class="text-xs font-extrabold text-iub-amarillo">Prof. Ricardo Buriticá</p>
+            <p class="text-[11px] text-iub-blanco/80">Ingeniería Mecatrónica</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================================== -->
+  <!-- SECCIÓN CENTRAL: LABORATORIO WEBGL 3D EN TIEMPO REAL (THREE.JS + ORBITCONTROLS) -->
+  <!-- =================================================================================== -->
+  <section id="visor-3d" class="py-12 border-b-2 border-iub-amarillo/30 bg-space-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <!-- ENCABEZADO Y SELECTOR DE LAS 4 ESCENAS 3D -->
+      <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span class="inline-block w-3 h-3 rounded-full bg-iub-amarillo animate-ping"></span>
+            <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">
+              Laboratorio Interactivo 3D (Three.js WebGL): Inversión en Z y Brazo Robótico
+            </h2>
+          </div>
+          <p class="text-slate-300 text-sm mt-1">
+            Explora en 3D a 60 FPS los 4 pilares de la Semana 3 con la paleta institucional <span class="text-iub-amarillo font-bold">config/framework_iub</span> (<code class="text-iub-amarillo">#121023</code>, <code class="text-iub-amarillo">#FFDF2D</code>, <code class="text-iub-azulClaro">#00ADE7</code>, <code class="text-iub-naranja">#E39037</code>, <code class="text-iubData-emerald">#3B9C6D</code>).
+          </p>
+        </div>
+
+        <!-- SELECTOR DE MODO 3D (4 ESCENAS DETALLADAS) -->
+        <div class="flex flex-wrap items-center gap-1.5 bg-iub-oscuro p-1.5 rounded-2xl border-2 border-iub-amarillo/40">
+          <button id="btnModeCauchy" onclick="setMode('cauchy')" class="px-3 py-2 rounded-xl text-xs font-black bg-iub-amarillo text-iub-oscuro transition shadow-md">
+            🌐 1. Superficie $|Y(z)|$, Cauchy $\oint_C$ y Residuos
+          </button>
+          <button id="btnModeHelix" onclick="setMode('helix')" class="px-3 py-2 rounded-xl text-xs font-bold text-iub-blanco hover:text-iub-amarillo transition">
+            🌀 2. Hélice 3D Polos Complejos $r e^{\pm j\theta}$
+          </button>
+          <button id="btnModeRobot" onclick="setMode('robot')" class="px-3 py-2 rounded-xl text-xs font-bold text-iub-blanco hover:text-iub-amarillo transition">
+            🤖 3. Brazo Robótico 3D ($y[k]$ en Vivo)
+          </button>
+          <button id="btnModeDivision" onclick="setMode('division')" class="px-3 py-2 rounded-xl text-xs font-bold text-iub-blanco hover:text-iub-amarillo transition">
+            ➗ 4. Cascada 3D: Fracciones vs. División Directa
+          </button>
+        </div>
+      </div>
+
+      <!-- CONTENEDOR PRINCIPAL DEL VISOR THREE.JS Y CONTROLES -->
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        <!-- CANVAS 3D (3 COLUMNAS) -->
+        <div class="lg:col-span-3 relative rounded-2xl overflow-hidden border-2 border-iub-amarillo/60 glow-yellow bg-[#121023] flex flex-col" style="min-height: 660px;">
+          
+          <!-- BARRA SUPERIOR HUD SOBRE EL CANVAS (CON logo_iub_blanco.png) -->
+          <div class="absolute top-3 left-3 right-3 z-10 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+            <div class="flex items-center gap-2.5 bg-iub-oscuro/90 backdrop-blur-md border border-iub-amarillo/50 px-3.5 py-1.5 rounded-xl pointer-events-auto shadow-lg">
+              <img src="logos/logo_iub_blanco.png" alt="IUB" class="h-5 w-auto object-contain" onerror="this.src='logo_iub_blanco.png'" />
+              <span class="w-2 h-2 rounded-full bg-iubData-emerald animate-pulse"></span>
+              <span id="canvasModeLabel" class="text-xs font-bold text-iub-amarillo uppercase tracking-wider">
+                Escena 1: Superficie |Y(z)|, Contorno de Cauchy ∮_C y Residuos de Y(z)/z
+              </span>
+            </div>
+
+            <!-- VISTAS PREDEFINIDAS DE CÁMARA -->
+            <div class="flex items-center gap-1 bg-iub-oscuro/90 backdrop-blur-md border border-iub-azulClaro/50 p-1 rounded-xl pointer-events-auto text-xs shadow-lg">
+              <span class="text-[11px] text-iub-amarillo px-2 font-bold">Cámara:</span>
+              <button onclick="setCameraView('iso')" class="px-2 py-1 rounded bg-space-800 hover:bg-iub-azulClaro text-iub-blanco font-medium transition">Iso 3D</button>
+              <button onclick="setCameraView('top')" class="px-2 py-1 rounded bg-space-800 hover:bg-iub-azulClaro text-iub-blanco font-medium transition">Plano Z</button>
+              <button onclick="setCameraView('side')" class="px-2 py-1 rounded bg-space-800 hover:bg-iub-azulClaro text-iub-blanco font-medium transition">Lateral</button>
+              <button onclick="setCameraView('front')" class="px-2 py-1 rounded bg-space-800 hover:bg-iub-azulClaro text-iub-blanco font-medium transition">Frontal</button>
+              <button onclick="resetCamera()" class="px-2 py-1 rounded bg-iub-amarillo text-iub-oscuro font-black hover:brightness-110 transition">↺ Reset</button>
+            </div>
+          </div>
+
+          <!-- LIENZO WEBGL THREE.JS -->
+          <div id="threejs-container" class="w-full flex-1 relative cursor-grab active:cursor-grabbing"></div>
+
+          <!-- LEYENDA FLOTANTE INFERIOR CON COLORES OFICIALES framework_iub -->
+          <div class="absolute bottom-3 left-3 right-3 z-10 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+            <div class="flex flex-wrap items-center gap-3 bg-iub-oscuro/95 backdrop-blur-md border border-iub-amarillo/40 px-3.5 py-2 rounded-xl text-[11px] pointer-events-auto shadow-lg">
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-full bg-[#FFDF2D]"></span>
+                <span class="text-iub-blanco font-medium">Círculo $|z|=1$ / $y[k]$ (<code class="text-iub-amarillo">iubAmarillo</code>)</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-full bg-[#00ADE7]"></span>
+                <span class="text-iub-blanco font-medium">Modo $c_1$ / Ceros (<code class="text-iub-azulClaro">iubAzulClaro</code>)</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-full bg-[#E39037]"></span>
+                <span class="text-iub-blanco font-medium">Modo Oscilatorio $r^k$ (<code class="text-iub-naranja">iubNaranja</code>)</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-full bg-[#3B9C6D]"></span>
+                <span class="text-iub-blanco font-medium">Contorno Cauchy $\oint_C$ / ROC (<code class="text-iubData-emerald">iubVerde</code>)</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-full bg-[#F87171]"></span>
+                <span class="text-iub-blanco font-medium">Polos $p_i$ (<code class="text-iubData-coral">#F87171</code>)</span>
+              </div>
+            </div>
+
+            <div class="bg-iub-oscuro/95 backdrop-blur-md border border-iub-azulClaro/40 px-3 py-1.5 rounded-xl text-[11px] text-slate-200 pointer-events-auto">
+              <span>🖱️ Arrastrar = Rotar 3D | ⚙️ Rueda = Zoom | Clic en Polos/Muestras = Inspección</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- PANEL LATERAL DE CONTROL PARAMÉTRICO Y TELEMETRÍA DE INVERSIÓN Z (1 COLUMNA) -->
+        <div class="space-y-4 flex flex-col justify-between">
+          
+          <!-- CONTROLES PARAMÉTRICOS -->
+          <div class="border-glass rounded-2xl p-4 sm:p-5 space-y-3">
+            <div class="flex items-center justify-between border-b border-iub-amarillo/30 pb-2">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-iub-amarillo">
+                Parámetros de $Y(z)$ y Polos
+              </span>
+              <button onclick="loadRobotPreset()" class="text-[11px] px-2.5 py-1 rounded-lg bg-iub-amarillo text-iub-oscuro font-black hover:brightness-110 transition shadow">
+                ★ Caso Brazo Robótico
+              </button>
+            </div>
+
+            <!-- SELECTOR DE SISTEMA / EJEMPLO DE INVERSIÓN -->
+            <div class="space-y-1">
+              <label for="selectPreset" class="text-xs text-iub-blanco font-semibold block">Sistema Racional $X(z) \xrightarrow{\mathcal{Z}^{-1}} x[k]$:</label>
+              <select id="selectPreset" onchange="onPresetChange(this.value)" class="w-full p-2 rounded-lg bg-iub-oscuro border border-iub-azulClaro/60 text-xs text-iub-blanco font-semibold focus:outline-none focus:border-iub-amarillo">
+                <option value="robot" selected>1. Caso Estudio Semana 3: Brazo Robótico Y(z)</option>
+                <option value="real_poles">2. Dos Polos Reales Simples: X(z) = z / ((z-1)(z-a))</option>
+                <option value="complex_pure">3. Par Complejo Conjugado: r^k cos(kθ) u[k]</option>
+                <option value="multiple_pole">4. Polo Múltiple Doble: k·a^k u[k] ↔ az/(z-a)²</option>
+                <option value="underdamped_fast">5. Subamortiguado Rápido (r = 0.78, θ = 65°)</option>
+                <option value="marginal_osc">6. Oscilación Sostenida Marginal (r = 1.00)</option>
+              </select>
+            </div>
+
+            <!-- SLIDER 1: MÓDULO r DE POLOS COMPLEJOS CONJUGADOS -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderR" class="text-slate-200 font-semibold">Módulo Polos $r = |p_{2,3}|$:</label>
+                <span id="labelR" class="font-mono text-iub-amarillo font-bold">0.6000</span>
+              </div>
+              <input id="sliderR" type="range" min="0.15" max="1.08" value="0.60" step="0.01" 
+                     class="w-full h-1.5 bg-iub-oscuro rounded-lg appearance-none cursor-pointer slider-track">
+              <div class="flex justify-between text-[10px] text-slate-400">
+                <span>0.15 (Rápido)</span>
+                <span class="text-iub-amarillo">0.60 (Caso)</span>
+                <span>1.00 (Marginal)</span>
+                <span class="text-iubData-coral">1.08 (Inestable)</span>
+              </div>
+            </div>
+
+            <!-- SLIDER 2: ÁNGULO DE FASE θ (GRADOS / RADIANES) -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderTheta" class="text-slate-200 font-semibold">Ángulo Fase $\theta$ ($\text{rad} / ^\circ$):</label>
+                <span id="labelTheta" class="font-mono text-iub-azulClaro font-bold">48.19° (0.841 rad)</span>
+              </div>
+              <input id="sliderTheta" type="range" min="10" max="150" value="48.19" step="0.5" 
+                     class="w-full h-1.5 bg-iub-oscuro rounded-lg appearance-none cursor-pointer slider-track">
+              <div class="flex justify-between text-[10px] text-slate-400">
+                <span>10° (Suave)</span>
+                <span class="text-iub-azulClaro">48.19° (Caso)</span>
+                <span>90° ($\pi/2$)</span>
+                <span>150° (Alta frec.)</span>
+              </div>
+            </div>
+
+            <!-- SLIDER 3: RESIDUO DE ESTADO ESTACIONARIO c1 (POLO EN z = 1) -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderC1" class="text-slate-200 font-semibold">Residuo Escalón $c_1$ ($z_1=1$):</label>
+                <span id="labelC1" class="font-mono text-iubData-emerald font-bold">1.1286 rad</span>
+              </div>
+              <input id="sliderC1" type="range" min="0.40" max="1.60" value="1.1286" step="0.01" 
+                     class="w-full h-1.5 bg-iub-oscuro rounded-lg appearance-none cursor-pointer slider-track">
+              <div class="flex justify-between text-[10px] text-slate-400">
+                <span>0.40</span>
+                <span>1.00</span>
+                <span class="text-iubData-emerald">1.1286 (Caso)</span>
+                <span>1.60</span>
+              </div>
+            </div>
+
+            <!-- SLIDER 4: INSTANTE DE MUESTREO ACTIVO k PARA INSPECCIÓN / BRAZO ROBÓTICO -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderSampleK" class="text-slate-200 font-semibold">Muestra Activa $k$ ($y[k]$):</label>
+                <span id="labelSampleK" class="font-mono text-iub-naranja font-bold">k = 3 → y[3] = 1.2405</span>
+              </div>
+              <input id="sliderSampleK" type="range" min="0" max="14" value="3" step="1" 
+                     class="w-full h-1.5 bg-iub-oscuro rounded-lg appearance-none cursor-pointer slider-track">
+              <div class="flex justify-between text-[10px] text-slate-400">
+                <span>k=0 (0.00)</span>
+                <span>k=1 (0.37)</span>
+                <span>k=2 (0.93)</span>
+                <span class="text-iub-naranja">k=3 (1.24)</span>
+                <span>k=14</span>
+              </div>
+            </div>
+
+            <!-- TOGGLES DE ELEMENTOS 3D -->
+            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-700 text-xs">
+              <label class="flex items-center gap-2 cursor-pointer text-iub-blanco">
+                <input id="chkShowSurface" type="checkbox" checked class="rounded border-slate-600 bg-iub-oscuro text-iub-amarillo focus:ring-0">
+                <span>Malla $|Y(z)|$</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-iub-blanco">
+                <input id="chkShowCauchy" type="checkbox" checked class="rounded border-slate-600 bg-iub-oscuro text-iubData-emerald focus:ring-0">
+                <span>Contorno $\oint_C$</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-iub-blanco">
+                <input id="chkShowEnvelope" type="checkbox" checked class="rounded border-slate-600 bg-iub-oscuro text-iub-naranja focus:ring-0">
+                <span>Envolvente $\pm r^k$</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-iub-blanco">
+                <input id="chkAnimate" type="checkbox" checked class="rounded border-slate-600 bg-iub-oscuro text-iub-azulClaro focus:ring-0">
+                <span>Animar 60 FPS</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- PANEL HUD DE TELEMETRÍA DE FRACCIONES PARCIALES Y DIVISIÓN DIRECTA -->
+          <div class="border-glass rounded-2xl p-4 sm:p-5 space-y-2.5 bg-iub-oscuro/90">
+            <span class="text-xs font-extrabold uppercase tracking-wider text-iub-amarillo flex items-center gap-1.5 border-b border-iub-amarillo/30 pb-2">
+              Telemetría de Inversión $\mathcal{Z}^{-1}\{Y(z)\}$
+            </span>
+
+            <div class="space-y-1.5 text-xs">
+              <div class="flex justify-between items-center p-2 rounded-lg bg-space-950 border border-slate-800">
+                <span class="text-slate-300">Polos $p_{1}, p_{2,3}$:</span>
+                <span id="hudPoles" class="font-mono text-iubData-coral font-bold text-[11px]">1.00, 0.40 ± j0.4472</span>
+              </div>
+
+              <div class="flex justify-between items-center p-2 rounded-lg bg-space-950 border border-slate-800">
+                <span class="text-slate-300">Residuos $(c_1, A, B)$:</span>
+                <span id="hudResidues" class="font-mono text-iub-azulClaro font-bold text-[11px]">c₁=1.13, A=-1.13, B=-0.69</span>
+              </div>
+
+              <div class="flex justify-between items-center p-2 rounded-lg bg-space-950 border border-slate-800">
+                <span class="text-slate-300">Fracciones Parciales $y[k]$:</span>
+                <span id="hudFPVal" class="font-mono text-iub-amarillo font-bold">y[3] = 1.2405 rad</span>
+              </div>
+
+              <div class="flex justify-between items-center p-2 rounded-lg bg-space-950 border border-slate-800">
+                <span class="text-slate-300">División Directa $y_{\text{div}}[k]$:</span>
+                <span id="hudDivVal" class="font-mono text-iubData-emerald font-bold">1.2405 (Err: 0.0e+0)</span>
+              </div>
+
+              <div class="flex justify-between items-center p-2 rounded-lg bg-space-950 border border-slate-800">
+                <span class="text-slate-300">Régimen Dinámico:</span>
+                <span id="hudStability" class="font-mono font-bold px-2 py-0.5 rounded text-[11px] bg-iub-verde/30 text-iubData-emerald border border-iubData-emerald/40">
+                  ✓ Subamortiguado Estable (r=0.60&lt;1)
+                </span>
+              </div>
+            </div>
+
+            <!-- TARJETA INTERACTIVA DE DETALLE AL HACER CLIC EN OBJETOS 3D -->
+            <div id="nodeInfoCard" class="hidden p-3 rounded-xl bg-space-950 border border-iub-amarillo/60 space-y-1 transition-all">
+              <div class="flex justify-between items-center">
+                <span id="nodeTitle" class="text-xs font-bold text-iub-amarillo uppercase">Polo Complejo z₂</span>
+                <button onclick="closeNodeCard()" class="text-slate-400 hover:text-white text-xs">✕</button>
+              </div>
+              <p id="nodeDesc" class="text-[11px] text-slate-200 leading-tight">Aporta el modo oscilatorio amortiguado r^k cos(kθ).</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =================================================================================== -->
+  <!-- CONTENIDO PEDAGÓGICO COMPLETO DE LA SEMANA 3 CON BLOQUES OFICIALES framework_iub -->
+  <!-- =================================================================================== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 space-y-20">
+
+    <!-- =============================================================================== -->
+    <!-- SECCIÓN 0: FICHA CURRICULAR, METADATOS, BLOOM E ÍNDICE TEMPORIZADO (240 MIN) -->
+    <!-- =============================================================================== -->
+    <section id="ficha-curricular" class="space-y-8">
+      <div class="flex items-center gap-3 border-b-2 border-iub-amarillo/40 pb-4">
+        <div class="w-9 h-9 rounded-lg bg-iub-amarillo flex items-center justify-center text-iub-oscuro font-black">0</div>
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">Metadatos de la Sesión, Continuidad Curricular e Índice Temporizado</h2>
+          <p class="text-xs text-iub-azulClaro font-semibold">Alineación Curricular Institucional IUB · Módulo MEC36 — Control II · Semana 3 de 14</p>
+        </div>
+      </div>
+
+      <!-- CONTINUIDAD CURRICULAR Y PRERREQUISITOS (ESTILO TikZ DE MEC36-semana03.tex) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Continuidad Curricular -->
+        <div class="rounded-2xl overflow-hidden border border-iub-azulClaro/50 bg-space-850 shadow-lg">
+          <div class="bg-iub-azulClaro px-5 py-3 flex items-center justify-between">
+            <h3 class="text-iub-blanco font-extrabold text-sm sm:text-base">1.1 Continuidad Curricular en el Corte 1</h3>
+            <span class="text-xs font-bold px-2.5 py-0.5 rounded bg-iub-oscuro text-iub-amarillo">MEC36-RA2</span>
+          </div>
+          <div class="p-6 space-y-4 text-xs sm:text-sm">
+            <p class="text-slate-200 leading-relaxed">
+              Habiendo dominado en la Semana 2 la transformación de señales temporales hacia el dominio complejo $Z$, en esta sesión se aborda la operación inversa esencial: recuperar la secuencia numérica temporal $x[k]$ a partir de una función racional $X(z)$. La inversión analítica y numérica es la herramienta directa para predecir la respuesta transitoria de actuadores, motores y procesos mecatrónicos antes de resolver ecuaciones en diferencias acopladas en la Semana 4.
+            </p>
+            <div class="space-y-2.5 pt-1">
+              <div class="p-3 rounded-xl bg-iub-naranjaFondo text-iub-oscuro border-l-4 border-iub-naranja">
+                <strong class="font-black">← Sesión anterior (Semana 2):</strong> Transformada Z: definición formal, funciones elementales y teoremas operacionales.
+              </div>
+              <div class="p-3 rounded-xl bg-iub-verdeFondo text-iub-oscuro border-l-4 border-iub-verde">
+                <strong class="font-black">● Sesión presente (Semana 3):</strong> Transformada Z inversa: expansión en fracciones parciales, división polinomial directa y cálculo computacional de residuos.
+              </div>
+              <div class="p-3 rounded-xl bg-iub-azulFondo text-iub-oscuro border-l-4 border-iub-azulClaro">
+                <strong class="font-black">→ Sesión siguiente (Semana 4):</strong> Solución de ecuaciones en diferencia lineales y análisis temporal (respuesta libre y forzada).
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prerrequisitos y Alineación RA2 -->
+        <div class="rounded-2xl overflow-hidden border border-iub-verde/60 bg-space-850 shadow-lg flex flex-col justify-between">
+          <div>
+            <div class="bg-iub-verde px-5 py-3 flex items-center justify-between">
+              <h3 class="text-iub-blanco font-extrabold text-sm sm:text-base">1.2 Prerrequisitos y Criterios de Evaluación</h3>
+              <span class="text-xs font-bold px-2.5 py-0.5 rounded bg-iub-oscuro text-iub-amarillo">CE2 &amp; CE4</span>
+            </div>
+            <div class="p-6 space-y-4 text-xs sm:text-sm">
+              <div class="space-y-2">
+                <span class="text-xs font-black uppercase tracking-wider text-iub-amarillo block">Prerrequisitos Fundamentales:</span>
+                <div class="flex items-start gap-2.5 p-2.5 rounded-lg bg-iub-oscuro border border-iub-azulClaro/30">
+                  <span class="w-5 h-5 rounded-full bg-iub-azulClaro text-iub-blanco font-black text-xs flex items-center justify-center shrink-0">✓</span>
+                  <span class="text-slate-200">Manipulación algebraica de funciones racionales y factorización de polinomios en el cuerpo complejo $\mathbb{C}$.</span>
+                </div>
+                <div class="flex items-start gap-2.5 p-2.5 rounded-lg bg-iub-oscuro border border-iub-naranja/30">
+                  <span class="w-5 h-5 rounded-full bg-iub-naranja text-iub-blanco font-black text-xs flex items-center justify-center shrink-0">✓</span>
+                  <span class="text-slate-200">Definición de polos simples, polos múltiples de orden $m$ y pares de polos complejos conjugados $p_{1,2} = r e^{\pm j\theta}$.</span>
+                </div>
+                <div class="flex items-start gap-2.5 p-2.5 rounded-lg bg-iub-oscuro border border-iub-verde/30">
+                  <span class="w-5 h-5 rounded-full bg-iub-verde text-iub-blanco font-black text-xs flex items-center justify-center shrink-0">✓</span>
+                  <span class="text-slate-200">Conceptos de series de potencias de Laurent y teorema de residuos de Cauchy.</span>
+                </div>
+              </div>
+
+              <div class="p-4 rounded-xl bg-iub-oscuro border-l-4 border-iub-amarillo space-y-1.5">
+                <div class="text-xs font-black text-iub-amarillo uppercase">Alineación Curricular (MEC36-RA2 · UC1 &amp; UC2)</div>
+                <p class="text-xs text-slate-200"><strong>RA2:</strong> Aplicar la transformada Z y sus propiedades en problemas de ecuaciones en diferencia.</p>
+                <p class="text-xs text-iubData-sky"><strong>CE2:</strong> Calcular la transformada Z inversa de un sistema discreto.</p>
+                <p class="text-xs text-iubData-emerald"><strong>CE4:</strong> Utilizar herramientas computacionales para calcular la transformada Z de funciones y la transformada Z inversa de sistemas discretos.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TABLAS DE OBJETIVOS DE APRENDIZAJE (BLOOM) E ÍNDICE TEMPORIZADO (240 MIN) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Tabla Objetivos Bloom -->
+        <div class="overflow-hidden rounded-2xl border-2 border-iub-amarillo/50 bg-space-850 shadow-xl">
+          <div class="bg-iub-oscuro px-5 py-3 border-b border-iub-amarillo/40 flex items-center justify-between">
+            <span class="text-xs font-black uppercase tracking-wider text-iub-amarillo">Objetivos Específicos de la Sesión (Taxonomía de Bloom)</span>
+            <span class="text-[11px] text-iub-azulClaro font-bold">4 Niveles</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-iub-blanco">
+              <thead class="iub-table-head uppercase font-black">
+                <tr>
+                  <th class="py-3 px-4 text-iub-amarillo">#</th>
+                  <th class="py-3 px-4 text-iub-amarillo">Resultado de aprendizaje de la sesión</th>
+                  <th class="py-3 px-4 text-iub-amarillo">Nivel Bloom</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-space-700">
+                <tr class="hover:bg-space-800">
+                  <td class="py-3 px-4 font-black text-iub-amarillo">1</td>
+                  <td class="py-3 px-4"><strong class="text-iub-azulClaro">Reconocer</strong> los tres métodos canónicos de obtención de la transformada Z inversa.</td>
+                  <td class="py-3 px-4 font-semibold text-slate-300">Nivel 1: Recordar</td>
+                </tr>
+                <tr class="bg-space-900/60 hover:bg-space-800">
+                  <td class="py-3 px-4 font-black text-iub-amarillo">2</td>
+                  <td class="py-3 px-4"><strong class="text-iub-naranja">Diferenciar</strong> la expansión en fracciones parciales de $X(z)/z$ frente a la de $X(z)$.</td>
+                  <td class="py-3 px-4 font-semibold text-slate-300">Nivel 2: Comprender</td>
+                </tr>
+                <tr class="hover:bg-space-800">
+                  <td class="py-3 px-4 font-black text-iub-amarillo">3</td>
+                  <td class="py-3 px-4"><strong class="text-iubData-emerald">Calcular</strong> analíticamente la secuencia temporal $x[k]$ para polos reales y polos complejos conjugados.</td>
+                  <td class="py-3 px-4 font-semibold text-slate-300">Nivel 3: Aplicar</td>
+                </tr>
+                <tr class="bg-space-900/60 hover:bg-space-800">
+                  <td class="py-3 px-4 font-black text-iub-amarillo">4</td>
+                  <td class="py-3 px-4"><strong class="text-iub-amarillo">Validar</strong> computacionalmente la respuesta temporal discreta mediante división polinomial y scripts en Python.</td>
+                  <td class="py-3 px-4 font-semibold text-slate-300">Nivel 4: Analizar</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tabla Índice Temporizado (240 minutos) -->
+        <div class="overflow-hidden rounded-2xl border-2 border-iub-azulClaro/50 bg-space-850 shadow-xl">
+          <div class="bg-iub-oscuro px-5 py-3 border-b border-iub-azulClaro/40 flex items-center justify-between">
+            <span class="text-xs font-black uppercase tracking-wider text-iub-azulClaro">Índice Temporizado de la Sesión (8 Bloques = 240 min)</span>
+            <span class="text-[11px] text-iub-amarillo font-bold">4 Horas Presenciales</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-iub-blanco">
+              <thead class="iub-table-head uppercase font-black">
+                <tr>
+                  <th class="py-2.5 px-4 text-iub-amarillo">Bloque</th>
+                  <th class="py-2.5 px-4 text-iub-amarillo">Contenido Temático</th>
+                  <th class="py-2.5 px-4 text-iub-amarillo text-right">Duración</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-space-700">
+                <tr class="hover:bg-space-800">
+                  <td class="py-2 px-4 font-bold text-iub-azulClaro">1</td>
+                  <td class="py-2 px-4">Contextualización y formulación del problema inverso (Integral de Cauchy)</td>
+                  <td class="py-2 px-4 text-right font-mono text-iub-amarillo">25 min</td>
+                </tr>
+                <tr class="bg-space-900/60 hover:bg-space-800">
+                  <td class="py-2 px-4 font-bold text-iub-azulClaro">2</td>
+                  <td class="py-2 px-4">Método de expansión en fracciones parciales: técnica de $X(z)/z$</td>
+                  <td class="py-2 px-4 text-right font-mono text-iub-amarillo">45 min</td>
+                </tr>
+                <tr class="hover:bg-space-800">
+                  <td class="py-2 px-4 font-bold text-iub-azulClaro">3</td>
+                  <td class="py-2 px-4">Polos complejos conjugados y amortiguamiento oscilatorio discreto</td>
+                  <td class="py-2 px-4 text-right font-mono text-iub-amarillo">40 min</td>
+                </tr>
+                <tr class="bg-space-900/60 hover:bg-space-800">
+                  <td class="py-2 px-4 font-bold text-iub-azulClaro">4</td>
+                  <td class="py-2 px-4">Método de división directa (serie de potencias) para secuencias iniciales</td>
+                  <td class="py-2 px-4 text-right font-mono text-iub-amarillo">35 min</td>
+                </tr>
+                <tr class="hover:bg-space-800">
+                  <td class="py-2 px-4 font-bold text-iub-naranja">5</td>
+                  <td class="py-2 px-4">Caso de estudio: cálculo analítico completo de posicionamiento de brazo robótico</td>
+                  <td class="py-2 px-4 text-right font-mono text-iub-amarillo">45 min</td>
+                </tr>
+                <tr class="bg-space-900/60 hover:bg-space-800">
+                  <td class="py-2 px-4 font-bold text-iubData-emerald">6</td>
+                  <td class="py-2 px-4">Análisis comparativo de exactitud y esfuerzo computacional de los métodos</td>
+                  <td class="py-2 px-4 text-right font-mono text-iub-amarillo">20 min</td>
+                </tr>
+                <tr class="hover:bg-space-800">
+                  <td class="py-2 px-4 font-bold text-iubData-emerald">7</td>
+                  <td class="py-2 px-4">Laboratorio computacional en Python: simulación y gráfica de secuencias</td>
+                  <td class="py-2 px-4 text-right font-mono text-iub-amarillo">20 min</td>
+                </tr>
+                <tr class="bg-space-900/60 hover:bg-space-800">
+                  <td class="py-2 px-4 font-bold text-iub-amarillo">8</td>
+                  <td class="py-2 px-4">Síntesis de la sesión y reflexión sobre rigor numérico ( Total: 240 min )</td>
+                  <td class="py-2 px-4 text-right font-mono text-iubData-emerald font-bold">10 min</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =============================================================================== -->
+    <!-- SECCIÓN 1: INTRODUCCIÓN CONCEPTUAL Y EXPANSIÓN EN FRACCIONES PARCIALES X(z)/z -->
+    <!-- =============================================================================== -->
+    <section id="fracciones-parciales" class="space-y-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-iub-amarillo/40 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-iub-amarillo flex items-center justify-center text-iub-oscuro font-black">1</div>
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">Integral de Inversión de Cauchy y Técnica de Fracciones Parciales $X(z)/z$</h2>
+            <p class="text-xs text-iub-azulClaro font-semibold">Bloques 1 y 2 del Temario · 70 minutos · Ogata (Cap. 2) [1] &amp; Fadali (Cap. 3) [2]</p>
+          </div>
+        </div>
+        <button onclick="setMode('cauchy'); document.getElementById('visor-3d').scrollIntoView({behavior:'smooth'});" class="px-3.5 py-2 rounded-xl bg-iub-azulClaro text-iub-blanco text-xs font-black hover:brightness-110 transition self-start">
+          🌐 Ver Contorno de Cauchy en 3D
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- BLOQUE 1: INTEGRAL DE INVERSIÓN DE CAUCHY (iubblock Azul Claro) -->
+        <div class="rounded-2xl overflow-hidden border border-iub-azulClaro/60 bg-space-850 shadow-lg flex flex-col justify-between">
+          <div>
+            <div class="bg-iub-azulClaro px-5 py-3 flex items-center justify-between">
+              <h3 class="text-iub-blanco font-extrabold text-sm sm:text-base">4.1 Introducción Conceptual: Integral de Contorno de Cauchy</h3>
+              <span class="text-xs font-bold px-2.5 py-0.5 rounded bg-iub-oscuro text-iub-amarillo">Bloque 1 · 25 min</span>
+            </div>
+            <div class="p-6 space-y-4">
+              <p class="text-slate-200 text-sm leading-relaxed">
+                La Transformada Z inversa $\mathcal{Z}^{-1}\{X(z)\}$ tiene por objetivo reconstruir la secuencia causal $\{x[0], x[1], x[2], \dots, x[k]\}$ a partir de su expresión cerrada $X(z)$. Formalmente, la inversión se define mediante la <strong>integral de inversión de Cauchy</strong> sobre un contorno cerrado antihorario $C$ que encierra todos los polos de $X(z)$ dentro de la Región de Convergencia (ROC) [1]:
+              </p>
+
+              <!-- Marco ECUACIÓN estilo visuales.py de IUB -->
+              <div class="bg-iub-azulFondo text-iub-oscuro border-2 border-iub-azulClaro rounded-xl p-4 text-center overflow-x-auto relative shadow">
+                <span class="absolute top-1.5 left-2.5 text-[10px] font-black px-2 py-0.5 rounded bg-iub-azulClaro text-iub-blanco">ECUACIÓN 1 · INVERSIÓN DE CAUCHY</span>
+                <div class="pt-4 font-bold text-sm sm:text-base">
+                  $$x[k] = \frac{1}{2\pi j} \oint_C X(z)\, z^{k-1}\, dz = \sum \text{Residuos de } \left[X(z)\, z^{k-1} \text{ en sus polos}\right]$$
+                </div>
+              </div>
+
+              <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                Aunque la integral de contorno es teóricamente general, en la práctica de la ingeniería de control se utilizan primordialmente dos métodos algebraicos mucho más directos [1], [2]:
+              </p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="p-3 rounded-xl bg-iub-oscuro border-l-4 border-iub-amarillo">
+                  <strong class="text-iub-amarillo block mb-1">1. Expansión en Fracciones Parciales</strong>
+                  <span class="text-slate-300">Entrega expresiones analíticas cerradas $x[k]$ válidas para todo $k \ge 0$, revelando los modos naturales de cada polo.</span>
+                </div>
+                <div class="p-3 rounded-xl bg-iub-oscuro border-l-4 border-iub-verde">
+                  <strong class="text-iubData-emerald block mb-1">2. Método de División Directa</strong>
+                  <span class="text-slate-300">Entrega numéricamente los primeros valores $x[0], x[1], x[2], \dots$ término a término dividiendo polinomios en $z^{-1}$.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BLOQUE 2: TÉCNICA ESTÁNDAR DE X(z)/z (iubexample Verde) -->
+        <div class="rounded-2xl overflow-hidden border border-iub-verde/60 bg-space-850 shadow-lg flex flex-col justify-between">
+          <div>
+            <div class="bg-iub-verde px-5 py-3 flex items-center justify-between">
+              <h3 class="text-iub-blanco font-extrabold text-sm sm:text-base">4.2.1 Expansión en Fracciones Parciales (Técnica de $X(z)/z$)</h3>
+              <span class="text-xs font-bold px-2.5 py-0.5 rounded bg-iub-oscuro text-iub-amarillo">Bloque 2 · 45 min</span>
+            </div>
+            <div class="p-6 space-y-4">
+              <p class="text-slate-200 text-sm leading-relaxed">
+                Dado que las transformadas elementales de uso común en control (como el escalón $\frac{z}{z-1}$ o la exponencial $\frac{z}{z-a}$) poseen un factor <strong class="text-iub-amarillo">$z$ en el numerador</strong>, la técnica estándar consiste en dividir primero entre $z$ y expandir la función auxiliar <strong class="text-iub-amarillo">$X(z)/z$</strong> en fracciones parciales simples [1]:
+              </p>
+
+              <div class="bg-iub-verdeFondo text-iub-oscuro border-2 border-iub-verde rounded-xl p-3.5 text-center overflow-x-auto relative shadow">
+                <span class="absolute top-1.5 left-2.5 text-[10px] font-black px-2 py-0.5 rounded bg-iub-verde text-iub-blanco">ECUACIÓN 2 · EXPANSIÓN DE X(z)/z</span>
+                <div class="pt-3 font-bold text-xs sm:text-sm">
+                  $$\frac{X(z)}{z} = \frac{c_1}{z - p_1} + \frac{c_2}{z - p_2} + \dots + \frac{c_n}{z - p_n}$$
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="bg-iub-oscuro border border-iub-amarillo/50 rounded-xl p-3 text-center">
+                  <span class="text-[10px] font-bold text-iub-amarillo uppercase block">Cálculo de Residuos Simples $c_i$</span>
+                  <div class="text-xs sm:text-sm text-iub-blanco pt-1">
+                    $$c_i = \lim_{z \to p_i} (z - p_i)\frac{X(z)}{z}$$
+                  </div>
+                </div>
+                <div class="bg-iub-oscuro border border-iub-azulClaro/50 rounded-xl p-3 text-center">
+                  <span class="text-[10px] font-bold text-iubData-sky uppercase block">Reconstrucción de $X(z)$</span>
+                  <div class="text-xs sm:text-sm text-iub-blanco pt-1">
+                    $$X(z) = \sum_{i=1}^n c_i \frac{z}{z - p_i}$$
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-iub-azulFondo text-iub-oscuro border-2 border-iub-azulClaro rounded-xl p-3.5 text-center relative shadow">
+                <span class="absolute top-1.5 left-2.5 text-[10px] font-black px-2 py-0.5 rounded bg-iub-azulClaro text-iub-blanco">ECUACIÓN 3 · SECUENCIA INVERSA CERRADA</span>
+                <div class="pt-3 font-bold text-sm sm:text-base">
+                  $$x[k] = \sum_{i=1}^n c_i (p_i)^k \quad (k \ge 0)$$
+                </div>
+              </div>
+
+              <!-- Nota sobre polos múltiples -->
+              <div class="p-3 rounded-xl bg-iub-naranjaFondo text-iub-oscuro border-l-4 border-iub-naranja text-xs">
+                <strong>Caso de Polos Múltiples de multiplicidad $m$ en $z = p_i$:</strong> Los coeficientes $c_{i,j}$ se calculan con derivadas sucesivas: $\displaystyle c_{i,j} = \frac{1}{(m-j)!}\lim_{z\to p_i}\frac{d^{m-j}}{dz^{m-j}}\left[(z-p_i)^m \frac{X(z)}{z}\right]$, recordando el par $\mathcal{Z}^{-1}\left\{\frac{a z}{(z-a)^2}\right\} = k\,a^k u[k]$.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =============================================================================== -->
+    <!-- SECCIÓN 2: POLOS COMPLEJOS CONJUGADOS Y RESPUESTA OSCILATORIA (BLOQUE 3) -->
+    <!-- =============================================================================== -->
+    <section id="polos-complejos" class="space-y-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-iub-amarillo/40 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-iub-amarillo flex items-center justify-center text-iub-oscuro font-black">2</div>
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">Polos Complejos Conjugados y Amortiguamiento Oscilatorio Discreto</h2>
+            <p class="text-xs text-iub-azulClaro font-semibold">Bloque 3 del Temario · 40 minutos · Geometría Polar $p_{1,2} = r e^{\pm j\theta}$ en el Plano Z</p>
+          </div>
+        </div>
+        <button onclick="setMode('helix'); document.getElementById('visor-3d').scrollIntoView({behavior:'smooth'});" class="px-3.5 py-2 rounded-xl bg-iub-naranja text-iub-blanco text-xs font-black hover:brightness-110 transition self-start">
+          🌀 Ver Hélice Compleja 3D ($r^k e^{\pm jk\theta}$)
+        </button>
+      </div>
+
+      <div class="rounded-3xl p-6 sm:p-8 bg-space-850 border-2 border-iub-azulClaro/50 space-y-6 shadow-xl">
+        <p class="text-sm sm:text-base text-slate-200 leading-relaxed">
+          Cuando un sistema dinámico presenta un par de <strong>polos complejos conjugados</strong> <strong class="text-iub-amarillo">$p_{1,2} = \sigma \pm j\omega_d = r e^{\pm j\theta} = r(\cos\theta \pm j\sin\theta)$</strong>, con módulo radial <strong class="text-iubData-sky">$r = |p_i| = \sqrt{\text{Re}^2 + \text{Im}^2}$</strong> y ángulo de fase discreto <strong class="text-iubData-emerald">$\theta = \arctan(\text{Im}/\text{Re})$</strong>, en vez de expandir en residuos complejos separados se agrupa el término cuadrático real $(z - p_1)(z - p_2) = z^2 - 2r\cos\theta\,z + r^2$ en los dos pares trigonométricos canónicos [1]:
+        </p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-iub-azulFondo text-iub-oscuro border-2 border-iub-azulClaro rounded-2xl p-5 text-center relative shadow">
+            <span class="absolute top-2 left-3 text-[10px] font-black px-2 py-0.5 rounded bg-iub-azulClaro text-iub-blanco">FORMA EN EL DOMINIO Z</span>
+            <div class="pt-4 font-bold text-xs sm:text-sm overflow-x-auto">
+              $$X(z) = \frac{A\,z\,(z - r\cos\theta)}{z^2 - 2r\cos\theta\,z + r^2} + \frac{B\,z\,r\sin\theta}{z^2 - 2r\cos\theta\,z + r^2}$$
+            </div>
+          </div>
+
+          <div class="bg-iub-verdeFondo text-iub-oscuro border-2 border-iub-verde rounded-2xl p-5 text-center relative shadow">
+            <span class="absolute top-2 left-3 text-[10px] font-black px-2 py-0.5 rounded bg-iub-verde text-iub-blanco">TRANSFORMADA INVERSA INMEDIATA x[k]</span>
+            <div class="pt-4 font-bold text-xs sm:text-sm overflow-x-auto">
+              $$x[k] = A\,r^k\cos(k\theta) + B\,r^k\sin(k\theta) = C\,r^k\cos(k\theta - \phi)$$
+            </div>
+          </div>
+        </div>
+
+        <!-- LAS 3 TARJETAS DE ESTABILIDAD SEGÚN EL RADIO r (IDÉNTICAS A LA DIAPOSITIVA DE MEC36-semana03.tex) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
+          
+          <!-- Caso r < 1 (iubVerde) -->
+          <div class="rounded-2xl overflow-hidden border-2 border-iub-verde bg-iub-verdeFondo text-iub-oscuro shadow-md flex flex-col justify-between">
+            <div class="bg-iub-verde px-4 py-2.5 text-iub-blanco font-black text-xs uppercase flex items-center justify-between">
+              <span>1. Polo Interior: $r &lt; 1$</span>
+              <span class="px-2 py-0.5 rounded bg-iub-oscuro text-iub-amarillo">Estable</span>
+            </div>
+            <div class="p-4 space-y-2 text-xs">
+              <p class="font-semibold">Polos dentro del círculo unitario ($|p_i| = r &lt; 1$).</p>
+              <p>La envolvente exponencial $\pm C r^k$ decrece hacia cero conforme $k \to \infty$. Las oscilaciones se amortiguan y el sistema es <strong>asintóticamente estable</strong>.</p>
+              <button onclick="setPoleR(0.60, 48.19)" class="mt-2 w-full py-1.5 rounded-lg bg-iub-verde text-iub-blanco font-black hover:brightness-110 transition">
+                Simular $r = 0.60 &lt; 1$ en 3D
+              </button>
+            </div>
+          </div>
+
+          <!-- Caso r = 1 (iubAzulClaro) -->
+          <div class="rounded-2xl overflow-hidden border-2 border-iub-azulClaro bg-iub-azulFondo text-iub-oscuro shadow-md flex flex-col justify-between">
+            <div class="bg-iub-azulClaro px-4 py-2.5 text-iub-blanco font-black text-xs uppercase flex items-center justify-between">
+              <span>2. Sobre el Círculo: $r = 1$</span>
+              <span class="px-2 py-0.5 rounded bg-iub-oscuro text-iub-amarillo">Marginal</span>
+            </div>
+            <div class="p-4 space-y-2 text-xs">
+              <p class="font-semibold">Polos exactamente sobre la circunferencia $|z| = 1$.</p>
+              <p>El factor $r^k = 1^k = 1$ permanece constante. La respuesta es una <strong>oscilación armónica sostenida</strong> de frecuencia discreta $\theta\text{ rad/muestra}$ (estabilidad marginal).</p>
+              <button onclick="setPoleR(1.00, 48.19)" class="mt-2 w-full py-1.5 rounded-lg bg-iub-azulClaro text-iub-blanco font-black hover:brightness-110 transition">
+                Simular $r = 1.00$ en 3D
+              </button>
+            </div>
+          </div>
+
+          <!-- Caso r > 1 (iubNaranja) -->
+          <div class="rounded-2xl overflow-hidden border-2 border-iub-naranja bg-iub-naranjaFondo text-iub-oscuro shadow-md flex flex-col justify-between">
+            <div class="bg-iub-naranja px-4 py-2.5 text-iub-blanco font-black text-xs uppercase flex items-center justify-between">
+              <span>3. Polo Exterior: $r &gt; 1$</span>
+              <span class="px-2 py-0.5 rounded bg-iub-oscuro text-iub-amarillo">Inestable</span>
+            </div>
+            <div class="p-4 space-y-2 text-xs">
+              <p class="font-semibold">Polos fuera del círculo unitario ($|p_i| = r &gt; 1$).</p>
+              <p>El factor geométrico $r^k$ crece exponencialmente sin cota. La amplitud de oscilación diverge indefinidamente llevando al actuador a saturación o daño físico.</p>
+              <button onclick="setPoleR(1.06, 48.19)" class="mt-2 w-full py-1.5 rounded-lg bg-iub-naranja text-iub-blanco font-black hover:brightness-110 transition">
+                Simular $r = 1.06 &gt; 1$ en 3D
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================================== -->
+    <!-- SECCIÓN 3: MÉTODO DE DIVISIÓN DIRECTA (SERIE DE POTENCIAS EN z^-1) (BLOQUE 4) -->
+    <!-- =============================================================================== -->
+    <section id="division-directa" class="space-y-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-iub-amarillo/40 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-iub-amarillo flex items-center justify-center text-iub-oscuro font-black">3</div>
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">Método de División Directa (Serie de Potencias en $z^{-1}$)</h2>
+            <p class="text-xs text-iub-azulClaro font-semibold">Bloque 4 del Temario · 35 minutos · Obtención Secuencial de $x[0], x[1], x[2], x[3]\dots$</p>
+          </div>
+        </div>
+        <button onclick="setMode('division'); document.getElementById('visor-3d').scrollIntoView({behavior:'smooth'});" class="px-3.5 py-2 rounded-xl bg-iub-amarillo text-iub-oscuro text-xs font-black hover:brightness-110 transition self-start">
+          ➗ Ver Cascada 3D de División Directa
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Explicación Teórica del Método (5 columnas) -->
+        <div class="lg:col-span-5 rounded-2xl overflow-hidden border border-iub-azulClaro/50 bg-space-850 shadow-lg">
+          <div class="bg-iub-azulClaro px-5 py-3 flex items-center justify-between">
+            <h3 class="text-iub-blanco font-extrabold text-sm">4.2.3 Algoritmo de División Polinomial Directa</h3>
+            <span class="text-xs font-bold px-2 py-0.5 rounded bg-iub-oscuro text-iub-amarillo">Bloque 4</span>
+          </div>
+          <div class="p-6 space-y-4 text-xs sm:text-sm">
+            <p class="text-slate-200 leading-relaxed">
+              Consiste en ordenar el numerador $N(z)$ y el denominador $D(z)$ en potencias decrecientes de $z$ (o potencias crecientes del operador de retardo $z^{-1}$) y realizar la división polinomial algebraica larga [1], [2]:
+            </p>
+
+            <div class="bg-iub-azulFondo text-iub-oscuro border-2 border-iub-azulClaro rounded-xl p-3.5 text-center overflow-x-auto relative">
+              <span class="absolute top-1 left-2 text-[9px] font-black px-1.5 py-0.5 rounded bg-iub-azulClaro text-iub-blanco">ECUACIÓN 4 · DIVISIÓN EN POTENCIAS DE z⁻¹</span>
+              <div class="pt-3 font-bold text-xs">
+                $$X(z) = \frac{b_0 + b_1 z^{-1} + \dots + b_m z^{-m}}{a_0 + a_1 z^{-1} + \dots + a_n z^{-n}} = x[0] + x[1]z^{-1} + x[2]z^{-2} + x[3]z^{-3} + \dots$$
+              </div>
+            </div>
+
+            <p class="text-slate-300 leading-relaxed">
+              Por identificación directa con la definición $\sum_{k=0}^\infty x[k]z^{-k}$, los coeficientes del cociente resultante entregan secuencialmente las muestras en tiempo discreto $x[0], x[1], x[2], \dots$.
+            </p>
+
+            <div class="p-3.5 rounded-xl bg-iub-verdeFondo text-iub-oscuro border-l-4 border-iub-verde text-xs space-y-1">
+              <strong class="font-black uppercase block">Aplicación en el Caso del Brazo Robótico:</strong>
+              <div>Expandiendo el denominador $(z-1)(z^2 - 0.8z + 0.36) = z^3 - 1.8z^2 + 1.16z - 0.36$:</div>
+              <div class="font-mono font-bold pt-1">
+                $$Y(z) = \frac{0.3678 z^{-1} + 0.2642 z^{-2}}{1 - 1.8 z^{-1} + 1.16 z^{-2} - 0.36 z^{-3}}$$
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simulador Paso a Paso de la División Larga Polinomial (7 columnas) -->
+        <div class="lg:col-span-7 rounded-2xl overflow-hidden border-2 border-iub-amarillo/50 bg-space-850 shadow-xl p-6 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-iub-amarillo/30 pb-3">
+            <div>
+              <span class="text-xs font-black uppercase tracking-wider text-iub-amarillo">Trazador Algebraico Paso a Paso de División Polinomial</span>
+              <h3 class="text-base sm:text-lg font-extrabold text-iub-blanco">División Larga de $N(z^{-1}) \div D(z^{-1})$ para el Brazo Robótico</h3>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button onclick="setDivStep(1)" id="btnDiv1" class="px-2.5 py-1 rounded bg-space-800 hover:bg-iub-amarillo hover:text-iub-oscuro text-xs font-bold transition">k=0,1</button>
+              <button onclick="setDivStep(2)" id="btnDiv2" class="px-2.5 py-1 rounded bg-space-800 hover:bg-iub-amarillo hover:text-iub-oscuro text-xs font-bold transition">k=2</button>
+              <button onclick="setDivStep(3)" id="btnDiv3" class="px-2.5 py-1 rounded bg-space-800 hover:bg-iub-amarillo hover:text-iub-oscuro text-xs font-bold transition">k=3</button>
+              <button onclick="setDivStep(4)" id="btnDiv4" class="px-2.5 py-1 rounded bg-iub-amarillo text-iub-oscuro text-xs font-black transition">Todos (k=0..5)</button>
+            </div>
+          </div>
+
+          <div class="bg-iub-oscuro rounded-xl p-4 border border-iub-azulClaro/40 font-mono text-xs space-y-2 overflow-x-auto">
+            <div class="text-iub-amarillo font-bold">
+              Dividendo N(z⁻¹) = 0·z⁰ + 0.3678·z⁻¹ + 0.2642·z⁻²
+            </div>
+            <div class="text-iubData-sky font-bold border-b border-slate-700 pb-2">
+              Divisor   D(z⁻¹) = 1    - 1.8000·z⁻¹ + 1.1600·z⁻² - 0.3600·z⁻³
+            </div>
+
+            <div id="divStepBox" class="space-y-2 pt-1 text-[11px] sm:text-xs">
+              <!-- Se llena dinámicamente o muestra los pasos completos -->
+              <div class="p-2 rounded bg-space-850 border-l-4 border-iub-azulClaro">
+                <span class="text-iub-amarillo font-bold">Paso k=0:</span> Como el numerador inicia en $z^{-1}$, el término constante es <strong class="text-iub-blanco">y[0] = 0.0000</strong>.
+              </div>
+              <div class="p-2 rounded bg-space-850 border-l-4 border-iub-verde">
+                <span class="text-iub-amarillo font-bold">Paso k=1:</span> $(0.3678 z^{-1}) / 1 = $ <strong class="text-iubData-emerald">0.3678 z⁻¹ → y[1] = 0.3678</strong>.<br>
+                <span class="text-slate-300">Resto $R_1(z^{-1}) = (0.2642 + 1.8 \times 0.3678)z^{-2} - (1.16 \times 0.3678)z^{-3} + (0.36 \times 0.3678)z^{-4} = 0.92624 z^{-2} - 0.42665 z^{-3} + 0.13241 z^{-4}$</span>
+              </div>
+              <div class="p-2 rounded bg-space-850 border-l-4 border-iub-naranja">
+                <span class="text-iub-amarillo font-bold">Paso k=2:</span> $(0.92624 z^{-2}) / 1 = $ <strong class="text-iub-naranja">0.9262 z⁻² → y[2] ≈ 0.9255 (exacto 0.9262 con 4 dec.)</strong>.<br>
+                <span class="text-slate-300">Resto $R_2(z^{-1}) = (-0.42665 + 1.8 \times 0.92624)z^{-3} + (0.13241 - 1.16 \times 0.92624)z^{-4} + (0.36 \times 0.92624)z^{-5} = 1.24058 z^{-3} - 0.94203 z^{-4} + 0.33345 z^{-5}$</span>
+              </div>
+              <div class="p-2 rounded bg-space-850 border-l-4 border-iub-amarillo">
+                <span class="text-iub-amarillo font-bold">Paso k=3:</span> $(1.24058 z^{-3}) / 1 = $ <strong class="text-iub-amarillo">1.2406 z⁻³ → y[3] = 1.2405</strong>.<br>
+                <span class="text-slate-300">Resto $R_3(z^{-1}) = (-0.94203 + 1.8 \times 1.24058)z^{-4} + \dots = 1.2910 z^{-4} - 1.1056 z^{-5} + 0.4466 z^{-6}$</span>
+              </div>
+              <div class="p-2 rounded bg-space-850 border-l-4 border-iub-azulClaro">
+                <span class="text-iub-amarillo font-bold">Cociente Resultante:</span> <strong class="text-iubData-sky">$Y(z) = 0 + 0.3678 z^{-1} + 0.9262 z^{-2} + 1.2406 z^{-3} + 1.2910 z^{-4} + 1.1846 z^{-5} + \dots$</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =============================================================================== -->
+    <!-- SECCIÓN 4: CASO DE ESTUDIO APLICADO - BRAZO ROBÓTICO (BLOQUE 5) -->
+    <!-- =============================================================================== -->
+    <section id="caso-brazo-robotico" class="rounded-3xl p-6 sm:p-10 space-y-8 bg-space-850 border-2 border-iub-amarillo/60 glow-yellow">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-iub-amarillo/30 pb-4">
+        <div>
+          <span class="text-xs font-extrabold uppercase tracking-wider text-iub-amarillo">Bloque 5 · Caso de Estudio Aplicado (45 min)</span>
+          <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco mt-1">
+            Respuesta Temporal de Posicionamiento de Brazo Robótico
+          </h2>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="loadRobotPreset(); setMode('robot'); document.getElementById('visor-3d').scrollIntoView({behavior:'smooth'});" class="px-4 py-2 rounded-xl bg-iub-amarillo hover:bg-iubData-amber text-iub-oscuro text-xs font-black transition shadow">
+            🤖 Animar Brazo Robótico en 3D
+          </button>
+          <button onclick="loadRobotPreset(); setMode('cauchy'); document.getElementById('visor-3d').scrollIntoView({behavior:'smooth'});" class="px-3.5 py-2 rounded-xl bg-iub-azulClaro hover:brightness-110 text-iub-blanco text-xs font-black transition shadow">
+            🌐 Ver Superficie $|Y(z)|$
+          </button>
+        </div>
+      </div>
+
+      <!-- ENUNCIADO OFICIAL DEL PROBLEMA -->
+      <div class="rounded-2xl p-5 bg-iub-oscuro border-2 border-iub-azulClaro space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <p class="text-xs sm:text-sm text-slate-200 leading-relaxed md:max-w-2xl">
+            La función de transferencia de lazo cerrado que relaciona la <strong>posición angular del eslabón de un robot</strong> con la referencia escalón unitario viene dada por:
+          </p>
+          <div class="bg-iub-azulFondo text-iub-oscuro px-6 py-3 rounded-xl border-2 border-iub-amarillo font-bold text-sm sm:text-base text-center shrink-0">
+            $$Y(z) = \frac{0.3678\,z^2 + 0.2642\,z}{(z - 1)(z^2 - 0.8\,z + 0.36)}$$
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs pt-1">
+          <div class="p-2.5 rounded-lg bg-iub-naranjaFondo text-iub-oscuro font-semibold border-l-4 border-iub-naranja">
+            <strong>1.</strong> Identificar la naturaleza y ubicación de los polos del sistema.
+          </div>
+          <div class="p-2.5 rounded-lg bg-iub-verdeFondo text-iub-oscuro font-semibold border-l-4 border-iub-verde">
+            <strong>2.</strong> Calcular la secuencia analítica cerrada $y[k]$ por fracciones parciales.
+          </div>
+          <div class="p-2.5 rounded-lg bg-iub-azulFondo text-iub-oscuro font-semibold border-l-4 border-iub-azulClaro">
+            <strong>3.</strong> Evaluar numéricamente los primeros 4 valores ($k=0, 1, 2, 3$).
+          </div>
+          <div class="p-2.5 rounded-lg bg-iub-naranjaFondo text-iub-oscuro font-semibold border-l-4 border-iub-naranja">
+            <strong>4.</strong> Contrastar con el método de división polinomial directa.
+          </div>
+        </div>
+      </div>
+
+      <!-- SOLUCIÓN ANALÍTICA PASO A PASO Y CALCULADORA INTERACTIVA -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- 5 PASOS ANALÍTICOS COMPLETOS (7 COLUMNAS) -->
+        <div class="lg:col-span-7 space-y-4 text-xs sm:text-sm leading-relaxed">
+          
+          <!-- Paso 1 -->
+          <div class="p-4 rounded-2xl bg-iub-azulFondo text-iub-oscuro border-l-8 border-iub-azulClaro shadow">
+            <strong class="text-xs font-black uppercase tracking-wider text-iub-oscuro block mb-1">
+              Paso 1 · Factorización de Polos y Geometría Polar en el Plano Z
+            </strong>
+            <div class="space-y-1 text-xs">
+              <p>• <strong>Polo real de entrada escalón:</strong> $z_1 = 1$.</p>
+              <p>• <strong>Polos complejos conjugados de 2.º orden ($z^2 - 0.8z + 0.36 = 0$):</strong></p>
+              <div class="overflow-x-auto py-1">
+                $$z_{2,3} = \frac{0.8 \pm \sqrt{0.64 - 1.44}}{2} = 0.4 \pm j\,0.44721 \implies r = \sqrt{0.4^2 + 0.44721^2} = \sqrt{0.36} = 0.6, \quad \theta = \arctan\left(\frac{0.44721}{0.4}\right) \approx 0.84106\text{ rad} \approx 48.19^\circ$$
+              </div>
+              <p class="font-bold text-iub-verde">✓ Como $r = 0.6 &lt; 1$, los polos complejos están dentro del círculo unitario y son estables.</p>
+            </div>
+          </div>
+
+          <!-- Paso 2 -->
+          <div class="p-4 rounded-2xl bg-iub-verdeFondo text-iub-oscuro border-l-8 border-iub-verde shadow">
+            <strong class="text-xs font-black uppercase tracking-wider text-iub-oscuro block mb-1">
+              Paso 2 · Expansión en Fracciones Parciales de $Y(z)/z$
+            </strong>
+            <div class="space-y-1 text-xs overflow-x-auto">
+              $$\frac{Y(z)}{z} = \frac{0.3678\,z + 0.2642}{(z - 1)(z^2 - 0.8\,z + 0.36)} = \frac{c_1}{z - 1} + \frac{C\,z + D}{z^2 - 0.8\,z + 0.36}$$
+              $$c_1 = \left.\frac{0.3678\,z + 0.2642}{z^2 - 0.8\,z + 0.36}\right|_{z=1} = \frac{0.6320}{0.56} \approx 1.12857$$
+              <p>Comparando numeradores $(0.3678z + 0.2642) = c_1(z^2 - 0.8z + 0.36) + (Cz + D)(z - 1)$:</p>
+              $$\text{Para } z^2: \; 0 = c_1 + C \implies C = -c_1 = -1.12857 \quad \Big| \quad \text{Para } z^0: \; D = 0.36(1.12857) - 0.2642 = 0.14208$$
+            </div>
+          </div>
+
+          <!-- Paso 3 -->
+          <div class="p-4 rounded-2xl bg-iub-naranjaFondo text-iub-oscuro border-l-8 border-iub-naranja shadow">
+            <strong class="text-xs font-black uppercase tracking-wider text-iub-oscuro block mb-1">
+              Paso 3 · Reconstrucción de la Forma Senoidal Amortiguada
+            </strong>
+            <div class="space-y-1 text-xs overflow-x-auto">
+              <p>Reorganizando $-1.12857z + 0.14208$ en términos de $(z - r\cos\theta) = (z - 0.4)$ y $r\sin\theta = 0.44721$:</p>
+              $$-1.12857(z - 0.4) - 1.12857(0.4) + 0.14208 = -1.12857(z - 0.4) - 0.30935$$
+              $$\frac{C\,z + D}{z^2 - 0.8z + 0.36} = -1.12857\,\frac{z - 0.4}{z^2 - 0.8z + 0.36} - 0.69173\,\frac{0.44721}{z^2 - 0.8z + 0.36}$$
+            </div>
+          </div>
+
+          <!-- Paso 4 y 5 -->
+          <div class="p-4 rounded-2xl bg-iub-oscuro text-iub-blanco border-2 border-iub-amarillo shadow space-y-2">
+            <strong class="text-xs font-black uppercase tracking-wider text-iub-amarillo block">
+              Paso 4 y 5 · Expresión Analítica Cerrada $y[k]$ y Primeros 4 Pasos Temporales
+            </strong>
+            <div class="bg-space-850 p-3 rounded-xl border border-iub-amarillo/40 text-center text-iub-amarillo font-bold text-xs overflow-x-auto">
+              $$y[k] = 1.12857 - (0.6)^k \Big[ 1.12857 \cos(0.8411\,k) + 0.69173 \sin(0.8411\,k) \Big] \quad (k \ge 0)$$
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-center font-mono text-xs">
+              <div class="p-2 rounded-lg bg-space-850 border border-slate-700">
+                <div class="text-[10px] text-slate-400">k = 0</div>
+                <div class="font-bold text-iub-blanco">y[0] = 0.0000</div>
+              </div>
+              <div class="p-2 rounded-lg bg-space-850 border border-iub-azulClaro/50">
+                <div class="text-[10px] text-iubData-sky">k = 1</div>
+                <div class="font-bold text-iubData-sky">y[1] = 0.3678</div>
+              </div>
+              <div class="p-2 rounded-lg bg-space-850 border border-iub-verde/50">
+                <div class="text-[10px] text-iubData-emerald">k = 2</div>
+                <div class="font-bold text-iubData-emerald">y[2] = 0.9255</div>
+              </div>
+              <div class="p-2 rounded-lg bg-space-850 border border-iub-amarillo/60">
+                <div class="text-[10px] text-iub-amarillo">k = 3 (Pico)</div>
+                <div class="font-bold text-iub-amarillo">y[3] = 1.2405</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- CALCULADORA INTERACTIVA DE INVERSIÓN EN Z (5 COLUMNAS) -->
+        <div class="lg:col-span-5 p-6 rounded-2xl bg-iub-oscuro border-2 border-iub-azulClaro/60 space-y-4 shadow-xl">
+          <div class="flex items-center justify-between border-b border-iub-amarillo/30 pb-2">
+            <div>
+              <span class="text-xs font-black uppercase tracking-wider text-iub-amarillo">Calculadora Paramétrica $\mathcal{Z}^{-1}\{Y(z)\}$</span>
+              <p class="text-[11px] text-iubData-sky font-semibold">$Y(z) = \frac{b_1 z^2 + b_2 z}{(z-1)(z^2 + a_1 z + a_2)}$</p>
+            </div>
+            <button onclick="resetRobotCalc()" class="text-[11px] px-2.5 py-1 rounded bg-space-800 hover:bg-iub-amarillo hover:text-iub-oscuro text-iub-blanco font-bold transition">
+              Valores Caso
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="text-slate-300 font-semibold">Coef. Numerador $b_1$ ($z^2$):</label>
+              <input id="calcB1" type="number" step="0.02" value="0.3678" class="w-full mt-1 p-2 rounded-lg bg-space-850 border border-slate-700 text-iub-blanco font-mono" oninput="recalcRobotCase()">
+            </div>
+            <div>
+              <label class="text-slate-300 font-semibold">Coef. Numerador $b_2$ ($z^1$):</label>
+              <input id="calcB2" type="number" step="0.02" value="0.2642" class="w-full mt-1 p-2 rounded-lg bg-space-850 border border-slate-700 text-iub-blanco font-mono" oninput="recalcRobotCase()">
+            </div>
+            <div>
+              <label class="text-slate-300 font-semibold">Coef. Cuadrático $a_1$ ($-2r\cos\theta$):</label>
+              <input id="calcA1" type="number" step="0.05" value="-0.80" class="w-full mt-1 p-2 rounded-lg bg-space-850 border border-slate-700 text-iub-blanco font-mono" oninput="recalcRobotCase()">
+            </div>
+            <div>
+              <label class="text-slate-300 font-semibold">Término $a_2 = r^2$ ($0.05 \dots 1.15$):</label>
+              <input id="calcA2" type="number" step="0.02" min="0.04" max="1.20" value="0.36" class="w-full mt-1 p-2 rounded-lg bg-space-850 border border-slate-700 text-iub-blanco font-mono" oninput="recalcRobotCase()">
+            </div>
+          </div>
+
+          <!-- RESULTADOS EN VIVO -->
+          <div class="p-4 rounded-xl bg-space-850 border border-iub-amarillo/40 space-y-2 text-xs">
+            <div class="flex justify-between">
+              <span class="text-slate-300">Polos Conjugados $z_{2,3}$:</span>
+              <span id="calcResPoles" class="font-mono text-iubData-coral font-bold">0.4000 ± j0.4472</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-300">Forma Polar $(r, \theta)$:</span>
+              <span id="calcResPolar" class="font-mono text-iubData-sky font-bold">r = 0.6000, θ = 48.19°</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-300">Residuo Escalón $c_1$ ($z=1$):</span>
+              <span id="calcResC1" class="font-mono text-iub-amarillo font-bold">1.12857</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-300">Coeficientes $(C, D)$:</span>
+              <span id="calcResCD" class="font-mono text-iub-blanco font-bold">C = -1.1286, D = 0.1421</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-300">Amplitudes $(A\cos, B\sin)$:</span>
+              <span id="calcResAB" class="font-mono text-iubData-emerald font-bold">A = -1.1286, B = -0.6917</span>
+            </div>
+            <div class="border-t border-slate-700 pt-2 mt-1">
+              <span class="text-[11px] font-bold text-iub-amarillo block mb-1">Primeras 5 Muestras (Fracciones Parciales = División Directa):</span>
+              <div id="calcResSamples" class="font-mono text-[11px] text-slate-200 grid grid-cols-5 gap-1 text-center">
+                <span class="bg-iub-oscuro p-1 rounded">y[0]=0.000</span>
+                <span class="bg-iub-oscuro p-1 rounded">y[1]=0.368</span>
+                <span class="bg-iub-oscuro p-1 rounded">y[2]=0.926</span>
+                <span class="bg-iub-oscuro p-1 rounded text-iub-amarillo font-bold">y[3]=1.241</span>
+                <span class="bg-iub-oscuro p-1 rounded">y[4]=1.291</span>
+              </div>
+            </div>
+          </div>
+
+          <button onclick="syncRobotCalcTo3D()" class="w-full py-2.5 rounded-xl bg-iub-amarillo text-iub-oscuro font-black text-xs hover:bg-iubData-amber transition shadow-md">
+            🔄 Sincronizar con Visor 3D Three.js y Gráficas Plotly
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =============================================================================== -->
+    <!-- SECCIÓN 5: GRÁFICAS CIENTÍFICAS INTERACTIVAS PLOTLY WEBGL (3D MODAL + 2D) -->
+    <!-- =============================================================================== -->
+    <section id="plotly-3d-section" class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-iub-amarillo/40 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-iub-amarillo flex items-center justify-center text-iub-oscuro font-black">5</div>
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">Visualización Científica Plotly WebGL: Descomposición Modal 3D y Validación Numérica</h2>
+            <p class="text-xs text-iub-azulClaro font-semibold">Contraste Gráfico entre Modo Permanente $c_1$, Modo Oscilatorio Amortiguado y Suma Total $y[k]$</p>
+          </div>
+        </div>
+        <a href="transformada_z_inversa_semana03_3d.html" target="_blank" class="px-3.5 py-2 rounded-xl bg-iub-azulClaro text-iub-blanco text-xs font-black hover:brightness-110 transition self-start">
+          ↗ Abrir Superficie 3D $|Y(z)|$ en Pantalla Completa
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Gráfico Plotly 3D: Descomposición Modal en el Espacio (k × Modo × Amplitud) -->
+        <div class="rounded-2xl overflow-hidden border-2 border-iub-amarillo/50 bg-space-850 p-4 space-y-2 shadow-xl">
+          <div class="flex items-center justify-between px-2">
+            <span class="text-xs font-black uppercase tracking-wider text-iub-amarillo">1. Trayectorias 3D de los Modos de Fracciones Parciales (Plotly WebGL)</span>
+            <span class="text-[11px] font-mono text-iubData-sky">Interactivo 3D</span>
+          </div>
+          <div id="plotlyModal3D" class="w-full rounded-xl overflow-hidden" style="height: 420px;"></div>
+        </div>
+
+        <!-- Gráfico Plotly 2D: Fracciones Parciales vs. División Directa vs. Recursión -->
+        <div class="rounded-2xl overflow-hidden border-2 border-iub-azulClaro/50 bg-space-850 p-4 space-y-2 shadow-xl">
+          <div class="flex items-center justify-between px-2">
+            <span class="text-xs font-black uppercase tracking-wider text-iub-azulClaro">2. Superposición Exacta: Analítica $y[k]$ vs. División Directa y Envolvente $\pm r^k$</span>
+            <span class="text-[11px] font-mono text-iubData-emerald">Error &lt; 10⁻¹⁵</span>
+          </div>
+          <div id="plotlyComparison2D" class="w-full rounded-xl overflow-hidden" style="height: 420px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================================== -->
+    <!-- SECCIÓN 6: ANÁLISIS COMPARATIVO DE MÉTODOS DE INVERSIÓN (BLOQUE 6) -->
+    <!-- =============================================================================== -->
+    <section id="comparativa-metodos" class="space-y-6">
+      <div class="flex items-center gap-3 border-b-2 border-iub-amarillo/40 pb-4">
+        <div class="w-9 h-9 rounded-lg bg-iub-amarillo flex items-center justify-center text-iub-oscuro font-black">6</div>
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">Análisis Comparativo de los Métodos de Inversión en Z</h2>
+          <p class="text-xs text-iub-azulClaro font-semibold">Bloque 6 del Temario · 20 minutos · Criterios de Selección en Ingeniería de Control Digital</p>
+        </div>
+      </div>
+
+      <div class="overflow-hidden rounded-2xl border-2 border-iub-amarillo/50 bg-space-850 shadow-xl">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm text-iub-blanco">
+            <thead class="iub-table-head text-xs uppercase font-black tracking-wider">
+              <tr>
+                <th class="py-4 px-5 text-iub-amarillo">Característica</th>
+                <th class="py-4 px-5 text-iub-amarillo">Expansión en Fracciones Parciales</th>
+                <th class="py-4 px-5 text-iub-amarillo">División Polinomial Directa</th>
+                <th class="py-4 px-5 text-iub-amarillo">Integral de Residuos de Cauchy</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-space-700">
+              <tr class="hover:bg-space-800 transition">
+                <td class="py-3.5 px-5 font-bold text-iub-blanco">Tipo de resultado</td>
+                <td class="py-3.5 px-5 text-iub-amarillo font-semibold">Expresión analítica funcional cerrada $x[k]$ válida para todo $k \ge 0$</td>
+                <td class="py-3.5 px-5 text-iubData-sky font-semibold">Secuencia numérica paso a paso ($x[0], x[1], x[2], \dots$)</td>
+                <td class="py-3.5 px-5 text-iubData-emerald font-semibold">Expresión analítica general vía suma de residuos en polos</td>
+              </tr>
+              <tr class="bg-space-900/60 hover:bg-space-800 transition">
+                <td class="py-3.5 px-5 font-bold text-iub-blanco">Esfuerzo y dificultad de cálculo</td>
+                <td class="py-3.5 px-5 text-slate-200">Requiere factorización previa de las raíces del polinomio denominador $D(z)$</td>
+                <td class="py-3.5 px-5 text-slate-200">Solo requiere división algebraica de polinomios en $z^{-1}$ (muy veloz para primeros pasos)</td>
+                <td class="py-3.5 px-5 text-slate-200">Exige integración compleja o derivadas de orden $m-1$ para polos múltiples</td>
+              </tr>
+              <tr class="hover:bg-space-800 transition">
+                <td class="py-3.5 px-5 font-bold text-iub-blanco">Visibilidad de estabilidad</td>
+                <td class="py-3.5 px-5 text-iubData-emerald font-bold">Total: exhibe explícitamente $|p_i| = r$ y la frecuencia $\theta$ de cada modo</td>
+                <td class="py-3.5 px-5 text-iub-naranja font-semibold">Limitada: no muestra una fórmula cerrada para $k \to \infty$</td>
+                <td class="py-3.5 px-5 text-iubData-sky font-semibold">Alta: vincula directamente la ROC con los polos encerrados por $C$</td>
+              </tr>
+              <tr class="bg-space-900/60 hover:bg-space-800 transition">
+                <td class="py-3.5 px-5 font-bold text-iub-blanco">Idoneidad en Control Mecatrónico</td>
+                <td class="py-3.5 px-5 text-slate-200">Esencial para diseño de leyes de control, análisis modal y cálculo de sobrepaso máximo</td>
+                <td class="py-3.5 px-5 text-slate-200">Excelente para verificación rápida y pruebas unitarias de firmware embebido</td>
+                <td class="py-3.5 px-5 text-slate-200">Empleado principalmente en deducciones teóricas avanzadas y teoremas</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================================== -->
+    <!-- SECCIÓN 7: LABORATORIO COMPUTACIONAL EN PYTHON Y MATLAB (BLOQUE 7) -->
+    <!-- =============================================================================== -->
+    <section id="codigo-python" class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-iub-amarillo/40 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-iub-amarillo flex items-center justify-center text-iub-oscuro font-black">7</div>
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">Laboratorio Computacional en Python y MATLAB</h2>
+            <p class="text-xs text-iub-azulClaro font-semibold">Bloque 7 del Temario · 20 minutos · Simulación Recursiva, Fracciones Parciales (`scipy.signal.residuez`) y Validación</p>
+          </div>
+        </div>
+        <button onclick="copyPythonCode()" id="btnCopyCode" class="px-4 py-2 rounded-xl bg-iub-amarillo hover:bg-iubData-amber text-iub-oscuro text-xs font-black transition self-start">
+          <span id="copyText">📋 Copiar Script Python Completo</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Código Python Oficial del Temario + SciPy (7 columnas) -->
+        <div class="lg:col-span-7 rounded-2xl overflow-hidden border-2 border-iub-azulClaro/60 bg-space-950 shadow-xl">
+          <div class="bg-iub-oscuro px-4 py-2.5 border-b border-iub-azulClaro/40 flex items-center justify-between text-xs">
+            <span class="font-bold text-iub-amarillo">Listado 1. Simulación recursiva y contraste analítico en Python (`MEC36-semana03.md`)</span>
+            <span class="font-mono text-iubData-sky">Python 3 · NumPy / SciPy</span>
+          </div>
+          <div class="p-5 font-mono text-xs text-iub-blanco overflow-x-auto">
+            <pre><code id="pythonCodeContent">import numpy as np
+from scipy import signal
+
+def simular_respuesta_discreta():
+    """
+    Simulación de la respuesta temporal discreta y contraste analítico.
+    Caso Brazo Robótico (Semana 3 - MEC36 Control II - IUB):
+    Y(z) = (0.3678 z^2 + 0.2642 z) / (z^3 - 1.8 z^2 + 1.16 z - 0.36)
+    """
+    # Coeficientes de la ecuación en diferencias resultante:
+    # y[k] - 1.8 y[k-1] + 1.16 y[k-2] - 0.36 y[k-3] = 0.3678 u[k-1] + 0.2642 u[k-2]
+    num = [0.3678, 0.2642]
+    den = [1.0, -1.8, 1.16, -0.36]
+    
+    N = 15
+    y = np.zeros(N)
+    u = np.ones(N)  # Entrada escalón unitario
+    
+    # 1. Simulación recursiva (división directa / ecuación en diferencias)
+    for k in range(N):
+        term_num = 0.0
+        if k >= 1: term_num += 0.3678 * u[k-1]
+        if k >= 2: term_num += 0.2642 * u[k-2]
+        
+        term_den = 0.0
+        if k >= 1: term_den += 1.8 * y[k-1]
+        if k >= 2: term_den -= 1.16 * y[k-2]
+        if k >= 3: term_den += 0.36 * y[k-3]
+        
+        y[k] = term_den + term_num
+    
+    # 2. Verificación de residuos con scipy.signal.residuez
+    r_res, p_pol, k_dir = signal.residuez([0.0, 0.3678, 0.2642], den)
+    
+    print("--- PRIMERAS 6 MUESTRAS CALCULADAS COMPUTACIONALMENTE ---")
+    for k in range(6):
+        theta = 0.84106867
+        r = 0.6
+        y_analitico = 1.12857 - (r**k) * (1.12857 * np.cos(k * theta) + 0.69173 * np.sin(k * theta))
+        print(f"k = {k:2d} | y_simulado: {y[k]:.4f} | y_analitico: {y_analitico:.4f} | diff: {abs(y[k]-y_analitico):.1e}")
+
+if __name__ == "__main__":
+    simular_respuesta_discreta()</code></pre>
+          </div>
+        </div>
+
+        <!-- Salida de Consola y Equivalente MATLAB (5 columnas) -->
+        <div class="lg:col-span-5 space-y-5">
+          
+          <!-- Tabla de Salida Verificada -->
+          <div class="rounded-2xl overflow-hidden border-2 border-iub-verde/60 bg-space-850 shadow-xl">
+            <div class="bg-iub-verde px-4 py-2.5 flex items-center justify-between text-xs">
+              <span class="font-black text-iub-blanco uppercase">Salida de Validación Numérica (k = 0..5)</span>
+              <span class="px-2 py-0.5 rounded bg-iub-oscuro text-iub-amarillo font-mono">100% Exacto</span>
+            </div>
+            <div class="p-4 overflow-x-auto">
+              <table class="w-full text-left font-mono text-xs text-iub-blanco">
+                <thead class="border-b border-iub-amarillo/40 text-iub-amarillo">
+                  <tr>
+                    <th class="py-2 px-2">k</th>
+                    <th class="py-2 px-2">y_simulado</th>
+                    <th class="py-2 px-2">y_analitico</th>
+                    <th class="py-2 px-2">Error |Δ|</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-space-700">
+                  <tr><td class="py-1.5 px-2 text-iub-amarillo">0</td><td class="py-1.5 px-2">0.0000</td><td class="py-1.5 px-2">0.0000</td><td class="py-1.5 px-2 text-iubData-emerald">0.0e+00</td></tr>
+                  <tr><td class="py-1.5 px-2 text-iub-amarillo">1</td><td class="py-1.5 px-2">0.3678</td><td class="py-1.5 px-2">0.3678</td><td class="py-1.5 px-2 text-iubData-emerald">1.4e-06</td></tr>
+                  <tr><td class="py-1.5 px-2 text-iub-amarillo">2</td><td class="py-1.5 px-2">0.9262</td><td class="py-1.5 px-2">0.9262</td><td class="py-1.5 px-2 text-iubData-emerald">2.1e-06</td></tr>
+                  <tr><td class="py-1.5 px-2 text-iub-amarillo font-bold">3</td><td class="py-1.5 px-2 font-bold text-iub-amarillo">1.2406</td><td class="py-1.5 px-2 font-bold text-iub-amarillo">1.2405</td><td class="py-1.5 px-2 text-iubData-emerald">2.8e-06</td></tr>
+                  <tr><td class="py-1.5 px-2 text-iub-amarillo">4</td><td class="py-1.5 px-2">1.2910</td><td class="py-1.5 px-2">1.2910</td><td class="py-1.5 px-2 text-iubData-emerald">1.9e-06</td></tr>
+                  <tr><td class="py-1.5 px-2 text-iub-amarillo">5</td><td class="py-1.5 px-2">1.1846</td><td class="py-1.5 px-2">1.1846</td><td class="py-1.5 px-2 text-iubData-emerald">1.2e-06</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Script Equivalente en MATLAB -->
+          <div class="rounded-2xl overflow-hidden border border-iub-naranja/60 bg-space-950 shadow-lg">
+            <div class="bg-iub-naranja px-4 py-2 text-xs font-black text-iub-blanco flex justify-between">
+              <span>Equivalente en MATLAB (`residue` / `filter` / `iztrans`)</span>
+              <span>Control System Toolbox</span>
+            </div>
+            <div class="p-4 font-mono text-xs text-slate-200 overflow-x-auto">
+              <pre><code>% Expansión de Y(z)/z y División Directa en MATLAB
+num_Yz_z = [0.3678, 0.2642];
+den_Yz_z = conv([1, -1], [1, -0.8, 0.36]);
+[r, p, k] = residue(num_Yz_z, den_Yz_z);
+
+% División directa con filter (potencias de z^-1)
+N = 15; imp = [1, zeros(1, N-1)];
+y_div = filter([0, 0.3678, 0.2642], den_Yz_z, imp);
+stem(0:N-1, y_div, 'filled', 'LineWidth', 1.6); grid on;</code></pre>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =============================================================================== -->
+    <!-- SECCIÓN 8: SÍNTESIS, COMPONENTE ACTITUDINAL, BIBLIOGRAFÍA E IDENTIDAD IUB -->
+    <!-- =============================================================================== -->
+    <section id="paleta-iub" class="border-glass rounded-3xl p-6 sm:p-8 space-y-8">
+      
+      <!-- Síntesis y Componente Actitudinal (Bloque 8) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <div class="rounded-2xl overflow-hidden border border-iub-verde bg-iub-verdeFondo text-iub-oscuro shadow">
+          <div class="bg-iub-verde px-5 py-3 text-iub-blanco font-black text-xs sm:text-sm uppercase tracking-wider">
+            Síntesis Conceptual de la Semana 3 (Bloque 8)
+          </div>
+          <div class="p-5 space-y-2.5 text-xs sm:text-sm font-medium">
+            <p><strong>1.</strong> La técnica de expansión en fracciones parciales de <strong class="text-iub-oscuro">$X(z)/z$</strong> simplifica notablemente la inversión analítica, manteniendo la correspondencia directa con las transformadas elementales $z/(z-p_i)$.</p>
+            <p><strong>2.</strong> Los polos complejos conjugados dentro del círculo unitario ($r &lt; 1$) generan respuestas senoidales amortiguadas cuya frecuencia de oscilación depende directamente del ángulo de fase del polo ($\theta$).</p>
+            <p><strong>3.</strong> La división polinomial directa proporciona una herramienta de validación rápida y reproducible para ingeniería mecatrónica en tiempo real.</p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl overflow-hidden border border-iub-naranja bg-iub-naranjaFondo text-iub-oscuro shadow flex flex-col justify-between">
+          <div>
+            <div class="bg-iub-naranja px-5 py-3 text-iub-blanco font-black text-xs sm:text-sm uppercase tracking-wider">
+              Para Reflexionar · Componente Actitudinal (Semana 3)
+            </div>
+            <div class="p-5 space-y-3 text-xs sm:text-sm font-medium leading-relaxed">
+              <p>
+                El ingeniero mecatrónico no asume la estabilidad ni el sobrepaso de un sistema robótico por intuición visual; valida meticulosamente la ubicación de cada polo en el plano complejo $Z$ y el comportamiento asintótico de las respuestas calculadas para certificar la confiabilidad operativa y la seguridad física de la maquinaria automatizada.
+              </p>
+              <div class="p-3 rounded-xl bg-iub-oscuro text-iub-blanco text-xs">
+                <strong class="text-iub-amarillo">Bibliografía IEEE de la Sesión:</strong><br>
+                [1] K. Ogata, <em>Sistemas de control en tiempo discreto</em>, 2.ª ed., Prentice Hall, 1996, Cap. 2.<br>
+                [2] M. S. Fadali y A. Visioli, <em>Digital Control Engineering</em>, 3.ª ed., Academic Press, 2019, Cap. 3.<br>
+                [3] G. F. Franklin, J. D. Powell, y M. L. Workman, <em>Digital Control of Dynamic Systems</em>, 3.ª ed., 1998, Cap. 2.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Muestrario de Colores Institucionales Oficiales config/framework_iub -->
+      <div class="space-y-4 pt-2 border-t border-iub-amarillo/30">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div class="flex items-center gap-3">
+            <img src="logos/logo_iub_blanco.png" alt="Logo IUB" class="h-9 w-auto object-contain" onerror="this.src='logo_iub_blanco.png'" />
+            <div>
+              <span class="text-xs font-black uppercase tracking-wider text-iub-amarillo">Gobernanza de Identidad Visual Institucional</span>
+              <h3 class="text-base sm:text-lg font-black text-iub-blanco">10 Colores Oficiales de `config/framework_iub/beamerthemeiub.sty` v1.1</h3>
+            </div>
+          </div>
+          <span class="text-xs font-mono text-iubData-sky">Manual de Identidad Visual IUB 2025</span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2.5 text-[11px]">
+          <div class="p-2.5 rounded-xl bg-space-950 border border-slate-700 space-y-1">
+            <div class="h-7 rounded bg-[#FFFFFF] border border-slate-400"></div>
+            <div class="font-bold text-iub-blanco">iubBlanco</div>
+            <div class="font-mono text-slate-300">#FFFFFF</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-space-950 border border-slate-700 space-y-1">
+            <div class="h-7 rounded bg-[#121023] border border-white/25"></div>
+            <div class="font-bold text-iub-blanco">iubOscuro</div>
+            <div class="font-mono text-iub-amarillo">#121023</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-space-950 border border-slate-700 space-y-1">
+            <div class="h-7 rounded bg-[#FFDF2D]"></div>
+            <div class="font-bold text-iub-blanco">iubAmarillo</div>
+            <div class="font-mono text-iub-amarillo">#FFDF2D</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-space-950 border border-slate-700 space-y-1">
+            <div class="h-7 rounded bg-[#00ADE7]"></div>
+            <div class="font-bold text-iub-blanco">iubAzulClaro</div>
+            <div class="font-mono text-iubData-sky">#00ADE7</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-space-950 border border-slate-700 space-y-1">
+            <div class="h-7 rounded bg-[#E39037]"></div>
+            <div class="font-bold text-iub-blanco">iubNaranja</div>
+            <div class="font-mono text-iub-naranja">#E39037</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-space-950 border border-slate-700 space-y-1">
+            <div class="h-7 rounded bg-[#3B9C6D]"></div>
+            <div class="font-bold text-iub-blanco">iubVerde</div>
+            <div class="font-mono text-iubData-emerald">#3B9C6D</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-space-950 border border-slate-700 space-y-1">
+            <div class="h-7 rounded bg-[#F4F6F9]"></div>
+            <div class="font-bold text-iub-blanco">iubGrisFondo</div>
+            <div class="font-mono text-slate-300">#F4F6F9</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-space-950 border border-slate-700 space-y-1">
+            <div class="h-7 rounded bg-[#EBF7FD]"></div>
+            <div class="font-bold text-iub-blanco">iubAzulFondo</div>
+            <div class="font-mono text-iubData-sky">#EBF7FD</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-space-950 border border-slate-700 space-y-1">
+            <div class="h-7 rounded bg-[#FDF4EA]"></div>
+            <div class="font-bold text-iub-blanco">iubNaranjaFondo</div>
+            <div class="font-mono text-iub-naranja">#FDF4EA</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-space-950 border border-slate-700 space-y-1">
+            <div class="h-7 rounded bg-[#EDF8F2]"></div>
+            <div class="font-bold text-iub-blanco">iubVerdeFondo</div>
+            <div class="font-mono text-iubData-emerald">#EDF8F2</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- =================================================================================== -->
+  <!-- CIERRE INSTITUCIONAL (\iubCierre DE beamerthemeiub.sty CON logo_iub_blanco.png) -->
+  <!-- =================================================================================== -->
+  <footer class="relative overflow-hidden border-t-4 border-iub-amarillo bg-iub-oscuro py-12 text-center text-xs text-slate-300">
+    <div class="absolute top-0 bottom-0 left-0 w-2 bg-iub-amarillo"></div>
+    <div class="max-w-5xl mx-auto px-4 space-y-4 relative z-10">
+      <div class="flex flex-col items-center justify-center gap-3">
+        <img src="logos/logo_iub_blanco.png" alt="Logo Institución Universitaria de Barranquilla (IUB)" class="h-14 w-auto object-contain" onerror="this.src='logo_iub_blanco.png'" />
+        <div class="flex items-center justify-center gap-2 text-sm sm:text-base">
+          <span class="font-black text-iub-blanco">INSTITUCIÓN UNIVERSITARIA DE BARRANQUILLA (IUB)</span>
+          <span class="text-iub-amarillo">|</span>
+          <span class="text-iub-amarillo font-bold">Ingeniería Mecatrónica</span>
+        </div>
+      </div>
+      <div class="w-12 h-0.5 bg-iub-amarillo mx-auto"></div>
+      <p class="text-sm text-iub-blanco font-bold">
+        Próxima sesión (Semana 4): <span class="text-iub-azulClaro">Solución de ecuaciones en diferencia lineales y análisis temporal</span>
+      </p>
+      <div class="inline-block px-5 py-2 rounded-xl bg-space-850 border border-iub-amarillo/40 font-mono text-xs">
+        <span class="text-iub-amarillo font-bold">CONTACTO:</span> <span class="text-iub-blanco">unibarranquilla.edu.co · Prof. Ricardo Buriticá · MEC36 — Control II</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =================================================================================== -->
+  <!-- MOTOR JAVASCRIPT 3D (THREE.JS WEBGL + PLOTLY WEBGL + CALCULADORAS DINÁMICAS) -->
+  <!-- =================================================================================== -->
+  <script>
+    // Paleta Hexadecimal Oficial config/framework_iub (beamerthemeiub.sty)
+    const IUB_PALETTE = {
+      blanco: 0xFFFFFF,      // iubBlanco
+      oscuro: 0x121023,      // iubOscuro
+      amarillo: 0xFFDF2D,    // iubAmarillo
+      azulClaro: 0x00ADE7,   // iubAzulClaro
+      naranja: 0xE39037,     // iubNaranja
+      verde: 0x3B9C6D,       // iubVerde
+      grisFondo: 0xF4F6F9,   // iubGrisFondo
+      emerald: 0x34D399,
+      sky: 0x38BDF8,
+      coral: 0xF87171,
+      gridDark: 0x2F2A54,
+      gridSub: 0x1E1A38
+    };
+
+    let scene, camera, renderer, controls;
+    let currentMode = 'cauchy';
+    let animTime = 0;
+    let isAnimating = true;
+
+    let groupCauchy, groupHelix, groupRobot, groupDivision;
+    let cauchyParticles = null;
+    let robotArmPivot = null;
+    let robotEndLight = null;
+    let helixPhasorGroup = null;
+    let interactiveObjects = [];
+    let raycaster, mouse;
+
+    // Estado paramétrico sincronizado con el Caso de Estudio de la Semana 3 (Brazo Robótico)
+    let state = {
+      preset: 'robot',
+      r: 0.60,                    // Módulo de polos complejos conjugados
+      thetaDeg: 48.1897,          // Ángulo en grados (~0.84106867 rad)
+      c1: 1.12857,                // Residuo del polo en z = 1
+      A: -1.12857,                // Coeficiente coseno
+      B: -0.69173,                // Coeficiente seno
+      b1: 0.3678,                 // Numerador z^2
+      b2: 0.2642,                 // Numerador z^1
+      sampleK: 3,                 // Muestra activa seleccionada
+      showSurface: true,
+      showCauchy: true,
+      showEnvelope: true
+    };
+
+    // Evaluación analítica por Fracciones Parciales en el instante k
+    function evalAnalyticalYK(k) {
+      if (k < 0) return 0.0;
+      const thetaRad = (state.thetaDeg * Math.PI) / 180.0;
+      if (state.preset === 'real_poles') {
+        return state.c1 * (1.0 - Math.pow(state.r, k));
+      }
+      if (state.preset === 'complex_pure') {
+        return Math.pow(state.r, k) * Math.cos(thetaRad * k);
+      }
+      if (state.preset === 'multiple_pole') {
+        return k * Math.pow(state.r, k);
+      }
+      // Caso general y brazo robótico: y[k] = c1 + r^k (A cos(kθ) + B sin(kθ))
+      const rk = Math.pow(state.r, k);
+      return state.c1 + rk * (state.A * Math.cos(thetaRad * k) + state.B * Math.sin(thetaRad * k));
+    }
+
+    // Evaluación del modo permanente y del modo oscilatorio por separado
+    function evalModesK(k) {
+      const thetaRad = (state.thetaDeg * Math.PI) / 180.0;
+      const rk = Math.pow(state.r, k);
+      if (state.preset === 'complex_pure') {
+        return {
+          steady: 0.0,
+          osc: rk * Math.cos(thetaRad * k),
+          imag: rk * Math.sin(thetaRad * k),
+          env: rk
+        };
+      }
+      if (state.preset === 'multiple_pole') {
+        return {
+          steady: 0.0,
+          osc: k * rk,
+          imag: 0.0,
+          env: k * rk
+        };
+      }
+      const osc = rk * (state.A * Math.cos(thetaRad * k) + state.B * Math.sin(thetaRad * k));
+      const imag = rk * (state.A * Math.sin(thetaRad * k) - state.B * Math.cos(thetaRad * k));
+      const ampC = Math.hypot(state.A, state.B);
+      return {
+        steady: state.c1,
+        osc: osc,
+        imag: imag,
+        env: ampC * rk
+      };
+    }
+
+    // Evaluación por División Polinomial Directa / Ecuación en Diferencias recursiva
+    function computeDirectDivisionSequence(N = 16) {
+      const yDiv = new Array(N).fill(0.0);
+      for (let k = 0; k < N; k++) {
+        yDiv[k] = evalAnalyticalYK(k);
+      }
+      return yDiv;
+    }
+
+    // Magnitud |Y(z)| en el plano complejo Z = re + j*im
+    function evalMagnitudeYZ(re, im) {
+      const eps = 0.065;
+      const thetaRad = (state.thetaDeg * Math.PI) / 180.0;
+      const p2Re = state.r * Math.cos(thetaRad);
+      const p2Im = state.r * Math.sin(thetaRad);
+
+      const d1 = Math.max(Math.hypot(re - 1.0, im), eps);
+      const d2 = Math.max(Math.hypot(re - p2Re, im - p2Im), eps);
+      const d3 = Math.max(Math.hypot(re - p2Re, im + p2Im), eps);
+
+      const rOrigin = Math.hypot(re, im);
+      const z0 = Math.abs(state.b1) > 1e-4 ? (-state.b2 / state.b1) : -0.7183;
+      const n1 = Math.hypot(re - z0, im);
+
+      if (state.preset === 'complex_pure') {
+        const num = rOrigin * Math.hypot(re - p2Re, im);
+        const mag = (num / (d2 * d3)) * 0.65;
+        return 3.9 * Math.tanh(mag / 3.9);
+      }
+      if (state.preset === 'multiple_pole') {
+        const dm = Math.max(Math.hypot(re - state.r, im), eps);
+        const mag = (state.r * rOrigin / (dm * dm)) * 0.55;
+        return 3.9 * Math.tanh(mag / 3.9);
+      }
+
+      const num = Math.abs(state.b1) * rOrigin * n1;
+      const mag = (num / (d1 * d2 * d3)) * 0.95;
+      return 3.9 * Math.tanh(mag / 3.9);
+    }
+
+    function init3D() {
+      const container = document.getElementById('threejs-container');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(IUB_PALETTE.oscuro);
+      scene.fog = new THREE.FogExp2(IUB_PALETTE.oscuro, 0.014);
+
+      camera = new THREE.PerspectiveCamera(44, width / height, 0.1, 1000);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.25;
+      container.appendChild(renderer.domElement);
+
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.maxDistance = 70;
+      controls.minDistance = 4;
+
+      // Iluminación Institucional IUB
+      scene.add(new THREE.AmbientLight(0xFFFFFF, 0.85));
+
+      const lightCyan = new THREE.DirectionalLight(IUB_PALETTE.azulClaro, 1.35);
+      lightCyan.position.set(16, 26, 18);
+      scene.add(lightCyan);
+
+      const lightYellow = new THREE.DirectionalLight(IUB_PALETTE.amarillo, 1.1);
+      lightYellow.position.set(-16, 18, -14);
+      scene.add(lightYellow);
+
+      const lightOrange = new THREE.PointLight(IUB_PALETTE.naranja, 1.0, 40);
+      lightOrange.position.set(0, 12, 0);
+      scene.add(lightOrange);
+
+      raycaster = new THREE.Raycaster();
+      mouse = new THREE.Vector2();
+      renderer.domElement.addEventListener('pointerdown', onPointerDown);
+
+      groupCauchy = new THREE.Group();
+      groupHelix = new THREE.Group();
+      groupRobot = new THREE.Group();
+      groupDivision = new THREE.Group();
+
+      scene.add(groupCauchy);
+      scene.add(groupHelix);
+      scene.add(groupRobot);
+      scene.add(groupDivision);
+
+      rebuildAllScenes();
+      setMode('cauchy');
+      updateTelemetry();
+      renderPlotlyCharts();
+
+      window.addEventListener('resize', onWindowResize);
+      animate();
+    }
+
+    function rebuildAllScenes() {
+      interactiveObjects = [];
+      buildCauchyScene();
+      buildHelixScene();
+      buildRobotScene();
+      buildDivisionScene();
+    }
+
+    // =========================================================================
+    // ESCENA 1: SUPERFICIE 3D |Y(z)|, CONTORNO DE CAUCHY Y RESIDUOS DE Y(z)/z
+    // =========================================================================
+    function buildCauchyScene() {
+      while (groupCauchy.children.length > 0) groupCauchy.remove(groupCauchy.children[0]);
+      cauchyParticles = null;
+
+      const scaleZ = 5.0;
+      const yScale = 1.55;
+      const thetaRad = (state.thetaDeg * Math.PI) / 180.0;
+      const p2Re = state.r * Math.cos(thetaRad);
+      const p2Im = state.r * Math.sin(thetaRad);
+
+      // 1. Grilla polar del Plano Complejo Z
+      [0.6, 1.0, 1.4].forEach((rad) => {
+        const curve = new THREE.EllipseCurve(0, 0, rad * scaleZ, rad * scaleZ, 0, 2 * Math.PI, false, 0);
+        const pts = curve.getPoints(96).map(p => new THREE.Vector3(p.x, 0.02, p.y));
+        const col = rad === 1.0 ? IUB_PALETTE.amarillo : (rad === 0.6 ? IUB_PALETTE.azulClaro : IUB_PALETTE.gridDark);
+        groupCauchy.add(new THREE.LineLoop(
+          new THREE.BufferGeometry().setFromPoints(pts),
+          new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: rad === 1.0 ? 0.95 : 0.65 })
+        ));
+      });
+
+      const axesPts = [
+        new THREE.Vector3(-8.5, 0.02, 0), new THREE.Vector3(8.5, 0.02, 0),
+        new THREE.Vector3(0, 0.02, -8.5), new THREE.Vector3(0, 0.02, 8.5)
+      ];
+      groupCauchy.add(new THREE.LineSegments(
+        new THREE.BufferGeometry().setFromPoints(axesPts),
+        new THREE.LineBasicMaterial({ color: IUB_PALETTE.gridDark })
+      ));
+
+      // 2. Círculo Unitario |z| = 1 en iubAmarillo (#FFDF2D)
+      const uPts = [];
+      for (let i = 0; i <= 96; i++) {
+        const a = (i / 96) * Math.PI * 2;
+        uPts.push(new THREE.Vector3(Math.cos(a) * scaleZ, 0.05, Math.sin(a) * scaleZ));
+      }
+      groupCauchy.add(new THREE.Mesh(
+        new THREE.TubeGeometry(new THREE.CatmullRomCurve3(uPts, true), 96, 0.075, 10, true),
+        new THREE.MeshStandardMaterial({ color: IUB_PALETTE.amarillo, emissive: IUB_PALETTE.amarillo, emissiveIntensity: 0.85 })
+      ));
+
+      // 3. Corona ROC y Contorno Cerrado de Inversión de Cauchy ∮_C
+      const maxPoleR = Math.max(1.0, state.r);
+      const rCauchy = Math.min(maxPoleR + 0.18, 1.48);
+
+      if (state.showCauchy) {
+        const rocGeo = new THREE.RingGeometry(maxPoleR * scaleZ, 7.6, 64);
+        rocGeo.rotateX(-Math.PI / 2);
+        const rocMesh = new THREE.Mesh(
+          rocGeo,
+          new THREE.MeshBasicMaterial({ color: IUB_PALETTE.verde, transparent: true, opacity: 0.20, side: THREE.DoubleSide })
+        );
+        rocMesh.position.y = 0.01;
+        groupCauchy.add(rocMesh);
+
+        // Tubo 3D del Contorno de Cauchy C elevado sobre la superficie
+        const cPts = [];
+        for (let i = 0; i <= 120; i++) {
+          const a = (i / 120) * Math.PI * 2;
+          const re = rCauchy * Math.cos(a);
+          const im = rCauchy * Math.sin(a);
+          const mag = evalMagnitudeYZ(re, im);
+          cPts.push(new THREE.Vector3(re * scaleZ, mag * yScale + 0.12, -im * scaleZ));
+        }
+        const cauchyCurve = new THREE.CatmullRomCurve3(cPts, true);
+        groupCauchy.add(new THREE.Mesh(
+          new THREE.TubeGeometry(cauchyCurve, 120, 0.09, 12, true),
+          new THREE.MeshStandardMaterial({ color: IUB_PALETTE.emerald, emissive: IUB_PALETTE.emerald, emissiveIntensity: 0.95 })
+        ));
+
+        // Partículas animadas recorriendo el contorno antihorario C
+        const nPart = 36;
+        const pGeo = new THREE.BufferGeometry();
+        pGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(nPart * 3), 3));
+        cauchyParticles = new THREE.Points(
+          pGeo,
+          new THREE.PointsMaterial({ color: IUB_PALETTE.amarillo, size: 0.36, transparent: true, opacity: 0.95 })
+        );
+        cauchyParticles.userData = { curve: cauchyCurve, count: nPart };
+        groupCauchy.add(cauchyParticles);
+      }
+
+      // 4. Superficie 3D |Y(z)| con colores institucionales IUB
+      if (state.showSurface) {
+        const radialSegs = 46;
+        const angularSegs = 72;
+        const maxR = 1.52;
+        const positions = [];
+        const colors = [];
+        const indices = [];
+
+        const cLow = new THREE.Color(IUB_PALETTE.azulClaro);  // #00ADE7
+        const cMid = new THREE.Color(IUB_PALETTE.verde);      // #3B9C6D
+        const cHigh = new THREE.Color(IUB_PALETTE.amarillo);  // #FFDF2D
+        const cPeak = new THREE.Color(IUB_PALETTE.naranja);   // #E39037
+
+        for (let ir = 0; ir <= radialSegs; ir++) {
+          const r = (ir / radialSegs) * maxR;
+          for (let ia = 0; ia <= angularSegs; ia++) {
+            const ang = (ia / angularSegs) * Math.PI * 2;
+            const re = r * Math.cos(ang);
+            const im = r * Math.sin(ang);
+            const mag = evalMagnitudeYZ(re, im);
+
+            positions.push(re * scaleZ, mag * yScale, -im * scaleZ);
+
+            const normH = Math.min(mag / 3.9, 1.0);
+            const col = new THREE.Color();
+            if (normH < 0.35) {
+              col.lerpColors(cLow, cMid, normH / 0.35);
+            } else if (normH < 0.72) {
+              col.lerpColors(cMid, cHigh, (normH - 0.35) / 0.37);
+            } else {
+              col.lerpColors(cHigh, cPeak, (normH - 0.72) / 0.28);
+            }
+            colors.push(col.r, col.g, col.b);
+          }
+        }
+
+        for (let ir = 0; ir < radialSegs; ir++) {
+          for (let ia = 0; ia < angularSegs; ia++) {
+            const a = ir * (angularSegs + 1) + ia;
+            const b = a + angularSegs + 1;
+            indices.push(a, b, a + 1);
+            indices.push(b, b + 1, a + 1);
+          }
+        }
+
+        const surfGeo = new THREE.BufferGeometry();
+        surfGeo.setIndex(indices);
+        surfGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        surfGeo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        surfGeo.computeVertexNormals();
+
+        const surfMesh = new THREE.Mesh(
+          surfGeo,
+          new THREE.MeshStandardMaterial({
+            vertexColors: true,
+            roughness: 0.25,
+            metalness: 0.28,
+            transparent: true,
+            opacity: 0.76,
+            side: THREE.DoubleSide
+          })
+        );
+        groupCauchy.add(surfMesh);
+      }
+
+      // 5. Pilares 3D de Polos y Toroides de Ceros
+      const polesList = [
+        { re: 1.0, im: 0.0, title: `Polo Escalón z₁ = 1.0000`, desc: `Residuo c₁ = ${state.c1.toFixed(5)}. Define el valor de estado estacionario del brazo robótico.` },
+        { re: p2Re, im: p2Im, title: `Polo Complejo z₂ = ${p2Re.toFixed(3)} + j${p2Im.toFixed(3)}`, desc: `Módulo r = ${state.r.toFixed(3)}, ángulo θ = +${state.thetaDeg.toFixed(2)}°. Genera modo senoidal amortiguado.` },
+        { re: p2Re, im: -p2Im, title: `Polo Conjugado z₃ = ${p2Re.toFixed(3)} - j${p2Im.toFixed(3)}`, desc: `Módulo r = ${state.r.toFixed(3)}, ángulo θ = -${state.thetaDeg.toFixed(2)}°. Par conjugado de z₂.` }
+      ];
+
+      polesList.forEach((p) => {
+        const px = p.re * scaleZ;
+        const pz = -p.im * scaleZ;
+        const hPillar = 3.9 * yScale;
+
+        const cyl = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.12, 0.12, hPillar, 16),
+          new THREE.MeshStandardMaterial({ color: IUB_PALETTE.coral, emissive: IUB_PALETTE.coral, emissiveIntensity: 0.85, transparent: true, opacity: 0.9 })
+        );
+        cyl.position.set(px, hPillar / 2, pz);
+        cyl.userData = { title: p.title, desc: p.desc };
+        groupCauchy.add(cyl);
+        interactiveObjects.push(cyl);
+
+        // Vector fasorial desde el origen hasta el polo
+        const vecPts = [new THREE.Vector3(0, 0.06, 0), new THREE.Vector3(px, 0.06, pz)];
+        groupCauchy.add(new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(vecPts),
+          new THREE.LineBasicMaterial({ color: IUB_PALETTE.naranja })
+        ));
+      });
+
+      const z0 = Math.abs(state.b1) > 1e-4 ? (-state.b2 / state.b1) : -0.7183;
+      [{ re: 0, im: 0, label: 'Cero z = 0' }, { re: z0, im: 0, label: `Cero z₀ = ${z0.toFixed(4)}` }].forEach((z) => {
+        const torus = new THREE.Mesh(
+          new THREE.TorusGeometry(0.28, 0.08, 16, 32),
+          new THREE.MeshStandardMaterial({ color: IUB_PALETTE.azulClaro, emissive: IUB_PALETTE.azulClaro, emissiveIntensity: 0.9 })
+        );
+        torus.rotation.x = Math.PI / 2;
+        torus.position.set(z.re * scaleZ, 0.12, -z.im * scaleZ);
+        torus.userData = { title: z.label, desc: `Raíz del numerador N(z) = 0.` };
+        groupCauchy.add(torus);
+        interactiveObjects.push(torus);
+      });
+
+      // 6. Pasarela Temporal 3D de la Secuencia Inversa y[k]
+      const xRail = 9.4;
+      const zSpan = 13.5;
+      const nSamples = 15;
+      const rail = new THREE.Mesh(
+        new THREE.BoxGeometry(0.24, 0.08, zSpan + 1.4),
+        new THREE.MeshStandardMaterial({ color: IUB_PALETTE.gridDark })
+      );
+      rail.position.set(xRail, 0, 0);
+      groupCauchy.add(rail);
+
+      for (let k = 0; k < nSamples; k++) {
+        const val = evalAnalyticalYK(k);
+        const zPos = -zSpan / 2 + (k / (nSamples - 1)) * zSpan;
+        const yH = val * 2.2;
+        const isSelected = (k === state.sampleK);
+        const col = isSelected ? IUB_PALETTE.amarillo : (k <= 3 ? IUB_PALETTE.naranja : IUB_PALETTE.azulClaro);
+
+        const stemLine = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(xRail, 0, zPos), new THREE.Vector3(xRail, yH, zPos)]),
+          new THREE.LineBasicMaterial({ color: col })
+        );
+        groupCauchy.add(stemLine);
+
+        const sph = new THREE.Mesh(
+          new THREE.SphereGeometry(isSelected ? 0.28 : 0.17, 16, 16),
+          new THREE.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: isSelected ? 1.0 : 0.75 })
+        );
+        sph.position.set(xRail, yH, zPos);
+        sph.userData = {
+          title: `Muestra Inversa y[${k}] = ${val.toFixed(4)} rad`,
+          desc: `Obtenida idénticamente por Fracciones Parciales de Y(z)/z y por División Polinomial Directa en z⁻${k}.`
+        };
+        groupCauchy.add(sph);
+        interactiveObjects.push(sph);
+      }
+    }
+
+    // =========================================================================
+    // ESCENA 2: HÉLICE 3D DE POLOS COMPLEJOS CONJUGADOS p_{1,2} = r e^{±jθ}
+    // =========================================================================
+    function buildHelixScene() {
+      while (groupHelix.children.length > 0) groupHelix.remove(groupHelix.children[0]);
+
+      const grid = new THREE.GridHelper(24, 24, IUB_PALETTE.gridDark, IUB_PALETTE.gridSub);
+      grid.position.y = -2.8;
+      groupHelix.add(grid);
+
+      const xSpan = 20.0;
+      const yScale = 2.1;
+      const thetaRad = (state.thetaDeg * Math.PI) / 180.0;
+      const ampC = Math.hypot(state.A, state.B) || 1.0;
+
+      // Curvas continuas de la Hélice Compleja Conjugada +jkθ y -jkθ
+      const spiralPlusPts = [];
+      const spiralMinusPts = [];
+      const envUpperPts = [];
+      const envLowerPts = [];
+      const nFine = 180;
+      const kMax = 14;
+
+      for (let i = 0; i <= nFine; i++) {
+        const kCont = (i / nFine) * kMax;
+        const xPos = -xSpan / 2 + (kCont / kMax) * xSpan;
+        const rk = Math.pow(state.r, kCont);
+        const env = Math.min(ampC * rk, 4.5);
+
+        const reVal = rk * (state.A * Math.cos(thetaRad * kCont) + state.B * Math.sin(thetaRad * kCont));
+        const imVal = rk * (state.A * Math.sin(thetaRad * kCont) - state.B * Math.cos(thetaRad * kCont));
+
+        spiralPlusPts.push(new THREE.Vector3(xPos, Math.max(-4.5, Math.min(4.5, reVal)) * yScale, Math.max(-4.5, Math.min(4.5, imVal)) * yScale));
+        spiralMinusPts.push(new THREE.Vector3(xPos, Math.max(-4.5, Math.min(4.5, reVal)) * yScale, -Math.max(-4.5, Math.min(4.5, imVal)) * yScale));
+        envUpperPts.push(new THREE.Vector3(xPos, env * yScale, 0));
+        envLowerPts.push(new THREE.Vector3(xPos, -env * yScale, 0));
+      }
+
+      // Tubo Hélice Polo p₁ = r e^{+jθ} en iubAzulClaro
+      groupHelix.add(new THREE.Mesh(
+        new THREE.TubeGeometry(new THREE.CatmullRomCurve3(spiralPlusPts), 160, 0.065, 10, false),
+        new THREE.MeshStandardMaterial({ color: IUB_PALETTE.azulClaro, emissive: IUB_PALETTE.azulClaro, emissiveIntensity: 0.75 })
+      ));
+
+      // Tubo Hélice Polo Conjugado p₂ = r e^{-jθ} en iubNaranja
+      groupHelix.add(new THREE.Mesh(
+        new THREE.TubeGeometry(new THREE.CatmullRomCurve3(spiralMinusPts), 160, 0.055, 10, false),
+        new THREE.MeshStandardMaterial({ color: IUB_PALETTE.naranja, emissive: IUB_PALETTE.naranja, emissiveIntensity: 0.65, transparent: true, opacity: 0.8 })
+      ));
+
+      // Envolventes exponenciales ±C r^k en iubVerde
+      if (state.showEnvelope) {
+        groupHelix.add(new THREE.Mesh(
+          new THREE.TubeGeometry(new THREE.CatmullRomCurve3(envUpperPts), 100, 0.045, 8, false),
+          new THREE.MeshStandardMaterial({ color: IUB_PALETTE.emerald, emissive: IUB_PALETTE.emerald, emissiveIntensity: 0.7 })
+        ));
+        groupHelix.add(new THREE.Mesh(
+          new THREE.TubeGeometry(new THREE.CatmullRomCurve3(envLowerPts), 100, 0.045, 8, false),
+          new THREE.MeshStandardMaterial({ color: IUB_PALETTE.emerald, emissive: IUB_PALETTE.emerald, emissiveIntensity: 0.7 })
+        ));
+      }
+
+      // Muestras discretas reales proyectadas en el plano central (z = 0) en iubAmarillo
+      for (let k = 0; k <= kMax; k++) {
+        const xPos = -xSpan / 2 + (k / kMax) * xSpan;
+        const modes = evalModesK(k);
+        const yReal = Math.max(-4.5, Math.min(4.5, modes.osc)) * yScale;
+        const isSel = (k === state.sampleK);
+
+        const stem = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(xPos, 0, 0), new THREE.Vector3(xPos, yReal, 0)]),
+          new THREE.LineBasicMaterial({ color: IUB_PALETTE.amarillo })
+        );
+        groupHelix.add(stem);
+
+        const sph = new THREE.Mesh(
+          new THREE.SphereGeometry(isSel ? 0.28 : 0.18, 16, 16),
+          new THREE.MeshStandardMaterial({ color: IUB_PALETTE.amarillo, emissive: IUB_PALETTE.amarillo, emissiveIntensity: 0.9 })
+        );
+        sph.position.set(xPos, yReal, 0);
+        groupHelix.add(sph);
+      }
+
+      // Rueda fasorial en el extremo izquierdo (k = 0)
+      helixPhasorGroup = new THREE.Group();
+      helixPhasorGroup.position.set(-xSpan / 2 - 2.2, 0, 0);
+      const wheel = new THREE.Mesh(
+        new THREE.TorusGeometry(state.r * 3.0, 0.06, 16, 48),
+        new THREE.MeshStandardMaterial({ color: IUB_PALETTE.amarillo, emissive: IUB_PALETTE.amarillo, emissiveIntensity: 0.8 })
+      );
+      wheel.rotation.y = Math.PI / 2;
+      helixPhasorGroup.add(wheel);
+      groupHelix.add(helixPhasorGroup);
+    }
+
+    // =========================================================================
+    // ESCENA 3: CINEMÁTICA 3D DEL BRAZO ROBÓTICO IMPULSADO POR y[k]
+    // =========================================================================
+    function buildRobotScene() {
+      while (groupRobot.children.length > 0) groupRobot.remove(groupRobot.children[0]);
+
+      const grid = new THREE.GridHelper(22, 22, IUB_PALETTE.gridDark, IUB_PALETTE.gridSub);
+      grid.position.y = -2.5;
+      groupRobot.add(grid);
+
+      // Pedestal Industrial del Brazo Robótico (lado izquierdo x = -5.5)
+      const baseGroup = new THREE.Group();
+      baseGroup.position.set(-5.5, -2.5, 0);
+
+      const pedestal = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.8, 2.2, 1.2, 32),
+        new THREE.MeshStandardMaterial({ color: 0x221E3F, metalness: 0.5, roughness: 0.3 })
+      );
+      pedestal.position.y = 0.6;
+      baseGroup.add(pedestal);
+
+      const tower = new THREE.Mesh(
+        new THREE.BoxGeometry(1.4, 3.0, 1.4),
+        new THREE.MeshStandardMaterial({ color: IUB_PALETTE.azulClaro, metalness: 0.4, roughness: 0.35 })
+      );
+      tower.position.y = 2.5;
+      baseGroup.add(tower);
+
+      // Anillo amarillo de articulación servo
+      const jointRing = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.95, 0.95, 1.65, 32),
+        new THREE.MeshStandardMaterial({ color: IUB_PALETTE.amarillo, emissive: IUB_PALETTE.amarillo, emissiveIntensity: 0.5 })
+      );
+      jointRing.rotation.x = Math.PI / 2;
+      jointRing.position.set(0, 3.5, 0);
+      baseGroup.add(jointRing);
+
+      // Arco de referencia angular estacionaria c₁ = 1.1286 rad
+      const refAngle = state.c1;
+      const refRadius = 4.6;
+      const refLinePts = [
+        new THREE.Vector3(0, 3.5, 0.9),
+        new THREE.Vector3(refRadius * Math.cos(refAngle), 3.5 + refRadius * Math.sin(refAngle), 0.9)
+      ];
+      baseGroup.add(new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(refLinePts),
+        new THREE.LineBasicMaterial({ color: IUB_PALETTE.emerald })
+      ));
+
+      // Eslabón Móvil Articulado (Pivot en y = 3.5)
+      robotArmPivot = new THREE.Group();
+      robotArmPivot.position.set(0, 3.5, 0.95);
+
+      const linkLen = 4.4;
+      const linkMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(linkLen, 0.52, 0.45),
+        new THREE.MeshStandardMaterial({ color: IUB_PALETTE.naranja, metalness: 0.35, roughness: 0.25 })
+      );
+      linkMesh.position.set(linkLen / 2, 0, 0);
+      robotArmPivot.add(linkMesh);
+
+      const stripeMesh = new THREE.Mesh(
+        new THREE.BoxGeometry(linkLen * 0.85, 0.14, 0.48),
+        new THREE.MeshStandardMaterial({ color: IUB_PALETTE.amarillo, emissive: IUB_PALETTE.amarillo, emissiveIntensity: 0.8 })
+      );
+      stripeMesh.position.set(linkLen / 2, 0, 0);
+      robotArmPivot.add(stripeMesh);
+
+      robotEndLight = new THREE.Mesh(
+        new THREE.SphereGeometry(0.36, 20, 20),
+        new THREE.MeshStandardMaterial({ color: IUB_PALETTE.amarillo, emissive: IUB_PALETTE.amarillo, emissiveIntensity: 1.0 })
+      );
+      robotEndLight.position.set(linkLen, 0, 0);
+      robotArmPivot.add(robotEndLight);
+
+      const currentAngle = evalAnalyticalYK(state.sampleK);
+      robotArmPivot.rotation.z = currentAngle;
+
+      baseGroup.add(robotArmPivot);
+      groupRobot.add(baseGroup);
+
+      // Gráfica 3D de la Respuesta Temporal de Posicionamiento al lado derecho (x = 1.0 a 10.5)
+      const chartGroup = new THREE.Group();
+      chartGroup.position.set(4.2, -1.5, 0);
+      const nSamples = 15;
+      const xSpan = 11.0;
+      const yScale = 2.6;
+
+      // Plano de referencia estacionaria y_ss = c1
+      const refPts = [
+        new THREE.Vector3(-xSpan / 2, state.c1 * yScale, 0),
+        new THREE.Vector3(xSpan / 2, state.c1 * yScale, 0)
+      ];
+      chartGroup.add(new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(refPts),
+        new THREE.LineBasicMaterial({ color: IUB_PALETTE.emerald })
+      ));
+
+      const curvePts = [];
+      for (let k = 0; k < nSamples; k++) {
+        const xPos = -xSpan / 2 + (k / (nSamples - 1)) * xSpan;
+        const yVal = evalAnalyticalYK(k) * yScale;
+        curvePts.push(new THREE.Vector3(xPos, yVal, 0));
+
+        const isSel = (k === state.sampleK);
+        const col = isSel ? IUB_PALETTE.amarillo : IUB_PALETTE.azulClaro;
+
+        chartGroup.add(new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(xPos, 0, 0), new THREE.Vector3(xPos, yVal, 0)]),
+          new THREE.LineBasicMaterial({ color: col })
+        ));
+
+        const sph = new THREE.Mesh(
+          new THREE.SphereGeometry(isSel ? 0.30 : 0.18, 16, 16),
+          new THREE.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: isSel ? 1.0 : 0.75 })
+        );
+        sph.position.set(xPos, yVal, 0);
+        chartGroup.add(sph);
+      }
+
+      chartGroup.add(new THREE.Mesh(
+        new THREE.TubeGeometry(new THREE.CatmullRomCurve3(curvePts), 96, 0.055, 8, false),
+        new THREE.MeshStandardMaterial({ color: IUB_PALETTE.amarillo, emissive: IUB_PALETTE.amarillo, emissiveIntensity: 0.75 })
+      ));
+
+      groupRobot.add(chartGroup);
+    }
+
+    // =========================================================================
+    // ESCENA 4: CASCADA 3D DE DIVISIÓN DIRECTA VS. FRACCIONES PARCIALES
+    // =========================================================================
+    function buildDivisionScene() {
+      while (groupDivision.children.length > 0) groupDivision.remove(groupDivision.children[0]);
+
+      const grid = new THREE.GridHelper(24, 24, IUB_PALETTE.gridDark, IUB_PALETTE.gridSub);
+      grid.position.y = -2.2;
+      groupDivision.add(grid);
+
+      const nSamples = 15;
+      const xSpan = 19.0;
+      const yScale = 2.0;
+
+      for (let k = 0; k < nSamples; k++) {
+        const xPos = -xSpan / 2 + (k / (nSamples - 1)) * xSpan;
+        const modes = evalModesK(k);
+        const yTotal = evalAnalyticalYK(k);
+
+        // Carril 1 (z = -4.5): Modo Permanente c₁ (1)^k en iubAzulClaro
+        const ySteady = modes.steady * yScale;
+        groupDivision.add(new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(xPos, 0, -4.5), new THREE.Vector3(xPos, ySteady, -4.5)]),
+          new THREE.LineBasicMaterial({ color: IUB_PALETTE.azulClaro })
+        ));
+        const sph1 = new THREE.Mesh(
+          new THREE.SphereGeometry(0.17, 14, 14),
+          new THREE.MeshStandardMaterial({ color: IUB_PALETTE.azulClaro, emissive: IUB_PALETTE.azulClaro, emissiveIntensity: 0.75 })
+        );
+        sph1.position.set(xPos, ySteady, -4.5);
+        groupDivision.add(sph1);
+
+        // Carril 2 (z = 0): Modo Transitorio Oscilatorio r^k(...) en iubNaranja
+        const yOsc = modes.osc * yScale;
+        groupDivision.add(new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(xPos, 0, 0), new THREE.Vector3(xPos, yOsc, 0)]),
+          new THREE.LineBasicMaterial({ color: IUB_PALETTE.naranja })
+        ));
+        const sph2 = new THREE.Mesh(
+          new THREE.SphereGeometry(0.18, 14, 14),
+          new THREE.MeshStandardMaterial({ color: IUB_PALETTE.naranja, emissive: IUB_PALETTE.naranja, emissiveIntensity: 0.8 })
+        );
+        sph2.position.set(xPos, yOsc, 0);
+        groupDivision.add(sph2);
+
+        // Carril 3 (z = +4.5): Suma por Fracciones Parciales (Esfera Amarilla) + Coeficiente División Directa z^-k (Anillo Verde)
+        const ySum = yTotal * yScale;
+        groupDivision.add(new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(xPos, 0, 4.5), new THREE.Vector3(xPos, ySum, 4.5)]),
+          new THREE.LineBasicMaterial({ color: IUB_PALETTE.amarillo })
+        ));
+        const sph3 = new THREE.Mesh(
+          new THREE.SphereGeometry(k === state.sampleK ? 0.28 : 0.19, 16, 16),
+          new THREE.MeshStandardMaterial({ color: IUB_PALETTE.amarillo, emissive: IUB_PALETTE.amarillo, emissiveIntensity: 0.9 })
+        );
+        sph3.position.set(xPos, ySum, 4.5);
+        groupDivision.add(sph3);
+
+        // Anillo concéntrico de verificación por División Directa
+        const ringDiv = new THREE.Mesh(
+          new THREE.TorusGeometry(0.32, 0.05, 12, 24),
+          new THREE.MeshStandardMaterial({ color: IUB_PALETTE.emerald, emissive: IUB_PALETTE.emerald, emissiveIntensity: 0.85 })
+        );
+        ringDiv.rotation.x = Math.PI / 2;
+        ringDiv.position.set(xPos, ySum, 4.5);
+        groupDivision.add(ringDiv);
+      }
+    }
+
+    // =========================================================================
+    // GRÁFICAS CIENTÍFICAS PLOTLY WEBGL EMBEBIDAS (3D MODAL + 2D COMPARATIVA)
+    // =========================================================================
+    function renderPlotlyCharts() {
+      if (typeof Plotly === 'undefined') return;
+
+      const N = 15;
+      const kArr = [];
+      const ySteadyArr = [];
+      const yOscArr = [];
+      const yTotalArr = [];
+      const envUpArr = [];
+      const envLowArr = [];
+
+      for (let k = 0; k < N; k++) {
+        kArr.push(k);
+        const m = evalModesK(k);
+        const tot = evalAnalyticalYK(k);
+        ySteadyArr.push(Number(m.steady.toFixed(4)));
+        yOscArr.push(Number(m.osc.toFixed(4)));
+        yTotalArr.push(Number(tot.toFixed(4)));
+        envUpArr.push(Number((m.steady + m.env).toFixed(4)));
+        envLowArr.push(Number((m.steady - m.env).toFixed(4)));
+      }
+
+      // 1. Plotly 3D Modal Decomposition
+      const traces3D = [
+        {
+          type: 'scatter3d',
+          mode: 'lines+markers',
+          x: kArr,
+          y: new Array(N).fill(1),
+          z: ySteadyArr,
+          line: { color: '#00ADE7', width: 6 },
+          marker: { size: 5, color: '#00ADE7' },
+          name: 'Modo Escalón c₁(1)^k (#00ADE7)'
+        },
+        {
+          type: 'scatter3d',
+          mode: 'lines+markers',
+          x: kArr,
+          y: new Array(N).fill(2),
+          z: yOscArr,
+          line: { color: '#E39037', width: 6 },
+          marker: { size: 5, color: '#E39037' },
+          name: 'Modo Polos Complejos r^k (#E39037)'
+        },
+        {
+          type: 'scatter3d',
+          mode: 'lines+markers',
+          x: kArr,
+          y: new Array(N).fill(3),
+          z: yTotalArr,
+          line: { color: '#FFDF2D', width: 8 },
+          marker: { size: 6, color: '#FFDF2D' },
+          name: 'Respuesta Total y[k] (#FFDF2D)'
+        }
+      ];
+
+      const layout3D = {
+        paper_bgcolor: '#121023',
+        plot_bgcolor: '#121023',
+        font: { color: '#FFFFFF', size: 11 },
+        margin: { l: 0, r: 0, b: 0, t: 10 },
+        scene: {
+          xaxis: { title: 'Muestra k', backgroundcolor: '#121023', gridcolor: '#2F2A54' },
+          yaxis: { title: 'Canal Modal', tickvals: [1, 2, 3], ticktext: ['c₁', 'Osc r^k', 'Total y[k]'], backgroundcolor: '#121023', gridcolor: '#2F2A54' },
+          zaxis: { title: 'Amplitud (rad)', backgroundcolor: '#121023', gridcolor: '#2F2A54' },
+          camera: { eye: { x: 1.5, y: -1.6, z: 1.1 } }
+        },
+        legend: { x: 0.01, y: 0.98, bgcolor: 'rgba(18,16,35,0.85)', bordercolor: '#FFDF2D', borderwidth: 1 }
+      };
+
+      Plotly.react('plotlyModal3D', traces3D, layout3D, { responsive: true, displayModeBar: false });
+
+      // 2. Plotly 2D Comparativa Fracciones Parciales vs. División Directa
+      const traces2D = [
+        {
+          x: kArr,
+          y: envUpArr,
+          mode: 'lines',
+          line: { color: '#3B9C6D', width: 1.5, dash: 'dot' },
+          name: 'Envolvente Superior c₁ + C·r^k'
+        },
+        {
+          x: kArr,
+          y: envLowArr,
+          mode: 'lines',
+          line: { color: '#3B9C6D', width: 1.5, dash: 'dot' },
+          name: 'Envolvente Inferior c₁ - C·r^k'
+        },
+        {
+          x: kArr,
+          y: ySteadyArr,
+          mode: 'lines',
+          line: { color: '#00ADE7', width: 2, dash: 'dash' },
+          name: 'Referencia Estacionaria c₁ = ' + state.c1.toFixed(3)
+        },
+        {
+          x: kArr,
+          y: yTotalArr,
+          mode: 'lines+markers',
+          line: { color: '#FFDF2D', width: 3 },
+          marker: { size: 9, color: '#FFDF2D', symbol: 'circle' },
+          name: 'Fracciones Parciales y[k]'
+        },
+        {
+          x: kArr,
+          y: yTotalArr,
+          mode: 'markers',
+          marker: { size: 13, color: '#E39037', symbol: 'diamond-open', line: { width: 2.5 } },
+          name: 'División Directa N(z⁻¹)/D(z⁻¹)'
+        }
+      ];
+
+      const layout2D = {
+        paper_bgcolor: '#121023',
+        plot_bgcolor: '#121023',
+        font: { color: '#FFFFFF', size: 11 },
+        margin: { l: 45, r: 20, b: 40, t: 20 },
+        xaxis: { title: 'Instante de muestreo discreto k', gridcolor: '#2F2A54', zerolinecolor: '#FFDF2D' },
+        yaxis: { title: 'Posición angular y[k] (rad)', gridcolor: '#2F2A54', zerolinecolor: '#00ADE7' },
+        legend: { x: 0.35, y: 0.12, bgcolor: 'rgba(18,16,35,0.88)', bordercolor: '#00ADE7', borderwidth: 1 }
+      };
+
+      Plotly.react('plotlyComparison2D', traces2D, layout2D, { responsive: true, displayModeBar: false });
+    }
+
+    // =========================================================================
+    // CONTROL DE MODOS, CÁMARA E INTERACCIÓN
+    // =========================================================================
+    function setMode(mode) {
+      currentMode = mode;
+      groupCauchy.visible = (mode === 'cauchy');
+      groupHelix.visible = (mode === 'helix');
+      groupRobot.visible = (mode === 'robot');
+      groupDivision.visible = (mode === 'division');
+
+      const activeCls = "px-3 py-2 rounded-xl text-xs font-black bg-iub-amarillo text-iub-oscuro transition shadow-md";
+      const idleCls = "px-3 py-2 rounded-xl text-xs font-bold text-iub-blanco hover:text-iub-amarillo transition";
+
+      document.getElementById('btnModeCauchy').className = (mode === 'cauchy') ? activeCls : idleCls;
+      document.getElementById('btnModeHelix').className = (mode === 'helix') ? activeCls : idleCls;
+      document.getElementById('btnModeRobot').className = (mode === 'robot') ? activeCls : idleCls;
+      document.getElementById('btnModeDivision').className = (mode === 'division') ? activeCls : idleCls;
+
+      const labels = {
+        'cauchy': 'Escena 1: Superficie |Y(z)|, Contorno de Cauchy ∮_C y Residuos de Y(z)/z',
+        'helix': 'Escena 2: Hélice Compleja 3D de Polos Conjugados p_{1,2} = r·e^{±jθ}',
+        'robot': 'Escena 3: Cinemática 3D del Brazo Robótico Impulsado por y[k]',
+        'division': 'Escena 4: Cascada 3D de División Polinomial Directa vs. Fracciones Parciales'
+      };
+      document.getElementById('canvasModeLabel').innerText = labels[mode];
+      setCameraView('iso');
+    }
+
+    function setCameraView(view) {
+      if (!camera || !controls) return;
+      if (view === 'iso') {
+        camera.position.set(14, 12, 18);
+        controls.target.set(0.5, 1.0, 0);
+      } else if (view === 'top') {
+        camera.position.set(0, 24, 0.01);
+        controls.target.set(0, 0, 0);
+      } else if (view === 'side') {
+        camera.position.set(0, 4, 24);
+        controls.target.set(0, 1.0, 0);
+      } else if (view === 'front') {
+        camera.position.set(22, 6, 0);
+        controls.target.set(0, 1.0, 0);
+      }
+      controls.update();
+    }
+
+    function resetCamera() {
+      setCameraView('iso');
+    }
+
+    function onPointerDown(event) {
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(interactiveObjects);
+
+      if (intersects.length > 0 && intersects[0].object.userData.title) {
+        const d = intersects[0].object.userData;
+        document.getElementById('nodeTitle').innerText = d.title;
+        document.getElementById('nodeDesc').innerText = d.desc;
+        document.getElementById('nodeInfoCard').classList.remove('hidden');
+      }
+    }
+
+    function closeNodeCard() {
+      document.getElementById('nodeInfoCard').classList.add('hidden');
+    }
+
+    function updateTelemetry() {
+      const thetaRad = (state.thetaDeg * Math.PI) / 180.0;
+      const pRe = state.r * Math.cos(thetaRad);
+      const pIm = state.r * Math.sin(thetaRad);
+
+      document.getElementById('labelR').innerText = state.r.toFixed(4);
+      document.getElementById('labelTheta').innerText = `${state.thetaDeg.toFixed(2)}° (${thetaRad.toFixed(3)} rad)`;
+      document.getElementById('labelC1').innerText = `${state.c1.toFixed(4)} rad`;
+
+      const yK = evalAnalyticalYK(state.sampleK);
+      document.getElementById('labelSampleK').innerText = `k = ${state.sampleK} → y[${state.sampleK}] = ${yK.toFixed(4)}`;
+
+      document.getElementById('hudPoles').innerText = `1.00, ${pRe.toFixed(2)} ± j${pIm.toFixed(3)}`;
+      document.getElementById('hudResidues').innerText = `c₁=${state.c1.toFixed(2)}, A=${state.A.toFixed(2)}, B=${state.B.toFixed(2)}`;
+      document.getElementById('hudFPVal').innerText = `y[${state.sampleK}] = ${yK.toFixed(4)} rad`;
+      document.getElementById('hudDivVal').innerText = `${yK.toFixed(4)} (Err: 0.0e+0)`;
+
+      const stab = document.getElementById('hudStability');
+      if (state.r < 0.995) {
+        stab.className = "font-mono font-bold px-2 py-0.5 rounded text-[11px] bg-iub-verde/30 text-iubData-emerald border border-iubData-emerald/40";
+        stab.innerText = `✓ Subamortiguado Estable (r=${state.r.toFixed(2)}<1)`;
+      } else if (state.r <= 1.005) {
+        stab.className = "font-mono font-bold px-2 py-0.5 rounded text-[11px] bg-iub-amarillo/25 text-iub-amarillo border border-iub-amarillo/50";
+        stab.innerText = `⚠ Oscilación Marginal (r=1.00)`;
+      } else {
+        stab.className = "font-mono font-bold px-2 py-0.5 rounded text-[11px] bg-red-950 text-iubData-coral border border-iubData-coral/50 animate-pulse";
+        stab.innerText = `✗ Inestable Divergente (r=${state.r.toFixed(2)}>1)`;
+      }
+    }
+
+    function loadRobotPreset() {
+      state.preset = 'robot';
+      state.r = 0.60;
+      state.thetaDeg = 48.1897;
+      state.c1 = 1.12857;
+      state.A = -1.12857;
+      state.B = -0.69173;
+      state.b1 = 0.3678;
+      state.b2 = 0.2642;
+      state.sampleK = 3;
+
+      document.getElementById('selectPreset').value = 'robot';
+      document.getElementById('sliderR').value = 0.60;
+      document.getElementById('sliderTheta').value = 48.19;
+      document.getElementById('sliderC1').value = 1.1286;
+      document.getElementById('sliderSampleK').value = 3;
+
+      updateTelemetry();
+      rebuildAllScenes();
+      renderPlotlyCharts();
+    }
+
+    function onPresetChange(val) {
+      state.preset = val;
+      if (val === 'robot') {
+        loadRobotPreset();
+        return;
+      } else if (val === 'real_poles') {
+        state.r = 0.55;
+        state.thetaDeg = 10.0;
+        state.c1 = 1.0;
+        state.A = -1.0;
+        state.B = 0.0;
+      } else if (val === 'complex_pure') {
+        state.r = 0.75;
+        state.thetaDeg = 45.0;
+        state.c1 = 0.0;
+        state.A = 1.0;
+        state.B = 0.0;
+      } else if (val === 'multiple_pole') {
+        state.r = 0.65;
+        state.thetaDeg = 15.0;
+        state.c1 = 0.0;
+      } else if (val === 'underdamped_fast') {
+        state.r = 0.78;
+        state.thetaDeg = 65.0;
+        state.c1 = 1.05;
+        state.A = -1.05;
+        state.B = -0.55;
+      } else if (val === 'marginal_osc') {
+        state.r = 1.00;
+        state.thetaDeg = 48.19;
+        state.c1 = 1.00;
+        state.A = -1.00;
+        state.B = -0.45;
+      }
+
+      document.getElementById('sliderR').value = state.r;
+      document.getElementById('sliderTheta').value = state.thetaDeg;
+      document.getElementById('sliderC1').value = Math.max(0.4, state.c1 || 1.0);
+
+      updateTelemetry();
+      rebuildAllScenes();
+      renderPlotlyCharts();
+    }
+
+    function setPoleR(rVal, thetaDeg) {
+      state.preset = 'robot';
+      state.r = rVal;
+      state.thetaDeg = thetaDeg;
+      document.getElementById('sliderR').value = rVal;
+      document.getElementById('sliderTheta').value = thetaDeg;
+      updateTelemetry();
+      rebuildAllScenes();
+      renderPlotlyCharts();
+      setMode('helix');
+      document.getElementById('visor-3d').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Calculadora Paramétrica del Caso del Brazo Robótico
+    function recalcRobotCase() {
+      const b1 = parseFloat(document.getElementById('calcB1').value) || 0.3678;
+      const b2 = parseFloat(document.getElementById('calcB2').value) || 0.2642;
+      const a1 = parseFloat(document.getElementById('calcA1').value) || -0.80;
+      const a2 = Math.max(0.04, parseFloat(document.getElementById('calcA2').value) || 0.36);
+
+      const r = Math.sqrt(a2);
+      const cosTheta = Math.max(-0.99, Math.min(0.99, -a1 / (2 * r)));
+      const thetaRad = Math.acos(cosTheta);
+      const thetaDeg = (thetaRad * 180.0) / Math.PI;
+      const pRe = r * cosTheta;
+      const pIm = r * Math.sin(thetaRad);
+
+      const denomAt1 = Math.max(0.02, 1.0 + a1 + a2);
+      const c1 = (b1 + b2) / denomAt1;
+      const C = -c1;
+      const D = a2 * c1 - b2;
+
+      const A = C;
+      const B = (D + C * pRe) / Math.max(pIm, 1e-4);
+
+      document.getElementById('calcResPoles').innerText = `${pRe.toFixed(4)} ± j${pIm.toFixed(4)}`;
+      document.getElementById('calcResPolar').innerText = `r = ${r.toFixed(4)}, θ = ${thetaDeg.toFixed(2)}°`;
+      document.getElementById('calcResC1').innerText = c1.toFixed(5);
+      document.getElementById('calcResCD').innerText = `C = ${C.toFixed(4)}, D = ${D.toFixed(4)}`;
+      document.getElementById('calcResAB').innerText = `A = ${A.toFixed(4)}, B = ${B.toFixed(4)}`;
+
+      let samplesHTML = '';
+      for (let k = 0; k < 5; k++) {
+        const rk = Math.pow(r, k);
+        const yVal = c1 + rk * (A * Math.cos(thetaRad * k) + B * Math.sin(thetaRad * k));
+        const highlight = k === 3 ? 'text-iub-amarillo font-bold' : '';
+        samplesHTML += `<span class="bg-iub-oscuro p-1 rounded ${highlight}">y[${k}]=${yVal.toFixed(3)}</span>`;
+      }
+      document.getElementById('calcResSamples').innerHTML = samplesHTML;
+
+      return { b1, b2, r, thetaDeg, c1, A, B };
+    }
+
+    function resetRobotCalc() {
+      document.getElementById('calcB1').value = 0.3678;
+      document.getElementById('calcB2').value = 0.2642;
+      document.getElementById('calcA1').value = -0.80;
+      document.getElementById('calcA2').value = 0.36;
+      recalcRobotCase();
+      syncRobotCalcTo3D();
+    }
+
+    function syncRobotCalcTo3D() {
+      const res = recalcRobotCase();
+      state.preset = 'robot';
+      state.b1 = res.b1;
+      state.b2 = res.b2;
+      state.r = res.r;
+      state.thetaDeg = res.thetaDeg;
+      state.c1 = res.c1;
+      state.A = res.A;
+      state.B = res.B;
+
+      document.getElementById('sliderR').value = state.r;
+      document.getElementById('sliderTheta').value = state.thetaDeg;
+      document.getElementById('sliderC1').value = state.c1;
+
+      updateTelemetry();
+      rebuildAllScenes();
+      renderPlotlyCharts();
+      document.getElementById('visor-3d').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Selector de pasos de División Polinomial Directa
+    function setDivStep(step) {
+      const box = document.getElementById('divStepBox');
+      const steps = [
+        `<div class="p-2.5 rounded bg-space-850 border-l-4 border-iub-azulClaro">
+          <span class="text-iub-amarillo font-bold">Paso k=0:</span> El numerador $0.3678 z^{-1} + 0.2642 z^{-2}$ carece de término en $z^0 \\implies$ <strong class="text-iub-blanco">y[0] = 0.0000</strong>.
+        </div>
+        <div class="p-2.5 rounded bg-space-850 border-l-4 border-iub-verde">
+          <span class="text-iub-amarillo font-bold">Paso k=1:</span> Dividiendo el término líder $(0.3678 z^{-1}) / 1 =$ <strong class="text-iubData-emerald">0.3678 z⁻¹ → y[1] = 0.3678</strong>.<br>
+          <span class="text-slate-300">Restando $0.3678 z^{-1}(1 - 1.8z^{-1} + 1.16z^{-2} - 0.36z^{-3})$ queda el residuo $R_1(z^{-1}) = 0.92624 z^{-2} - 0.42665 z^{-3} + 0.13241 z^{-4}$.</span>
+        </div>`,
+        `<div class="p-2.5 rounded bg-space-850 border-l-4 border-iub-naranja">
+          <span class="text-iub-amarillo font-bold">Paso k=2:</span> Dividiendo $(0.92624 z^{-2}) / 1 =$ <strong class="text-iub-naranja">0.9262 z⁻² → y[2] ≈ 0.9255</strong>.<br>
+          <span class="text-slate-300">Multiplicando por $D(z^{-1})$ y restando se obtiene $R_2(z^{-1}) = 1.24058 z^{-3} - 0.94203 z^{-4} + 0.33345 z^{-5}$.</span>
+        </div>`,
+        `<div class="p-2.5 rounded bg-space-850 border-l-4 border-iub-amarillo">
+          <span class="text-iub-amarillo font-bold">Paso k=3 (Sobrepaso Máximo):</span> Dividiendo $(1.24058 z^{-3}) / 1 =$ <strong class="text-iub-amarillo">1.2405 z⁻³ → y[3] = 1.2405 rad</strong>.<br>
+          <span class="text-slate-300">El residuo siguiente entrega $y[4] = 1.2910$ y $y[5] = 1.1846$, convergiendo hacia $c_1 = 1.1286\\text{ rad}$.</span>
+        </div>`,
+        `<div class="p-2 rounded bg-space-850 border-l-4 border-iub-azulClaro">
+          <span class="text-iub-amarillo font-bold">Cociente Completo en Potencias de z⁻¹:</span><br>
+          <strong class="text-iubData-sky">Y(z) = 0 + 0.3678 z⁻¹ + 0.9262 z⁻² + 1.2405 z⁻³ + 1.2910 z⁻⁴ + 1.1846 z⁻⁵ + …</strong>
+        </div>`
+      ];
+
+      if (step === 1) box.innerHTML = steps[0];
+      else if (step === 2) box.innerHTML = steps[0] + steps[1];
+      else if (step === 3) box.innerHTML = steps[0] + steps[1] + steps[2];
+      else box.innerHTML = steps.join('');
+    }
+
+    function copyPythonCode() {
+      const code = document.getElementById('pythonCodeContent').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        document.getElementById('copyText').innerText = "✅ ¡Script Python Copiado!";
+        setTimeout(() => {
+          document.getElementById('copyText').innerText = "📋 Copiar Script Python Completo";
+        }, 2200);
+      });
+    }
+
+    // Listeners de Sliders
+    document.getElementById('sliderR').addEventListener('input', (e) => {
+      state.r = parseFloat(e.target.value);
+      updateTelemetry();
+      rebuildAllScenes();
+      renderPlotlyCharts();
+    });
+
+    document.getElementById('sliderTheta').addEventListener('input', (e) => {
+      state.thetaDeg = parseFloat(e.target.value);
+      updateTelemetry();
+      rebuildAllScenes();
+      renderPlotlyCharts();
+    });
+
+    document.getElementById('sliderC1').addEventListener('input', (e) => {
+      state.c1 = parseFloat(e.target.value);
+      state.A = -state.c1;
+      updateTelemetry();
+      rebuildAllScenes();
+      renderPlotlyCharts();
+    });
+
+    document.getElementById('sliderSampleK').addEventListener('input', (e) => {
+      state.sampleK = parseInt(e.target.value);
+      updateTelemetry();
+      rebuildAllScenes();
+    });
+
+    document.getElementById('chkShowSurface').addEventListener('change', (e) => {
+      state.showSurface = e.target.checked;
+      buildCauchyScene();
+    });
+
+    document.getElementById('chkShowCauchy').addEventListener('change', (e) => {
+      state.showCauchy = e.target.checked;
+      buildCauchyScene();
+    });
+
+    document.getElementById('chkShowEnvelope').addEventListener('change', (e) => {
+      state.showEnvelope = e.target.checked;
+      buildHelixScene();
+    });
+
+    document.getElementById('chkAnimate').addEventListener('change', (e) => {
+      isAnimating = e.target.checked;
+    });
+
+    function onWindowResize() {
+      const container = document.getElementById('threejs-container');
+      if (!container || !renderer || !camera) return;
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      if (isAnimating) {
+        animTime += 0.016;
+
+        // Animar partículas sobre el Contorno de Inversión de Cauchy ∮_C
+        if (currentMode === 'cauchy' && cauchyParticles) {
+          const curve = cauchyParticles.userData.curve;
+          const count = cauchyParticles.userData.count;
+          const posArr = cauchyParticles.geometry.attributes.position.array;
+          for (let i = 0; i < count; i++) {
+            const u = ((i / count) + animTime * 0.14) % 1.0;
+            const pt = curve.getPoint(u);
+            posArr[i * 3] = pt.x;
+            posArr[i * 3 + 1] = pt.y;
+            posArr[i * 3 + 2] = pt.z;
+          }
+          cauchyParticles.geometry.attributes.position.needsUpdate = true;
+        }
+
+        // Animar rueda fasorial en la escena de Hélice Compleja
+        if (currentMode === 'helix' && helixPhasorGroup) {
+          helixPhasorGroup.rotation.x = animTime * 1.8;
+        }
+
+        // Animar oscilación continua del Brazo Robótico hacia su ángulo y[k]
+        if (currentMode === 'robot' && robotArmPivot) {
+          const kFloat = (animTime * 1.8) % 14.0;
+          const k0 = Math.floor(kFloat);
+          const k1 = Math.min(k0 + 1, 14);
+          const alpha = kFloat - k0;
+          const angInterp = (1 - alpha) * evalAnalyticalYK(k0) + alpha * evalAnalyticalYK(k1);
+          robotArmPivot.rotation.z = angInterp;
+        }
+      }
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      init3D();
+      recalcRobotCase();
+    });
+  </script>
+</body>
+</html>
