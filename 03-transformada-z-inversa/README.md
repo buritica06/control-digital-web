@@ -8,12 +8,12 @@ Entorno computacional interactivo para la recuperación analítica y numérica d
 ## Tecnologías y Herramientas Utilizadas
 - **Visualización 3D:** Three.js / Plotly.js / WebGL
 - **Diseño Web y HUD:** Tailwind CSS (Dark Mode espacial)
-- **Formulación Matemática:** KaTeX ($\LaTeX$ en navegador a 60 FPS)
+- **Formulación Matemática:** KaTeX (LaTeX en navegador a 60 FPS)
 - **Generación Matemática:** Python (semana03_3d_experience.py)
 
 ## Enlaces Directos de Ejecución
-- 🌐 **[Abrir Aplicación Web Interactiva](https://buritica06.github.io/control-digital-web/03-transformada-z-inversa/)**
-- 📊 **[Abrir Visor 3D Directo](https://buritica06.github.io/control-digital-web/03-transformada-z-inversa/transformada_z_inversa_semana03_3d.html)**
+- **[Abrir Aplicación Web Interactiva](https://buritica06.github.io/control-digital-web/03-transformada-z-inversa/)**
+- **[Abrir Visor 3D Directo](https://buritica06.github.io/control-digital-web/03-transformada-z-inversa/transformada_z_inversa_semana03_3d.html)**
 
 ## Ejecución Local
 Puedes abrir directamente el archivo `index.html` en cualquier navegador web moderno (Chrome, Edge, Firefox, Safari) sin necesidad de instalar servidores locales.

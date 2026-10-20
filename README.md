@@ -62,7 +62,7 @@ control-digital-web/
 
 - **Frontend:** HTML5, CSS3, JavaScript nativo (ES6+), **Tailwind CSS** (vía CDN para máxima portabilidad).
 - **Gráficos 3D:** **Three.js** (WebGL con controles orbitales `OrbitControls`) y **Plotly.js** (superficies matemáticas de alta precisión).
-- **Tipografía Matemática:** **KaTeX** (renderizado $\LaTeX$ ultrarrápido en el navegador sin dependencias externas).
+- **Tipografía Matemática:** **KaTeX** (renderizado LaTeX ultrarrápido en el navegador sin dependencias externas).
 - **Identidad Institucional:** Paleta de colores oficial de la Institución Universitaria de Barranquilla (IUB):
   - Azul Institucional: `#002F6C`
   - Azul Claro: `#00A3E0`
