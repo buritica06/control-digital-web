@@ -23,19 +23,22 @@ export function initRouter() {
   const contentEl = document.getElementById('app-content');
   if (!contentEl) return;
 
-  // 1. Renderizar estructura de todos los capítulos
-  contentEl.innerHTML = `
-    ${renderModule01()}
-    ${renderModule02()}
-    ${renderModule03()}
-    ${renderModule04()}
-    ${renderModule05()}
-    ${renderModule06()}
-    ${renderModule07()}
-  `;
+  // 1. Inyectar HTML solo si no viene ya pre-renderizado en la plantilla estática
+  const needsHtml = !contentEl.innerHTML.trim() || contentEl.innerHTML.includes('<!-- El contenido dinámico');
+  if (needsHtml) {
+    contentEl.innerHTML = `
+      ${renderModule01()}
+      ${renderModule02()}
+      ${renderModule03()}
+      ${renderModule04()}
+      ${renderModule05()}
+      ${renderModule06()}
+      ${renderModule07()}
+    `;
+  }
 
-  // 2. Renderizar KaTeX en todo el contenido insertado
-  renderAllMath(contentEl);
+  // 2. Renderizar KaTeX en todo el documento (cuerpo, menú lateral y módulos)
+  renderAllMath(document.body);
 
   // 3. Montar visualizadores 3D y 2D coordinados con sus paneles lil-gui
   initVisualizations();

@@ -4,7 +4,7 @@
  */
 
 import { initProgreso, registrarHito, reiniciarProgreso } from './ui/progreso.js';
-import { initNav } from './ui/nav.js';
+import { initNav, navegarAModulo } from './ui/nav.js';
 import { initTheme } from './ui/theme.js';
 import { initRouter } from './router.js';
 
@@ -19,6 +19,9 @@ const QUIZ_ANSWERS = {
 window.IUBApp = {
   resetProgress: () => {
     reiniciarProgreso();
+  },
+  goToModule: (id, e) => {
+    navegarAModulo(id, e);
   },
   checkQuiz: (quizId, selectedOption) => {
     const feedbackEl = document.getElementById(`quiz-feedback-${quizId}`);
@@ -39,8 +42,8 @@ window.IUBApp = {
 
 function boot() {
   initTheme();
-  initRouter();   // Renderiza los módulos en #app-content primero
-  initNav();      // Ahora sí puede enlazar scrollspy con #mod-01...#mod-07
+  initRouter();   // Prepara/monta contenido y visualizaciones
+  initNav();      // Enlaza scrollspy y eventos de navegación
   initProgreso(); // Inicializa y restaura el estado de progreso
   console.log('MEC36 Control II - Semana 2 (Transformada Z) inicializado exitosamente.');
 }
