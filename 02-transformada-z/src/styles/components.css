@@ -1,0 +1,221 @@
+/* ==========================================================================
+   COMPONENTES UI Y TARJETAS PEDAGÓGICAS IUB
+   ========================================================================== */
+
+/* Tarjetas de Contenido Estructuradas */
+.edu-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: var(--space-6);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.edu-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.edu-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.edu-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(255, 223, 45, 0.15);
+  color: var(--iub-amarillo);
+  border: 1px solid rgba(255, 223, 45, 0.3);
+}
+
+/* Cajas de Aprendizaje Activo */
+.box-callout {
+  border-radius: 12px;
+  padding: var(--space-4) var(--space-6);
+  margin: var(--space-4) 0;
+  border-left: 4px solid;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.box-intuition {
+  background: rgba(0, 173, 231, 0.08);
+  border-color: var(--iub-azul-claro);
+  color: var(--text-primary);
+}
+
+.box-intuition .box-title {
+  color: var(--iub-azul-claro);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: var(--space-2);
+}
+
+.box-practice {
+  background: rgba(59, 156, 109, 0.09);
+  border-color: var(--iub-verde);
+  color: var(--text-primary);
+}
+
+.box-practice .box-title {
+  color: var(--text-success);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: var(--space-2);
+}
+
+.box-warning {
+  background: rgba(227, 144, 55, 0.09);
+  border-color: var(--iub-naranja);
+  color: var(--text-primary);
+}
+
+.box-warning .box-title {
+  color: var(--iub-naranja);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: var(--space-2);
+}
+
+.box-challenge {
+  background: rgba(255, 223, 45, 0.08);
+  border-color: var(--iub-amarillo);
+  color: var(--text-primary);
+}
+
+.box-challenge .box-title {
+  color: var(--iub-amarillo);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: var(--space-2);
+}
+
+/* Contenedores de Visualizaciones (Anti-superposición) */
+.viz-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: var(--space-4);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  overflow: hidden;
+  margin: var(--space-6) 0;
+  min-height: 480px;
+}
+
+@media (max-width: 992px) {
+  .viz-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+}
+
+.viz-canvas-area {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 440px;
+}
+
+.viz-controls-area {
+  background: var(--bg-card);
+  border-left: 1px solid var(--border-subtle);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  overflow-y: auto;
+}
+
+@media (max-width: 992px) {
+  .viz-controls-area {
+    border-left: none;
+    border-top: 1px solid var(--border-subtle);
+  }
+}
+
+/* Fórmulas matemáticas legibles y adaptativas */
+.math-display {
+  overflow-x: auto;
+  padding: var(--space-3) var(--space-4);
+  background: rgba(11, 10, 22, 0.6);
+  border-radius: 8px;
+  margin: var(--space-3) 0;
+  text-align: center;
+}
+
+.math-display::-webkit-scrollbar {
+  height: 6px;
+}
+.math-display::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+
+/* Botones interactivos */
+.btn-iub {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: none;
+}
+
+.btn-iub-yellow {
+  background: var(--iub-amarillo);
+  color: var(--iub-oscuro);
+}
+.btn-iub-yellow:hover {
+  background: #ffe86b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 223, 45, 0.4);
+}
+
+.btn-iub-cyan {
+  background: var(--iub-azul-claro);
+  color: #ffffff;
+}
+.btn-iub-cyan:hover {
+  background: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 173, 231, 0.4);
+}
+
+.btn-iub-ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+}
+.btn-iub-ghost:hover {
+  border-color: var(--iub-amarillo);
+  color: var(--iub-amarillo);
+}

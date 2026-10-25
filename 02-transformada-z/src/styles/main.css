@@ -1,0 +1,225 @@
+@import './theme.css';
+@import './components.css';
+
+/* ==========================================================================
+   RESET & ESTILOS GLOBALES
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Enlaces */
+a {
+  color: var(--iub-azul-claro);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+a:hover {
+  color: var(--iub-amarillo);
+}
+
+/* Selección */
+::selection {
+  background-color: var(--iub-amarillo);
+  color: var(--iub-oscuro);
+}
+
+/* Barra de desplazamiento */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: #2f2a54;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--iub-amarillo);
+}
+
+/* Encabezado Institucional */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(18, 16, 35, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 2px solid var(--iub-amarillo);
+}
+
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.header-logo {
+  height: 44px;
+  width: auto;
+  object-contain: fit;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  list-style: none;
+}
+
+.nav-link {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all var(--transition-fast);
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--iub-amarillo);
+  background: rgba(255, 223, 45, 0.1);
+}
+
+/* Barra de Progreso */
+.progress-container {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 8px var(--space-6);
+}
+
+.progress-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  font-size: 0.8rem;
+}
+
+.progress-track {
+  flex: 1;
+  max-width: 400px;
+  height: 8px;
+  background: var(--bg-card);
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--iub-azul-claro), var(--iub-verde), var(--iub-amarillo));
+  border-radius: 9999px;
+  transition: width 0.4s ease;
+}
+
+/* Contenido Principal */
+.main-layout {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-8);
+}
+
+@media (max-width: 1024px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sidebar-sticky {
+  position: sticky;
+  top: 130px;
+  height: fit-content;
+}
+
+.content-area {
+  min-width: 0;
+}
+
+/* Secciones de Módulos */
+.module-section {
+  margin-bottom: var(--space-16);
+  scroll-margin-top: 140px;
+}
+
+.module-header {
+  margin-bottom: var(--space-6);
+}
+
+.module-title {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  margin-top: var(--space-2);
+  line-height: 1.25;
+}
+
+.module-title span {
+  color: var(--iub-amarillo);
+}
+
+.module-intro {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-top: var(--space-3);
+  line-height: 1.7;
+}
+
+/* Fallback de WebGL */
+.webgl-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-8);
+  background: var(--bg-card);
+  border: 2px dashed var(--iub-naranja);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  min-height: 380px;
+}
+
+.webgl-fallback img {
+  max-width: 320px;
+  margin-bottom: var(--space-4);
+  border-radius: 8px;
+}
