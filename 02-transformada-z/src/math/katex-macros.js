@@ -42,16 +42,28 @@ export function renderMath(target, latex, displayMode = false) {
  * Auto-renderiza todas las expresiones matemáticas en un contenedor
  */
 export function renderAllMath(container = document.body) {
-  if (typeof window !== 'undefined' && window.renderMathInElement) {
-    window.renderMathInElement(container, {
-      delimiters: [
-        { left: '$$', right: '$$', display: true },
-        { left: '$', right: '$', display: false },
-        { left: '\\[', right: '\\]', display: true },
-        { left: '\\(', right: '\\)', display: false },
-      ],
-      throwOnError: false,
-      macros: KATEX_MACROS,
-    });
+  const tryRender = () => {
+    if (typeof window !== 'undefined' && window.renderMathInElement) {
+      window.renderMathInElement(container, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '$', right: '$', display: false },
+          { left: '\\[', right: '\\]', display: true },
+          { left: '\\(', right: '\\)', display: false },
+        ],
+        throwOnError: false,
+        macros: KATEX_MACROS,
+      });
+      return true;
+    }
+    return false;
+  };
+
+  if (!tryRender()) {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('load', tryRender);
+      setTimeout(tryRender, 250);
+      setTimeout(tryRender, 800);
+    }
   }
 }

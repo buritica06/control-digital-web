@@ -96,7 +96,7 @@
       <!-- METRICAS / STATS -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto text-left">
         <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-          <p class="text-2xl font-black text-cyan-400">4</p>
+          <p class="text-2xl font-black text-cyan-400">6</p>
           <p class="text-xs text-slate-400 font-medium">Aplicaciones 3D Activas</p>
         </div>
         <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
@@ -123,11 +123,12 @@
         <svg class="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
       </div>
       <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
-        <button onclick="filtrar('todos')" class="filtro-btn active px-3.5 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-slate-950 transition">Todos</button>
-        <button onclick="filtrar('muestreo')" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Muestreo</button>
-        <button onclick="filtrar('transformada z')" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Transformada Z</button>
-        <button onclick="filtrar('inversa')" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Inversa</button>
-        <button onclick="filtrar('topología')" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Topología 3D</button>
+        <button onclick="filtrar('todos', this)" class="filtro-btn active px-3.5 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-slate-950 transition">Todos</button>
+        <button onclick="filtrar('muestreo', this)" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Muestreo</button>
+        <button onclick="filtrar('transformada z', this)" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Transformada Z</button>
+        <button onclick="filtrar('inversa', this)" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Inversa</button>
+        <button onclick="filtrar('ecuaciones', this)" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Ecuaciones</button>
+        <button onclick="filtrar('topología', this)" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Topología 3D</button>
       </div>
     </div>
   </section>
@@ -288,6 +289,44 @@
         </div>
       </article>
 
+      <article class="app-card group relative flex flex-col justify-between rounded-2xl bg-slate-900/70 border border-slate-800/80 hover:border-cyan-500/50 p-6 sm:p-7 backdrop-blur-md transition-all duration-300 hover:shadow-[0_0_35px_rgba(0,163,224,0.2)] hover:-translate-y-1" data-tags="ecuaciones en diferencias plano z lugar de raíces 3d bode nyquist ejercicios three.js 3d plotly 2d ecuaciones en diferencias: plataforma interactiva 3d/2d semana 04">
+        <div>
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-extrabold uppercase tracking-wider rounded-lg bg-iub-azul/30 text-iub-azulClaro border border-iub-azulClaro/30">
+              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+              Semana 04
+            </span>
+            <span class="text-xs font-mono text-slate-400 font-medium">/04b-ecuaciones-diferencias-interactiva/</span>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-black text-white group-hover:text-cyan-300 transition-colors mb-2 leading-snug">
+            Ecuaciones en Diferencias: Plataforma Interactiva 3D/2D
+          </h3>
+          <p class="text-xs font-semibold text-yellow-400/90 uppercase tracking-wide mb-3">
+            Plano z, Superficie |G(z)|, Lugar de Raíces 3D, Bode, Nyquist y Espacio de Estados
+          </p>
+          <p class="text-sm text-slate-300/90 leading-relaxed mb-6">
+            Plataforma por capítulos (Three.js + Plotly + KaTeX + math.js) con representación, discretización ZOH, solución paso a paso con respuesta libre y forzada, aplicaciones en control digital, 9 ejercicios con verificación automática y 3 ejemplos resueltos. Progreso guardado, tema claro/oscuro y versión móvil.
+          </p>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-slate-800/60">
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Ecuaciones en Diferencias</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Plano Z</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Lugar de Raíces 3D</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Bode</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Nyquist</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Ejercicios</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Three.js 3D</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Plotly 2D</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <a href="./04b-ecuaciones-diferencias-interactiva/" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400 text-white text-xs sm:text-sm font-bold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              <span>Abrir App Interactiva</span>
+            </a>
+            <a href="./04b-ecuaciones-diferencias-interactiva/index.html#/capitulo/05-aplicaciones" target="_blank" title="Abrir Visor 3D en pantalla completa" class="inline-flex items-center justify-center p-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 text-slate-300 hover:text-white border border-slate-700 hover:border-cyan-500/40 transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
       <article class="app-card group relative flex flex-col justify-between rounded-2xl bg-slate-900/70 border border-slate-800/80 hover:border-cyan-500/50 p-6 sm:p-7 backdrop-blur-md transition-all duration-300 hover:shadow-[0_0_35px_rgba(0,163,224,0.2)] hover:-translate-y-1" data-tags="topología energética mapeo s a z círculo unitario superficie 3d plotly 3d topología energética 3d de la transformada z tópico avanzado">
         <div>
           <div class="flex items-center justify-between gap-3 mb-4">
@@ -355,8 +394,8 @@
     function actualizarFiltro() {
       const query = input.value.toLowerCase().trim();
       cards.forEach(card => {
-        const tags = card.getAttribute('data-tags');
-        if (tags.includes(query)) {
+        const tags = (card.getAttribute('data-tags') || '').toLowerCase();
+        if (!query || tags.includes(query)) {
           card.style.display = 'flex';
         } else {
           card.style.display = 'none';
@@ -366,13 +405,15 @@
 
     input.addEventListener('input', actualizarFiltro);
 
-    function filtrar(categoria) {
-      filtroBtns.forEach(btn => {
-        btn.classList.remove('bg-cyan-500', 'text-slate-950');
-        btn.classList.add('bg-slate-800', 'text-slate-300');
+    function filtrar(categoria, btn) {
+      filtroBtns.forEach(b => {
+        b.classList.remove('bg-cyan-500', 'text-slate-950');
+        b.classList.add('bg-slate-800', 'text-slate-300');
       });
-      event.target.classList.add('bg-cyan-500', 'text-slate-950');
-      event.target.classList.remove('bg-slate-800', 'text-slate-300');
+      if (btn) {
+        btn.classList.add('bg-cyan-500', 'text-slate-950');
+        btn.classList.remove('bg-slate-800', 'text-slate-300');
+      }
 
       if (categoria === 'todos') {
         input.value = '';

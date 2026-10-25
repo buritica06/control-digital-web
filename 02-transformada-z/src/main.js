@@ -3,7 +3,6 @@
  * Asignatura: MEC36 - Control II | Institución Universitaria de Barranquilla (IUB).
  */
 
-import './styles/main.css';
 import { initProgreso, registrarHito, reiniciarProgreso } from './ui/progreso.js';
 import { initNav } from './ui/nav.js';
 import { initTheme } from './ui/theme.js';
@@ -16,7 +15,7 @@ const QUIZ_ANSWERS = {
   3: { correct: 1, explanation: '¡Exacto! Todo polo real negativo (-1 < z < 0) produce una respuesta alternante muestra a muestra debido al factor (-a)ᵏ.' }
 };
 
-// API global IUBApp para microinteracciones HTML inline
+// API global IUBApp disponible de inmediato en window
 window.IUBApp = {
   resetProgress: () => {
     reiniciarProgreso();
@@ -38,11 +37,16 @@ window.IUBApp = {
   }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+function boot() {
   initTheme();
-  initProgreso();
-  initNav();
-  initRouter();
-
+  initRouter();   // Renderiza los módulos en #app-content primero
+  initNav();      // Ahora sí puede enlazar scrollspy con #mod-01...#mod-07
+  initProgreso(); // Inicializa y restaura el estado de progreso
   console.log('MEC36 Control II - Semana 2 (Transformada Z) inicializado exitosamente.');
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot);
+} else {
+  boot();
+}
