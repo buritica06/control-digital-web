@@ -1,0 +1,289 @@
+/* ==========================================================================
+   Hoja de Estilos Oficial — Plataforma Educativa de Ecuaciones en Diferencias
+   Asignatura: MEC36 - Control II | Institución Universitaria de Barranquilla (IUB)
+   Basada en: config/framework_iub/beamerthemeiub.sty (Manual Visual IUB 2025)
+   ========================================================================== */
+
+:root {
+  /* Paleta Institucional Principal IUB */
+  --iub-blanco: #FFFFFF;
+  --iub-oscuro: #121023;
+  --iub-amarillo: #FFDF2D;
+  --iub-azul-claro: #00ADE7;
+  --iub-naranja: #E39037;
+  --iub-verde: #3B9C6D;
+
+  /* Tonos suaves para bloques semánticos */
+  --iub-gris-fondo: #F4F6F9;
+  --iub-azul-fondo: #EBF7FD;
+  --iub-naranja-fondo: #FDF4EA;
+  --iub-verde-fondo: #EDF8F2;
+
+  /* Superficies oscuras de interfaz (derivadas de #121023) */
+  --space-950: #0B0A16;
+  --space-900: #121023;
+  --space-850: #1A1732;
+  --space-800: #221E3F;
+  --space-700: #2F2A54;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6.5rem;
+}
+
+body {
+  background-color: var(--iub-oscuro);
+  color: var(--iub-blanco);
+  font-family: 'Helvetica Neue', Helvetica, 'Inter', Arial, sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   1. Efectos de Iluminación y Tarjetas de Vidrio Institucional
+   -------------------------------------------------------------------------- */
+.glow-yellow {
+  box-shadow: 0 0 28px rgba(255, 223, 45, 0.20);
+}
+.glow-cyan {
+  box-shadow: 0 0 28px rgba(0, 173, 231, 0.22);
+}
+.glow-emerald {
+  box-shadow: 0 0 25px rgba(59, 156, 109, 0.22);
+}
+.glow-orange {
+  box-shadow: 0 0 25px rgba(227, 144, 55, 0.22);
+}
+
+.border-glass {
+  border: 1px solid rgba(255, 223, 45, 0.20);
+  background: rgba(26, 23, 50, 0.88);
+  backdrop-filter: blur(12px);
+}
+
+.card-academic {
+  background: linear-gradient(180deg, rgba(26, 23, 50, 0.95) 0%, rgba(18, 16, 35, 0.98) 100%);
+  border: 1px solid rgba(47, 42, 84, 0.9);
+  border-radius: 1rem;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.card-academic:hover {
+  border-color: rgba(0, 173, 231, 0.55);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   2. Cajas de Ecuación Estilo Beamer IUB (con etiqueta superior sin colisión)
+   -------------------------------------------------------------------------- */
+.iub-eq-box {
+  position: relative;
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+  padding: 1.35rem 1.25rem 1rem 1.25rem;
+  border-radius: 0.85rem;
+  background-color: rgba(11, 10, 22, 0.92);
+  border: 1.5px solid var(--iub-azul-claro);
+  overflow-x: auto;
+}
+
+.iub-eq-box.eq-yellow {
+  border-color: var(--iub-amarillo);
+}
+.iub-eq-box.eq-orange {
+  border-color: var(--iub-naranja);
+}
+.iub-eq-box.eq-green {
+  border-color: var(--iub-verde);
+}
+
+.iub-eq-badge {
+  position: absolute;
+  top: 0.35rem;
+  left: 0.85rem;
+  font-size: 0.65rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.1rem 0.5rem;
+  border-radius: 0.3rem;
+  background-color: var(--iub-azul-claro);
+  color: var(--iub-oscuro);
+}
+
+.iub-eq-box.eq-yellow .iub-eq-badge {
+  background-color: var(--iub-amarillo);
+  color: var(--iub-oscuro);
+}
+.iub-eq-box.eq-orange .iub-eq-badge {
+  background-color: var(--iub-naranja);
+  color: var(--iub-blanco);
+}
+.iub-eq-box.eq-green .iub-eq-badge {
+  background-color: var(--iub-verde);
+  color: var(--iub-blanco);
+}
+
+/* Evita que fórmulas largas de KaTeX se superpongan en pantallas pequeñas */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.35rem 0;
+  margin: 0.4rem 0 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. Contenedores de Gráficas y Visores 3D (Cero Superposición Garantizada)
+   -------------------------------------------------------------------------- */
+.chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem;
+  background-color: var(--space-950);
+  border: 1.5px solid rgba(47, 42, 84, 0.95);
+  overflow: hidden;
+}
+
+.chart-header {
+  padding: 1rem 1.25rem;
+  background-color: rgba(26, 23, 50, 0.95);
+  border-bottom: 1px solid rgba(255, 223, 45, 0.22);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.chart-canvas {
+  width: 100%;
+  min-height: 410px;
+  position: relative;
+}
+
+.chart-footer-legend {
+  padding: 0.65rem 1.25rem;
+  background-color: rgba(18, 16, 35, 0.95);
+  border-top: 1px solid rgba(47, 42, 84, 0.8);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.75rem;
+}
+
+/* Estructura del Visor 3D sin superposición de HUD */
+.viewer3d-frame {
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem;
+  border: 2px solid rgba(255, 223, 45, 0.55);
+  background-color: var(--iub-oscuro);
+  overflow: hidden;
+}
+
+.viewer3d-topbar {
+  padding: 0.75rem 1rem;
+  background-color: rgba(11, 10, 22, 0.96);
+  border-bottom: 1px solid rgba(255, 223, 45, 0.28);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.viewer3d-stage {
+  width: 100%;
+  height: 520px;
+  position: relative;
+  cursor: grab;
+}
+
+.viewer3d-stage:active {
+  cursor: grabbing;
+}
+
+.viewer3d-bottombar {
+  padding: 0.65rem 1rem;
+  background-color: rgba(11, 10, 22, 0.96);
+  border-top: 1px solid rgba(0, 173, 231, 0.28);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+}
+
+@media (max-width: 768px) {
+  .viewer3d-stage {
+    height: 390px;
+  }
+  .chart-canvas {
+    min-height: 340px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. Controles Deslizantes (Sliders), Tablas y Barra de Desplazamiento
+   -------------------------------------------------------------------------- */
+.iub-table-head {
+  background-color: var(--iub-oscuro);
+  color: var(--iub-amarillo);
+  border-bottom: 2px solid var(--iub-amarillo);
+}
+
+.slider-track {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--space-700);
+  outline: none;
+}
+
+.slider-track::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--iub-amarillo);
+  border: 2px solid var(--iub-oscuro);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 223, 45, 0.8);
+  transition: transform 0.15s ease;
+}
+
+.slider-track::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--iub-oscuro);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--space-700);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--iub-amarillo);
+}
+
+/* Botones de navegación de capítulos activos */
+.chapter-pill.active {
+  background-color: var(--iub-amarillo);
+  color: var(--iub-oscuro);
+  font-weight: 900;
+  box-shadow: 0 0 15px rgba(255, 223, 45, 0.35);
+}

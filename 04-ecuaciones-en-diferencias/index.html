@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEC36 - Semana 4: Ecuaciones en Diferencias, Animaciones Manim y Respuesta LTI 3D | IUB</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- KaTeX CSS & JS para formulación matemática rigurosa -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+  <!-- Three.js (WebGL) + OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- Plotly.js para gráficas científicas dinámicas y comparativas -->
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            iub: {
+              blanco: '#FFFFFF',
+              oscuro: '#121023',
+              amarillo: '#FFDF2D',
+              azulClaro: '#00ADE7',
+              naranja: '#E39037',
+              verde: '#3B9C6D',
+              grisFondo: '#F4F6F9',
+              azulFondo: '#EBF7FD',
+              naranjaFondo: '#FDF4EA',
+              verdeFondo: '#EDF8F2'
+            },
+            space: {
+              950: '#0B0A16',
+              900: '#121023',
+              850: '#1A1732',
+              800: '#221E3F',
+              700: '#2F2A54'
+            }
+          },
+          fontFamily: {
+            sans: ['Helvetica Neue', 'Helvetica', 'Inter', 'Arial', 'sans-serif'],
+            mono: ['Consolas', 'Fira Code', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Hoja de estilos institucional IUB -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="bg-iub-oscuro text-iub-blanco antialiased font-sans selection:bg-iub-amarillo selection:text-iub-oscuro">
+
+  <!-- =================================================================================== -->
+  <!-- MENÚ PRINCIPAL INSTITUCIONAL Y BARRA DE PROGRESO DE APRENDIZAJE -->
+  <!-- =================================================================================== -->
+  <header class="sticky top-0 z-50 border-b-2 border-iub-amarillo/85 bg-iub-oscuro/95 backdrop-blur-md shadow-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <a href="#" class="flex items-center gap-3 group shrink-0">
+          <img src="assets/images/logo_iub_blanco.png" alt="Logo Institución Universitaria de Barranquilla (IUB)"
+               class="h-11 w-auto object-contain transition-transform group-hover:scale-105"
+               onerror="this.src='logo_iub_blanco.png'" />
+        </a>
+        <div class="h-9 w-[1.5px] bg-iub-amarillo/40 hidden sm:block"></div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-iub-blanco tracking-wide text-sm sm:text-base">MEC36 — Control II</span>
+            <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-iub-amarillo text-iub-oscuro font-black uppercase tracking-wider">Semana 4 de 14</span>
+          </div>
+          <p class="text-[11px] text-iub-azulClaro font-semibold hidden sm:block">
+            Institución Universitaria de Barranquilla · Ingeniería Mecatrónica · Prof. Ricardo Buriticá
+          </p>
+        </div>
+      </div>
+
+      <!-- Menú de navegación por capítulos -->
+      <nav class="hidden xl:flex items-center gap-3 text-xs font-bold uppercase tracking-wider text-iub-blanco/90">
+        <a href="#manim-studio" class="px-2.5 py-1.5 rounded-lg bg-iub-amarillo/15 text-iub-amarillo border border-iub-amarillo/40 hover:bg-iub-amarillo hover:text-iub-oscuro transition">
+          🎬 Animaciones Manim
+        </a>
+        <a href="#laboratorio-3d-graficas" class="hover:text-iub-amarillo transition-colors">Laboratorio 3D &amp; Gráficas</a>
+        <a href="#mod-1-intro" class="hover:text-iub-amarillo transition-colors">1. Introducción</a>
+        <a href="#mod-2-math" class="hover:text-iub-amarillo transition-colors">2. Dominio Z</a>
+        <a href="#mod-3-phys" class="hover:text-iub-amarillo transition-colors">3. Continuo–Discreto</a>
+        <a href="#mod-4-step" class="hover:text-iub-amarillo transition-colors">4. Paso a Paso</a>
+        <a href="#mod-5-apps" class="hover:text-iub-amarillo transition-colors">5. Estabilidad &amp; PI</a>
+        <a href="#ejemplos-resueltos" class="hover:text-iub-amarillo transition-colors">Ejemplos</a>
+        <a href="#ejercicios-propuestos" class="hover:text-iub-amarillo transition-colors">Ejercicios</a>
+      </nav>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <a href="ecuaciones_diferencias_semana04_3d.html" target="_blank"
+           class="hidden md:inline-flex px-3 py-1.5 rounded-lg bg-space-850 hover:bg-space-800 border border-iub-azulClaro/60 text-iub-azulClaro text-xs font-bold items-center gap-1.5 transition">
+          <span>Visor 3D Pantalla Completa</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Barra de progreso de aprendizaje interactiva -->
+    <div class="bg-space-950/95 border-t border-slate-800/90 px-4 sm:px-6 lg:px-8 py-1.5">
+      <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-iub-verde animate-pulse"></span>
+          <span class="font-bold text-slate-300">Progreso de Aprendizaje Guiado:</span>
+          <span id="learningProgressText" class="font-black text-iub-amarillo">0% Completado</span>
+          <span class="text-slate-500">|</span>
+          <span id="learningProgressCount" class="font-mono text-iub-azulClaro">0 / 12 Hitos</span>
+        </div>
+        <div class="flex items-center gap-3 flex-1 max-w-md">
+          <div class="w-full h-2 bg-space-800 rounded-full overflow-hidden border border-slate-700">
+            <div id="learningProgressBar" class="h-full bg-gradient-to-r from-iub-azulClaro via-iub-verde to-iub-amarillo transition-all duration-500" style="width: 8%;"></div>
+          </div>
+          <button onclick="window.IUBApp.resetProgress()" title="Reiniciar progreso de lectura"
+                  class="text-[11px] text-slate-400 hover:text-iub-amarillo font-semibold shrink-0 transition">
+            ↺ Reiniciar
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- =================================================================================== -->
+  <!-- PORTADA HERO INSTITUCIONAL (DISEÑO OFICIAL beamerthemeiub.sty SEMANA 04) -->
+  <!-- =================================================================================== -->
+  <section class="relative overflow-hidden pt-10 pb-14 border-b-4 border-iub-azulClaro bg-iub-oscuro">
+    <div class="absolute top-0 bottom-0 left-0 w-2.5 bg-iub-amarillo"></div>
+    <div class="absolute top-0 right-0 bottom-0 w-1/3 bg-gradient-to-l from-iub-azulClaro/10 to-transparent pointer-events-none"
+         style="clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 0% 100%);"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
+        <div class="space-y-4 text-left lg:max-w-4xl">
+          <div class="inline-flex flex-wrap items-center gap-2 px-3.5 py-1 rounded-full border border-iub-amarillo/50 bg-space-850 text-xs text-iub-amarillo font-bold">
+            <span class="w-2 h-2 rounded-full bg-iub-amarillo"></span>
+            <span>RESULTADO DE APRENDIZAJE: <strong class="text-iub-blanco">MEC36-RA2</strong> · CRITERIOS <strong class="text-iub-azulClaro">CE3 &amp; CE4</strong> · CORTE EVALUATIVO 1</span>
+          </div>
+
+          <p class="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-iub-azulClaro">
+            INSTITUCIÓN UNIVERSITARIA DE BARRANQUILLA · FACULTAD DE INGENIERÍA · CONTROL II (MEC36)
+          </p>
+
+          <h1 class="text-3xl sm:text-5xl font-black text-iub-blanco tracking-tight leading-tight">
+            Solución de <span class="text-iub-amarillo">Ecuaciones en Diferencias</span>, Animaciones <span class="text-iub-azulClaro">Manim</span> y Respuesta Temporal en <span class="text-emerald-400">Sistemas LTI</span>
+          </h1>
+
+          <div class="w-24 h-1.5 bg-iub-amarillo rounded-full"></div>
+
+          <p class="text-sm sm:text-base text-slate-200 leading-relaxed">
+            Plataforma interactiva de aprendizaje universitario para el modelado, análisis algebraico y simulación en tiempo real de <strong>ecuaciones en diferencias lineales con coeficientes constantes (LTI)</strong>. Integra animaciones matemáticas generadas con <strong>Manim Community Edition</strong>, visualizaciones tridimensionales <strong>WebGL (Three.js + Plotly)</strong>, descomposición en <strong>respuesta libre y forzada</strong>, comparativa de discretización (ZOH, Tustin, Euler), criterio de estabilidad de <strong>Jury</strong> e implementación práctica de controladores digitales en microcontroladores.
+          </p>
+
+          <!-- Tarjetas ejecutivas de la ficha de sesión -->
+          <div class="pt-3 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="p-3.5 rounded-xl bg-iub-azulClaro text-iub-blanco shadow-lg border border-white/15">
+              <div class="text-[10px] font-black uppercase tracking-wider opacity-90">SEMANA CURRICULAR</div>
+              <div class="text-2xl font-black mt-0.5">4 <span class="text-sm font-bold">/ 14</span></div>
+              <div class="text-[11px] font-semibold mt-0.5">Cierre del Corte Evaluativo 1 (30%)</div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-iub-naranja text-iub-blanco shadow-lg border border-white/15">
+              <div class="text-[10px] font-black uppercase tracking-wider opacity-90">DURACIÓN PRESENCIAL</div>
+              <div class="text-2xl font-black mt-0.5">240 <span class="text-sm font-bold">min</span></div>
+              <div class="text-[11px] font-semibold mt-0.5">120 min Teoría + 120 min Práctica</div>
+            </div>
+            <div class="p-3.5 rounded-xl bg-iub-verde text-iub-blanco shadow-lg border border-white/15">
+              <div class="text-[10px] font-black uppercase tracking-wider opacity-90">MOTOR MATEMÁTICO</div>
+              <div class="text-2xl font-black mt-0.5">Manim <span class="text-sm font-bold">+ 3D</span></div>
+              <div class="text-[11px] font-semibold mt-0.5">Python / SciPy / Three.js / Plotly</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sello Anular Semana 04 (idéntico a MEC36-semana04.tex) -->
+        <div class="shrink-0 flex flex-col items-center justify-center p-6 rounded-3xl bg-space-850/95 border-2 border-iub-azulClaro/60 glow-cyan">
+          <img src="assets/images/logo_iub_blanco.png" alt="Logo IUB Blanco" class="h-14 w-auto mb-4 object-contain"
+               onerror="this.src='logo_iub_blanco.png'" />
+          <div class="relative w-40 h-40 rounded-full border-2 border-iub-azulClaro flex flex-col items-center justify-center bg-iub-oscuro shadow-inner">
+            <div class="absolute inset-[-8px] rounded-full border border-iub-azulClaro/30 pointer-events-none"></div>
+            <div class="absolute inset-[-15px] rounded-full border border-iub-azulClaro/15 pointer-events-none"></div>
+            <div class="absolute -top-1.5 w-3.5 h-3.5 rounded-full bg-iub-amarillo shadow-md"></div>
+            <span class="text-[11px] font-extrabold uppercase tracking-widest text-iub-azulClaro">SEMANA</span>
+            <span class="text-5xl font-black text-iub-blanco leading-none my-1">04</span>
+            <div class="w-9 h-0.5 bg-iub-amarillo my-1"></div>
+            <span class="text-[11px] text-slate-300 font-semibold">de 14 · MEC36</span>
+          </div>
+          <div class="mt-4 text-center">
+            <p class="text-xs font-extrabold text-iub-amarillo">Prof. Ricardo Buriticá</p>
+            <p class="text-[11px] text-iub-blanco/80">Ingeniería Mecatrónica</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================================== -->
+  <!-- ESTUDIO DE ANIMACIONES MATEMÁTICAS CON MANIM (4 ESCENAS HD INTEGRALES) -->
+  <!-- =================================================================================== -->
+  <section id="manim-studio" class="py-12 border-b-2 border-iub-amarillo/30 bg-space-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span class="inline-block w-3 h-3 rounded-full bg-iub-amarillo animate-ping"></span>
+            <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">
+              Estudio de Animaciones Matemáticas con Manim Community Edition
+            </h2>
+          </div>
+          <p class="text-slate-300 text-sm mt-1">
+            Selecciona cualquiera de las 4 escenas generadas desde <code class="text-iub-amarillo">scenes/manim/manim_scenes.py</code> para visualizar paso a paso el desarrollo algebraico, la transformación al dominio $Z$, la evolución de secuencias y la estabilidad.
+          </p>
+        </div>
+
+        <!-- Botones selectores de las 4 escenas de Manim -->
+        <div class="flex flex-wrap items-center gap-2 bg-iub-oscuro p-1.5 rounded-2xl border border-iub-amarillo/40">
+          <button data-scene="scene1" onclick="selectManimScene('scene1')"
+                  class="manim-tab-btn px-3 py-2 rounded-xl text-xs font-black bg-iub-amarillo text-iub-oscuro transition">
+            1. Desarrollo Algebraico
+          </button>
+          <button data-scene="scene2" onclick="selectManimScene('scene2')"
+                  class="manim-tab-btn px-3 py-2 rounded-xl text-xs font-semibold bg-space-850 text-iub-blanco hover:text-iub-amarillo transition">
+            2. Transformación Z + CI
+          </button>
+          <button data-scene="scene3" onclick="selectManimScene('scene3')"
+                  class="manim-tab-btn px-3 py-2 rounded-xl text-xs font-semibold bg-space-850 text-iub-blanco hover:text-iub-amarillo transition">
+            3. Evolución de Secuencias
+          </button>
+          <button data-scene="scene4" onclick="selectManimScene('scene4')"
+                  class="manim-tab-btn px-3 py-2 rounded-xl text-xs font-semibold bg-space-850 text-iub-blanco hover:text-iub-amarillo transition">
+            4. Estabilidad en Plano Z
+          </button>
+        </div>
+      </div>
+
+      <!-- Contenedor principal del reproductor Manim y explicación -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Columna de Video Manim (7 columnas) -->
+        <div class="lg:col-span-7 rounded-2xl overflow-hidden border-2 border-iub-amarillo/60 bg-iub-oscuro glow-yellow">
+          <div class="px-4 py-2.5 bg-space-950 border-b border-iub-amarillo/30 flex flex-wrap items-center justify-between gap-2">
+            <span id="manimClassBadge" class="text-xs font-mono text-iub-amarillo font-bold">
+              scenes/manim/manim_scenes.py :: Scene01AlgebraicDevelopment
+            </span>
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="text-slate-400 font-semibold">Velocidad:</span>
+              <button data-rate="0.5" onclick="setManimPlaybackRate(0.5)" class="manim-speed-btn px-2 py-0.5 rounded bg-space-800 text-slate-200 font-mono">0.5x</button>
+              <button data-rate="1.0" onclick="setManimPlaybackRate(1.0)" class="manim-speed-btn px-2 py-0.5 rounded bg-iub-amarillo text-iub-oscuro font-black font-mono">1.0x</button>
+              <button data-rate="1.5" onclick="setManimPlaybackRate(1.5)" class="manim-speed-btn px-2 py-0.5 rounded bg-space-800 text-slate-200 font-mono">1.5x</button>
+              <button data-rate="2.0" onclick="setManimPlaybackRate(2.0)" class="manim-speed-btn px-2 py-0.5 rounded bg-space-800 text-slate-200 font-mono">2.0x</button>
+            </div>
+          </div>
+
+          <div class="relative bg-[#121023] aspect-video w-full">
+            <video id="manimVideoElement" class="w-full h-full object-contain" controls playsinline preload="metadata"
+                   poster="assets/images/poster_scene_01.png" src="assets/videos/scene_01_algebraic_dev.mp4">
+              Tu navegador no soporta reproducción de video HTML5 MP4.
+            </video>
+          </div>
+
+          <!-- Marcadores de salto rápido en la animación -->
+          <div class="p-3.5 bg-space-950 border-t border-slate-800 space-y-2">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-iub-azulClaro">
+              Marcadores Pedagógicos de la Escena (Clic para saltar al instante exacto):
+            </div>
+            <div id="manimMarkersContainer" class="flex flex-wrap gap-2"></div>
+          </div>
+        </div>
+
+        <!-- Columna de Síntesis Matemática y Código Manim (5 columnas) -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="card-academic p-5 space-y-3">
+            <span class="inline-block text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded bg-iub-azulClaro text-iub-oscuro">
+              Guía de la Animación Activa
+            </span>
+            <h3 id="manimSceneTitle" class="text-xl font-black text-iub-amarillo leading-snug">
+              Escena 1: Desarrollo Algebraico y Arquitectura de Memoria Recursiva
+            </h3>
+            <p id="manimSceneSubtitle" class="text-xs font-bold text-iub-azulClaro">
+              Del Lazo de Control Digital (ADC → CPU → DAC/ZOH) al Algoritmo en el Microcontrolador
+            </p>
+            <p id="manimSceneDescription" class="text-xs sm:text-sm text-slate-200 leading-relaxed">
+              Visualiza cómo un procesador digital reemplaza las ecuaciones diferenciales continuas por una ecuación en diferencias lineal de orden n.
+            </p>
+
+            <div class="iub-eq-box eq-yellow">
+              <span class="iub-eq-badge">FÓRMULA CLAVE DE LA ESCENA</span>
+              <div id="manimSceneEquation" class="text-sm text-center text-iub-blanco">
+                $$y[k] = -a_1 y[k-1] - a_2 y[k-2] + b_0 u[k] + b_1 u[k-1]$$
+              </div>
+            </div>
+
+            <details class="group pt-1">
+              <summary class="cursor-pointer text-xs font-bold text-iub-amarillo hover:underline flex items-center justify-between py-1">
+                <span>🐍 Ver código fuente de Manim CE para esta escena</span>
+                <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <pre class="mt-2 p-3 rounded-xl bg-space-950 border border-slate-800 text-[11px] font-mono text-cyan-200 overflow-x-auto leading-relaxed"><code id="manimPythonCode"></code></pre>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================================== -->
+  <!-- LABORATORIO INTERACTIVO 3D (THREE.JS) + GRÁFICAS DINÁMICAS CERO SUPERPOSICIÓN -->
+  <!-- =================================================================================== -->
+  <section id="laboratorio-3d-graficas" class="py-12 border-b-2 border-iub-azulClaro/30 bg-iub-oscuro">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">
+            Laboratorio Interactivo 3D y Simulador de Ecuaciones en Diferencias
+          </h2>
+          <p class="text-slate-300 text-sm mt-1">
+            Modifica en tiempo real los coeficientes $a_1, a_2, b_0$ y las condiciones iniciales $y[-1], y[-2]$ para explorar simultáneamente la geometría 3D y las gráficas de respuesta libre, forzada y total.
+          </p>
+        </div>
+
+        <!-- Selector de las 4 escenas 3D de Three.js -->
+        <div class="flex flex-wrap items-center gap-1.5 bg-space-950 p-1.5 rounded-2xl border border-iub-amarillo/40">
+          <button data-mode="surface" onclick="window.IUBViewer3D.setViewer3DMode('surface')"
+                  class="btn-mode-3d px-3 py-2 rounded-xl text-xs font-black bg-iub-amarillo text-iub-oscuro transition">
+            🌐 1. Superficie 3D $|Y(z)|$ &amp; Polos
+          </button>
+          <button data-mode="memory" onclick="window.IUBViewer3D.setViewer3DMode('memory')"
+                  class="btn-mode-3d px-3 py-2 rounded-xl text-xs font-bold bg-space-850 text-iub-blanco hover:text-iub-amarillo transition">
+            📊 2. Cascada 3D Libre + Forzada
+          </button>
+          <button data-mode="servo" onclick="window.IUBViewer3D.setViewer3DMode('servo')"
+                  class="btn-mode-3d px-3 py-2 rounded-xl text-xs font-bold bg-space-850 text-iub-blanco hover:text-iub-amarillo transition">
+            ⚙️ 3. Servomecanismo 3D en Vivo
+          </button>
+          <button data-mode="mapping" onclick="window.IUBViewer3D.setViewer3DMode('mapping')"
+                  class="btn-mode-3d px-3 py-2 rounded-xl text-xs font-bold bg-space-850 text-iub-blanco hover:text-iub-amarillo transition">
+            🧭 4. Mapeo 3D $s \mapsto z = e^{sT}$
+          </button>
+        </div>
+      </div>
+
+      <!-- Rejilla principal: Visor 3D (8 cols) + Panel de Control Paramétrico (4 cols) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <!-- Visor 3D con barras dedicadas superior e inferior (Cero superposición con el lienzo) -->
+        <div class="lg:col-span-8 viewer3d-frame glow-yellow">
+          <div class="viewer3d-topbar">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-iub-verde animate-pulse"></span>
+              <span id="viewer3dSceneTitle" class="text-xs font-bold text-iub-amarillo uppercase tracking-wider">
+                Escena 3D 1: Superficie |Y(z)|, Círculo Unitario |z|=1 y Polos de A(z)
+              </span>
+            </div>
+            <div class="flex items-center gap-1 text-xs">
+              <span class="text-[11px] text-slate-400 font-semibold mr-1">Vista 3D:</span>
+              <button onclick="window.IUBViewer3D.setCameraPreset('iso')" class="px-2 py-1 rounded bg-space-800 hover:bg-iub-azulClaro hover:text-iub-oscuro font-semibold transition">Iso</button>
+              <button onclick="window.IUBViewer3D.setCameraPreset('top')" class="px-2 py-1 rounded bg-space-800 hover:bg-iub-azulClaro hover:text-iub-oscuro font-semibold transition">Superior</button>
+              <button onclick="window.IUBViewer3D.setCameraPreset('front')" class="px-2 py-1 rounded bg-space-800 hover:bg-iub-azulClaro hover:text-iub-oscuro font-semibold transition">Frontal</button>
+              <button onclick="window.IUBViewer3D.setCameraPreset('side')" class="px-2 py-1 rounded bg-space-800 hover:bg-iub-azulClaro hover:text-iub-oscuro font-semibold transition">Lateral</button>
+            </div>
+          </div>
+
+          <div id="threejs-stage-container" class="viewer3d-stage"></div>
+
+          <div class="viewer3d-bottombar">
+            <div class="flex flex-wrap items-center gap-3">
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-iub-amarillo"></span><span>$|z|=1$ / Total $y[k]$</span></span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-iub-azulClaro"></span><span>Forzada $y_{\text{forz}}[k]$</span></span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-iub-naranja"></span><span>Libre $y_{\text{libre}}[k]$</span></span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-iub-verde"></span><span>Polos Estables ($|p|&lt;1$)</span></span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-red-400"></span><span>Polos Inestables ($|p|\ge 1$)</span></span>
+            </div>
+            <span class="text-slate-400">🖱️ Arrastrar: Rotar 3D · Rueda: Zoom</span>
+          </div>
+        </div>
+
+        <!-- Panel de Controles Paramétricos de la Ecuación en Diferencias -->
+        <div class="lg:col-span-4 border-glass rounded-2xl p-5 flex flex-col justify-between space-y-4">
+          <div class="space-y-3.5">
+            <div class="flex items-center justify-between border-b border-iub-amarillo/30 pb-2">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-iub-amarillo">
+                Parámetros de $y[k] + a_1 y[k-1] + a_2 y[k-2] = b_0 u[k]$
+              </span>
+            </div>
+
+            <!-- Selector de Caso Preconfigurado -->
+            <div class="space-y-1">
+              <label for="selectSystemPreset" class="text-xs font-bold text-slate-200 block">Cargar Caso de Estudio:</label>
+              <select id="selectSystemPreset" onchange="window.IUBApp.applySystemPreset(this.value)"
+                      class="w-full p-2 rounded-lg bg-space-950 border border-iub-azulClaro/60 text-xs text-iub-blanco font-semibold focus:outline-none focus:border-iub-amarillo">
+                <option value="servo_ci" selected>1. Caso Servomecanismo con CI (y[-1]=2, y[-2]=1)</option>
+                <option value="canonical_3m">2. Ejemplo Base 3 Métodos (a₁=-0.7, a₂=0.1, CI=0)</option>
+                <option value="complex_underdamped">3. Polos Complejos Conjugados (r=0.707, θ=45°)</option>
+                <option value="alternating_pole">4. Polo Real Negativo Alternante (p = -0.65)</option>
+                <option value="unstable_jury">5. Sistema Inestable Fuera del Círculo Unitario</option>
+              </select>
+            </div>
+
+            <!-- Slider a1 -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderA1" class="text-slate-200 font-semibold">Coeficiente $a_1$ ($y[k-1]$):</label>
+                <span id="valA1" class="font-mono text-iub-amarillo font-bold">-1.30</span>
+              </div>
+              <input id="sliderA1" type="range" min="-1.80" max="1.80" step="0.05" value="-1.30"
+                     oninput="window.IUBApp.updateMainDifferenceLab()" class="w-full slider-track">
+            </div>
+
+            <!-- Slider a2 -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderA2" class="text-slate-200 font-semibold">Coeficiente $a_2$ ($y[k-2]$):</label>
+                <span id="valA2" class="font-mono text-iub-azulClaro font-bold">0.40</span>
+              </div>
+              <input id="sliderA2" type="range" min="-0.95" max="1.15" step="0.05" value="0.40"
+                     oninput="window.IUBApp.updateMainDifferenceLab()" class="w-full slider-track">
+            </div>
+
+            <!-- Slider b0 -->
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderB0" class="text-slate-200 font-semibold">Ganancia de Entrada $b_0$ ($u[k]$):</label>
+                <span id="valB0" class="font-mono text-emerald-300 font-bold">1.00</span>
+              </div>
+              <input id="sliderB0" type="range" min="0.20" max="2.50" step="0.10" value="1.00"
+                     oninput="window.IUBApp.updateMainDifferenceLab()" class="w-full slider-track">
+            </div>
+
+            <!-- Condiciones iniciales y[-1], y[-2] -->
+            <div class="grid grid-cols-2 gap-3 pt-1">
+              <div class="space-y-1">
+                <div class="flex justify-between text-xs">
+                  <label for="sliderYm1" class="text-slate-200 font-semibold">CI $y[-1]$:</label>
+                  <span id="valYm1" class="font-mono text-iub-naranja font-bold">2.00</span>
+                </div>
+                <input id="sliderYm1" type="range" min="-2.0" max="4.0" step="0.25" value="2.0"
+                       oninput="window.IUBApp.updateMainDifferenceLab()" class="w-full slider-track">
+              </div>
+              <div class="space-y-1">
+                <div class="flex justify-between text-xs">
+                  <label for="sliderYm2" class="text-slate-200 font-semibold">CI $y[-2]$:</label>
+                  <span id="valYm2" class="font-mono text-iub-naranja font-bold">1.00</span>
+                </div>
+                <input id="sliderYm2" type="range" min="-2.0" max="4.0" step="0.25" value="1.0"
+                       oninput="window.IUBApp.updateMainDifferenceLab()" class="w-full slider-track">
+              </div>
+            </div>
+
+            <!-- Muestra activa k -->
+            <div class="space-y-1 pt-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderActiveK" class="text-slate-200 font-semibold">Inspeccionar Muestra $k$:</label>
+                <span id="valActiveK" class="font-mono text-iub-amarillo font-bold">k = 3</span>
+              </div>
+              <input id="sliderActiveK" type="range" min="0" max="12" step="1" value="3"
+                     oninput="window.IUBApp.updateMainDifferenceLab()" class="w-full slider-track">
+            </div>
+          </div>
+
+          <!-- Panel de Telemetría y Verificación de Jury -->
+          <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2 text-xs">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-400 font-bold">Diagnóstico de Jury:</span>
+              <span id="hudJuryBadge" class="px-2.5 py-1 rounded-lg text-xs font-black bg-iub-verde/30 text-emerald-300 border border-emerald-400/50">
+                ✓ BIBO Estable
+              </span>
+            </div>
+            <div class="grid grid-cols-3 gap-1.5 text-[11px] font-mono text-center pt-1">
+              <div id="juryCond1" class="p-1.5 rounded bg-space-900 border border-slate-800 text-emerald-300">P(1) &gt; 0 ✓</div>
+              <div id="juryCond2" class="p-1.5 rounded bg-space-900 border border-slate-800 text-emerald-300">P(-1) &gt; 0 ✓</div>
+              <div id="juryCond3" class="p-1.5 rounded bg-space-900 border border-slate-800 text-emerald-300">|a₂| &lt; 1 ✓</div>
+            </div>
+            <div class="pt-1 border-t border-slate-800/80 space-y-1">
+              <div class="flex justify-between">
+                <span class="text-slate-400">Polos de $A(z)$:</span>
+                <span id="hudPolesText" class="font-mono text-iub-azulClaro font-bold">p₁ = 0.800, p₂ = 0.500</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Muestra activa:</span>
+                <span id="hudSampleValues" class="font-mono text-iub-amarillo font-bold">y[3] = 6.0204</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOS GRÁFICAS DINÁMICAS SINCRONIZADAS (RESPUESTA TEMPORAL + PLANO Z) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Gráfica 1: Respuesta Temporal y Descomposición (7 cols) -->
+        <div class="lg:col-span-7 chart-wrapper">
+          <div class="chart-header">
+            <div>
+              <h3 class="text-base sm:text-lg font-black text-iub-amarillo">
+                Gráfica 1: Evolución Temporal Discreta y Descomposición ($y_{\text{libre}}[k] + y_{\text{forzada}}[k]$)
+              </h3>
+              <p class="text-xs text-slate-300">
+                Superposición exacta entre la respuesta a entrada cero (condiciones iniciales) y la respuesta a estado cero (escalón unitario).
+              </p>
+            </div>
+            <span class="text-[11px] font-mono px-2.5 py-1 rounded bg-space-900 text-iub-azulClaro border border-iub-azulClaro/30">
+              Zoom &amp; Pan Activos
+            </span>
+          </div>
+          <div id="chart-response-decomp" class="chart-canvas"></div>
+        </div>
+
+        <!-- Gráfica 2: Mapa de Polos en el Plano Complejo Z (5 cols) -->
+        <div class="lg:col-span-5 chart-wrapper">
+          <div class="chart-header">
+            <div>
+              <h3 class="text-base sm:text-lg font-black text-iub-azulClaro">
+                Gráfica 2: Ubicación de Polos en el Plano Complejo $Z$
+              </h3>
+              <p class="text-xs text-slate-300">
+                Frontera del Círculo Unitario $|z|=1$ y radio característico $|p|$.
+              </p>
+            </div>
+            <span class="text-[11px] font-mono px-2.5 py-1 rounded bg-space-900 text-iub-amarillo border border-iub-amarillo/30">
+              Escala 1:1
+            </span>
+          </div>
+          <div id="chart-zplane-poles" class="chart-canvas"></div>
+        </div>
+      </div>
+
+      <!-- Tabla dinámica de iteración recursiva vs. descomposición -->
+      <div class="card-academic p-5 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h3 class="text-base font-black text-iub-blanco">
+              Tabla Dinámica de Evolución Muestra a Muestra ($k = 0 \dots 8$)
+            </h3>
+            <p class="text-xs text-slate-300">
+              Verifica numéricamente que en cada instante discreto $k$ se cumple exactamente $y_{\text{total}}[k] = y_{\text{libre}}[k] + y_{\text{forzada}}[k]$.
+            </p>
+          </div>
+        </div>
+        <div class="overflow-x-auto rounded-xl border border-slate-800">
+          <table class="w-full text-left text-xs">
+            <thead class="iub-table-head font-bold uppercase tracking-wider">
+              <tr>
+                <th class="px-3 py-2.5">Muestra $k$</th>
+                <th class="px-3 py-2.5">Memoria $y[k-1]$</th>
+                <th class="px-3 py-2.5">Memoria $y[k-2]$</th>
+                <th class="px-3 py-2.5">Resp. Libre $y_{\text{libre}}[k]$</th>
+                <th class="px-3 py-2.5">Resp. Forzada $y_{\text{forzada}}[k]$</th>
+                <th class="px-3 py-2.5">Salida Total $y[k]$</th>
+              </tr>
+            </thead>
+            <tbody id="dynamicRecursionTableBody" class="bg-space-950/90"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================================== -->
+  <!-- CONTENIDO PEDAGÓGICO PROGRESIVO (5 MÓDULOS GUIADOS + EJEMPLOS + EJERCICIOS) -->
+  <!-- =================================================================================== -->
+  <main id="modulos-conceptuales" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 space-y-20">
+
+    <!-- =============================================================================== -->
+    <!-- MÓDULO 1: INTRODUCCIÓN A LAS ECUACIONES EN DIFERENCIAS Y EL LAZO DIGITAL -->
+    <!-- =============================================================================== -->
+    <section id="mod-1-intro" data-milestone="mod_intro" class="space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-iub-amarillo/40 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-iub-amarillo flex items-center justify-center text-iub-oscuro font-black text-lg">1</div>
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">
+              Introducción a las Ecuaciones en Diferencias: El Lazo con Computador
+            </h2>
+            <p class="text-xs text-iub-azulClaro font-semibold">
+              Del mundo físico continuo $y(t)$ a la secuencia numérica discreta $y[k] = y(kT)$ en el microcontrolador
+            </p>
+          </div>
+        </div>
+        <span data-milestone-badge="mod_intro" class="px-3 py-1 rounded-full text-xs font-bold bg-space-800 text-slate-400">Pendiente</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 card-academic p-6 space-y-4 text-sm text-slate-200">
+          <h3 class="text-lg font-black text-iub-amarillo">1.1 ¿Por qué un computador controla mediante Ecuaciones en Diferencias?</h3>
+          <p>
+            Un microcontrolador, DSP o PLC <strong>no resuelve ecuaciones diferenciales continuas</strong> en tiempo real. En su lugar, un reloj de hardware dispara una interrupción periódica cada $T$ segundos (el <strong>periodo de muestreo</strong>). En cada instante discreto $t = kT$ ($k = 0, 1, 2, \dots$), el sistema ejecuta cuatro operaciones fundamentales:
+          </p>
+          <ol class="list-decimal list-inside space-y-2 text-xs sm:text-sm">
+            <li><strong class="text-iub-azulClaro">Muestreo y Conversión A/D (ADC):</strong> Lee el voltaje del sensor analógico $y(t)$ y lo transforma en un número en memoria $y[k] = y(kT)$.</li>
+            <li><strong class="text-iub-amarillo">Cálculo del Error:</strong> Compara la referencia deseada $r[k]$ con la medición actual: $e[k] = r[k] - y[k]$.</li>
+            <li><strong class="text-emerald-400">Ejecución de la Ecuación en Diferencias:</strong> Calcula la nueva acción de control $u[k]$ como una combinación lineal finita de errores actuales/pasados y salidas pasadas almacenadas en registros de memoria.</li>
+            <li><strong class="text-iub-naranja">Conversión D/A y Retención de Orden Cero (ZOH):</strong> Escribe $u[k]$ en el DAC o módulo PWM, el cual mantiene el voltaje constante durante todo el intervalo $[kT, (k+1)T)$.</li>
+          </ol>
+
+          <div class="iub-eq-box">
+            <span class="iub-eq-badge">MODELO DEL RETENEDOR DE ORDEN CERO (ZOH)</span>
+            <p class="text-xs text-slate-300 mb-1">
+              El DAC con retención escalonada introduce un retardo efectivo promedio de $T/2$ segundos y se modela en Laplace mediante:
+            </p>
+            $$G_{h0}(s) = \frac{1 - e^{-sT}}{s}$$
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 card-academic p-6 space-y-4">
+          <h3 class="text-lg font-black text-iub-azulClaro">1.2 Selección Práctica del Periodo de Muestreo $T$</h3>
+          <p class="text-xs sm:text-sm text-slate-200">
+            Aunque el <strong>Teorema de Nyquist–Shannon</strong> establece que $\omega_s > 2\omega_{\text{máx}}$ para evitar <em>aliasing</em> (solapamiento espectral), en ingeniería de control se requiere un muestreo mucho más rápido para no degradar el margen de fase por el retardo $T/2$ del retenedor ZOH:
+          </p>
+          <div class="overflow-x-auto rounded-xl border border-slate-800">
+            <table class="w-full text-left text-xs">
+              <thead class="iub-table-head">
+                <tr>
+                  <th class="px-3 py-2">Criterio de Ingeniería</th>
+                  <th class="px-3 py-2">Regla de Diseño</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800 bg-space-950">
+                <tr>
+                  <td class="px-3 py-2 font-semibold text-iub-amarillo">Constante de tiempo $\tau$</td>
+                  <td class="px-3 py-2 font-mono">$T \approx \tau / 10 \text{ a } \tau / 5$</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2 font-semibold text-iub-azulClaro">Tiempo de subida $t_r$</td>
+                  <td class="px-3 py-2 font-mono">$N_r = t_r / T \in [4, 10]\text{ muestras}$</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2 font-semibold text-emerald-400">Ancho de banda $\omega_b$</td>
+                  <td class="px-3 py-2 font-mono">$\omega_s \approx 20\,\omega_b \text{ a } 40\,\omega_b$</td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2 font-semibold text-iub-naranja">Establecimiento $t_s$</td>
+                  <td class="px-3 py-2 font-mono">$t_s / T \ge 20\text{ muestras}$</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="p-3.5 rounded-xl bg-iub-naranjaFondo text-iub-oscuro border-l-4 border-iub-naranja text-xs">
+            <strong class="font-black">⚠ Fenómeno de Aliasing:</strong> Una señal parásita de $9\text{ Hz}$ muestreada a $f_s = 10\text{ Hz}$ produce exactamente las mismas muestras que una senoide de $|9 - 10| = 1\text{ Hz}$. Siempre debe colocarse un filtro analógico pasabajos <em>antialiasing</em> antes del ADC con frecuencia de corte $\omega_c < \omega_s/2$.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================================== -->
+    <!-- MÓDULO 2: REPRESENTACIÓN MATEMÁTICA Y TRANSFORMACIÓN AL DOMINIO Z -->
+    <!-- =============================================================================== -->
+    <section id="mod-2-math" data-milestone="mod_math" class="space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-iub-azulClaro/40 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-iub-azulClaro flex items-center justify-center text-iub-oscuro font-black text-lg">2</div>
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">
+              Representación Matemática, Clasificación y Transformación al Dominio $Z$
+            </h2>
+            <p class="text-xs text-iub-amarillo font-semibold">
+              Estructura LTI de orden $n$, teoremas de traslación con condiciones iniciales y desacoplamiento Libre vs. Forzada
+            </p>
+          </div>
+        </div>
+        <span data-milestone-badge="mod_math" class="px-3 py-1 rounded-full text-xs font-bold bg-space-800 text-slate-400">Pendiente</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="card-academic p-6 space-y-4 text-sm text-slate-200">
+          <h3 class="text-lg font-black text-iub-azulClaro">2.1 Ecuación en Diferencias LTI de Orden $n$</h3>
+          <p>
+            Una ecuación en diferencias <strong>lineal e invariante en el tiempo (LTI)</strong> de orden $n$ en forma de atrasos relaciona la salida actual $y[k]$ con las $n$ salidas pasadas y las $m$ entradas pasadas:
+          </p>
+          <div class="iub-eq-box">
+            <span class="iub-eq-badge">FORMA IMPLÍCITA DE ATRASO (ORDEN n)</span>
+            $$y[k] + a_1 y[k-1] + a_2 y[k-2] + \dots + a_n y[k-n] = b_0 u[k] + b_1 u[k-1] + \dots + b_m u[k-m]$$
+          </div>
+          <p>
+            Al despejar $y[k]$, se obtiene la <strong>forma explícita recursiva</strong> que se programa directamente en lenguaje C o Python dentro de la rutina de interrupción del temporizador:
+          </p>
+          <div class="iub-eq-box eq-yellow">
+            <span class="iub-eq-badge">ALGORITMO RECURSIVO EJECUTABLE</span>
+            $$y[k] = -\sum_{i=1}^{n} a_i\, y[k-i] + \sum_{j=0}^{m} b_j\, u[k-j]$$
+          </div>
+          <ul class="space-y-1.5 text-xs text-slate-300 pt-1">
+            <li><strong class="text-iub-amarillo">Sistemas Recursivos (IIR — Respuesta al Impulso Infinita):</strong> Al menos un coeficiente $a_i \neq 0$. Poseen polos no triviales y retroalimentación de estados de salida.</li>
+            <li><strong class="text-iub-azulClaro">Sistemas No Recursivos (FIR — Respuesta al Impulso Finita):</strong> Todos los $a_i = 0$. Su salida depende únicamente de una ventana finita de entradas pasadas y sus polos están todos en el origen $z = 0$.</li>
+          </ul>
+        </div>
+
+        <div class="card-academic p-6 space-y-4 text-sm text-slate-200">
+          <h3 class="text-lg font-black text-iub-amarillo">2.2 Teorema de Traslación Temporal y Descomposición Libre + Forzada</h3>
+          <p>
+            Cuando el sistema físico parte con energía almacenada (condiciones iniciales históricas $y[-1], y[-2], \dots, y[-n]$ conocidas en $k=0$), la Transformada Z unilateral incorpora dichos estados iniciales mediante el <strong>Teorema de Retardo Temporal</strong>:
+          </p>
+          <div class="iub-eq-box eq-orange">
+            <span class="iub-eq-badge">TRASLACIÓN HACIA ATRÁS CON CONDICIONES INICIALES</span>
+            $$\mathcal{Z}\{y[k-1]\} = z^{-1}Y(z) + y[-1]$$
+            $$\mathcal{Z}\{y[k-2]\} = z^{-2}Y(z) + z^{-1}y[-1] + y[-2]$$
+          </div>
+          <p>
+            Al sustituir en la ecuación en diferencias y agrupar términos, la transformada de la salida $Y(z)$ se separa de manera exacta y aditiva en dos componentes independientes:
+          </p>
+          <div class="iub-eq-box eq-green">
+            <span class="iub-eq-badge">DESACOPLAMIENTO EN EL DOMINIO Z</span>
+            $$Y(z) = \underbrace{\frac{C_{\text{CI}}(z)}{A(z)}}_{\text{Respuesta Libre } Y_{\text{libre}}(z)} + \underbrace{\frac{B(z)}{A(z)} U(z)}_{\text{Respuesta Forzada } Y_{\text{forzada}}(z)}$$
+          </div>
+          <p class="text-xs text-slate-300">
+            Donde $A(z) = 1 + a_1 z^{-1} + \dots + a_n z^{-n}$ es el <strong>polinomio característico</strong> y $G(z) = B(z)/A(z)$ es la <strong>Función de Transferencia de Pulso</strong> (definida bajo condiciones iniciales nulas $C_{\text{CI}}(z)=0$).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================================== -->
+    <!-- MÓDULO 3: INTERPRETACIÓN FÍSICA Y COMPARACIÓN CONTINUO vs. DISCRETO -->
+    <!-- =============================================================================== -->
+    <section id="mod-3-phys" data-milestone="mod_phys" class="space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-iub-naranja/40 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-iub-naranja flex items-center justify-center text-iub-blanco font-black text-lg">3</div>
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">
+              Interpretación Física y Relación entre Sistemas Continuos y Discretos
+            </h2>
+            <p class="text-xs text-iub-amarillo font-semibold">
+              Mapeo $z = e^{sT}$ y comparación de métodos de discretización: ZOH, Tustin (Bilineal), Euler Adelante y Euler Atrás
+            </p>
+          </div>
+        </div>
+        <span data-milestone-badge="mod_phys" class="px-3 py-1 rounded-full text-xs font-bold bg-space-800 text-slate-400">Pendiente</span>
+      </div>
+
+      <!-- Tabla comparativa de los 4 métodos de discretización sobre G(s) = K / (tau*s + 1) -->
+      <div class="card-academic p-6 space-y-4">
+        <h3 class="text-lg font-black text-iub-amarillo">
+          3.1 De la Ecuación Diferencial Física $\tau\dot{y}(t) + y(t) = K u(t)$ a la Ecuación en Diferencias
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-200">
+          Sea una planta física de primer orden $G(s) = \dfrac{K}{\tau s + 1}$ (como la velocidad angular de un motor DC o la tensión en un circuito RC). Según el método de conversión continuo–discreto empleado, se obtienen distintas ecuaciones en diferencias:
+        </p>
+
+        <div class="overflow-x-auto rounded-xl border border-slate-800">
+          <table class="w-full text-left text-xs">
+            <thead class="iub-table-head">
+              <tr>
+                <th class="px-3 py-2.5">Método</th>
+                <th class="px-3 py-2.5">Sustitución / Definición</th>
+                <th class="px-3 py-2.5">Polo Discreto $p$</th>
+                <th class="px-3 py-2.5">Ecuación en Diferencias Resultante</th>
+                <th class="px-3 py-2.5">¿Preserva Estabilidad?</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 bg-space-950">
+              <tr>
+                <td class="px-3 py-2.5 font-bold text-iub-amarillo">1. ZOH (Invariante al Escalón)</td>
+                <td class="px-3 py-2.5">$(1-z^{-1})\mathcal{Z}\left\{\frac{G(s)}{s}\right\}$</td>
+                <td class="px-3 py-2.5 font-mono">$e^{-T/\tau}$</td>
+                <td class="px-3 py-2.5">$y[k] = e^{-T/\tau}y[k-1] + K(1-e^{-T/\tau})u[k-1]$</td>
+                <td class="px-3 py-2.5 text-emerald-300 font-bold">Sí, siempre ($0 &lt; p &lt; 1$). Exacta para planta con DAC.</td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2.5 font-bold text-iub-azulClaro">2. Tustin (Bilineal / Trapecio)</td>
+                <td class="px-3 py-2.5">$s \leftarrow \frac{2}{T}\frac{z-1}{z+1}$</td>
+                <td class="px-3 py-2.5 font-mono">$\frac{2\tau - T}{2\tau + T}$</td>
+                <td class="px-3 py-2.5">$y[k] = \frac{2\tau-T}{2\tau+T}y[k-1] + \frac{KT}{2\tau+T}(u[k]+u[k-1])$</td>
+                <td class="px-3 py-2.5 text-emerald-300 font-bold">Sí, mapea exactamente el semiplano izquierdo a $|z|&lt;1$.</td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2.5 font-bold text-red-400">3. Euler hacia Adelante</td>
+                <td class="px-3 py-2.5">$s \leftarrow \frac{z-1}{T}$</td>
+                <td class="px-3 py-2.5 font-mono">$1 - \frac{T}{\tau}$</td>
+                <td class="px-3 py-2.5">$y[k] = \left(1-\frac{T}{\tau}\right)y[k-1] + \frac{KT}{\tau}u[k-1]$</td>
+                <td class="px-3 py-2.5 text-red-300 font-bold">No: diverge si $T &gt; 2\tau$ ($|p| &gt; 1$).</td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2.5 font-bold text-emerald-400">4. Euler hacia Atrás</td>
+                <td class="px-3 py-2.5">$s \leftarrow \frac{z-1}{Tz}$</td>
+                <td class="px-3 py-2.5 font-mono">$\frac{\tau}{\tau + T}$</td>
+                <td class="px-3 py-2.5">$y[k] = \frac{\tau}{\tau+T}y[k-1] + \frac{KT}{\tau+T}u[k]$</td>
+                <td class="px-3 py-2.5 text-emerald-300 font-bold">Sí, siempre estable, pero introduce sobreamortiguamiento.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- GRÁFICA DINÁMICA 3: COMPARADOR DE DISCRETIZACIÓN CONTINUO vs. DISCRETO -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <div class="lg:col-span-8 chart-wrapper">
+          <div class="chart-header">
+            <div>
+              <h3 class="text-base sm:text-lg font-black text-iub-amarillo">
+                Gráfica 3: Comparación Dinámica entre Sistema Continuo y Métodos de Discretización
+              </h3>
+              <p class="text-xs text-slate-300">
+                Planta $G(s) = K / (\tau s + 1)$ ante escalón de $6\text{ V}$. Observa cómo ZOH coincide exactamente en cada muestra y cómo Euler adelante diverge si $T &gt; 2\tau$.
+              </p>
+            </div>
+          </div>
+          <div id="chart-discretization-compare" class="chart-canvas"></div>
+        </div>
+
+        <div class="lg:col-span-4 border-glass rounded-2xl p-5 flex flex-col justify-between space-y-4">
+          <div class="space-y-4">
+            <h4 class="text-xs font-extrabold uppercase tracking-wider text-iub-amarillo border-b border-iub-amarillo/30 pb-2">
+              Controles de Discretización ($T, \tau, K$)
+            </h4>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderDiscT" class="text-slate-200 font-semibold">Periodo de Muestreo $T$ [s]:</label>
+                <span id="valDiscT" class="font-mono text-iub-amarillo font-bold">0.05 s</span>
+              </div>
+              <input id="sliderDiscT" type="range" min="0.02" max="1.25" step="0.01" value="0.05"
+                     oninput="window.IUBApp.updateDiscretizationLab()" class="w-full slider-track">
+              <div class="flex justify-between text-[10px] text-slate-400">
+                <span>0.02 s (Fino)</span>
+                <span class="text-iub-amarillo">0.05 s (Diseño)</span>
+                <span class="text-red-400">1.20 s (Euler Diverge)</span>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderDiscTau" class="text-slate-200 font-semibold">Constante de Tiempo $\tau$ [s]:</label>
+                <span id="valDiscTau" class="font-mono text-iub-azulClaro font-bold">0.50 s</span>
+              </div>
+              <input id="sliderDiscTau" type="range" min="0.20" max="1.50" step="0.05" value="0.50"
+                     oninput="window.IUBApp.updateDiscretizationLab()" class="w-full slider-track">
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderDiscK" class="text-slate-200 font-semibold">Ganancia Estática $K$:</label>
+                <span id="valDiscK" class="font-mono text-emerald-300 font-bold">20.0</span>
+              </div>
+              <input id="sliderDiscK" type="range" min="5.0" max="30.0" step="1.0" value="20.0"
+                     oninput="window.IUBApp.updateDiscretizationLab()" class="w-full slider-track">
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5 text-xs">
+            <div class="font-bold text-iub-amarillo pb-1 border-b border-slate-800">Polos Resultantes según el Método:</div>
+            <div class="flex justify-between"><span>Polo ZOH ($e^{-T/\tau}$):</span><span id="discPoleZoh" class="font-mono font-bold text-iub-amarillo">0.9048</span></div>
+            <div class="flex justify-between"><span>Polo Tustin:</span><span id="discPoleTus" class="font-mono font-bold text-iub-azulClaro">0.9048</span></div>
+            <div class="flex justify-between"><span>Polo Euler Adelante:</span><span id="discPoleEf" class="font-mono font-bold text-red-300">0.9000 (Estable)</span></div>
+            <div class="flex justify-between"><span>Polo Euler Atrás:</span><span id="discPoleEb" class="font-mono font-bold text-emerald-300">0.9091</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================================== -->
+    <!-- MÓDULO 4: SOLUCIÓN PASO A PASO POR LOS 3 MÉTODOS FUNDAMENTALES -->
+    <!-- =============================================================================== -->
+    <section id="mod-4-step" data-milestone="mod_step" class="space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-iub-verde/40 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-iub-verde flex items-center justify-center text-iub-blanco font-black text-lg">4</div>
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">
+              Solución Paso a Paso: Los 3 Métodos Fundamentales Comparados
+            </h2>
+            <p class="text-xs text-iub-amarillo font-semibold">
+              Demostración de equivalencia exacta entre 1) Iteración Recursiva, 2) Solución Clásica y 3) Transformada Z
+            </p>
+          </div>
+        </div>
+        <span data-milestone-badge="mod_step" class="px-3 py-1 rounded-full text-xs font-bold bg-space-800 text-slate-400">Pendiente</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Método 1: Recursivo -->
+        <div class="card-academic p-6 space-y-3 text-xs sm:text-sm text-slate-200">
+          <span class="px-2.5 py-1 rounded bg-iub-naranja text-iub-blanco text-xs font-black uppercase">Método 1: Iteración Recursiva</span>
+          <h3 class="text-base font-black text-iub-amarillo pt-1">Evaluación Secuencial en CPU</h3>
+          <p>
+            Dada $y[k] - 0.7y[k-1] + 0.1y[k-2] = u[k]$ con $u[k]=1$ ($k\ge 0$) y $y[-1]=y[-2]=0$, despejamos $y[k]$:
+          </p>
+          <div class="iub-eq-box eq-orange">
+            <span class="iub-eq-badge">REGLA DE RECURSIÓN</span>
+            $$y[k] = 0.7y[k-1] - 0.1y[k-2] + u[k]$$
+          </div>
+          <ul class="space-y-1 font-mono text-xs bg-space-950 p-3 rounded-xl border border-slate-800">
+            <li>k=0: y[0] = 0.7(0) - 0.1(0) + 1 = <strong class="text-iub-amarillo">1.0000</strong></li>
+            <li>k=1: y[1] = 0.7(1) - 0.1(0) + 1 = <strong class="text-iub-amarillo">1.7000</strong></li>
+            <li>k=2: y[2] = 0.7(1.7) - 0.1(1) + 1 = <strong class="text-iub-amarillo">2.0900</strong></li>
+            <li>k=3: y[3] = 0.7(2.09) - 0.1(1.7) + 1 = <strong class="text-iub-amarillo">2.2930</strong></li>
+          </ul>
+          <p class="text-xs text-slate-400">
+            <strong>Ventaja:</strong> Es el código exacto que corre en el microcontrolador. <strong>Limitación:</strong> No entrega expresión analítica cerrada.
+          </p>
+        </div>
+
+        <!-- Método 2: Clásico (Homogénea + Particular) -->
+        <div class="card-academic p-6 space-y-3 text-xs sm:text-sm text-slate-200">
+          <span class="px-2.5 py-1 rounded bg-iub-azulClaro text-iub-oscuro text-xs font-black uppercase">Método 2: Clásico (Homogénea + Particular)</span>
+          <h3 class="text-base font-black text-iub-azulClaro pt-1">Polinomio Característico y Raíces</h3>
+          <p>
+            1. <strong>Ecuación característica</strong> ($y_h[k] = r^k$):
+            $$r^2 - 0.7r + 0.1 = (r - 0.5)(r - 0.2) = 0$$
+            Por tanto, $y_h[k] = C_1(0.5)^k + C_2(0.2)^k$.
+          </p>
+          <p>
+            2. <strong>Solución particular constante</strong> para escalón $u[k]=1$:
+            $$y_p = \frac{1}{1 - 0.7 + 0.1} = 2.5$$
+          </p>
+          <p>
+            3. <strong>Evaluación con $y[0]=1, y[1]=1.7$:</strong>
+            $$C_1 + C_2 + 2.5 = 1, \quad 0.5C_1 + 0.2C_2 + 2.5 = 1.7$$
+            Resulta $C_1 = -5/3$ y $C_2 = +1/6$.
+          </p>
+        </div>
+
+        <!-- Método 3: Transformada Z y Fracciones Parciales -->
+        <div class="card-academic p-6 space-y-3 text-xs sm:text-sm text-slate-200">
+          <span class="px-2.5 py-1 rounded bg-iub-verde text-iub-blanco text-xs font-black uppercase">Método 3: Transformada Z Operacional</span>
+          <h3 class="text-base font-black text-emerald-400 pt-1">Expansión de Heaviside de $Y(z)/z$</h3>
+          <p>
+            Transformando con CI nulas y $U(z) = \dfrac{z}{z-1}$:
+            $$Y(z) = \frac{z^3}{(z-1)(z-0.5)(z-0.2)}$$
+          </p>
+          <p>
+            Dividiendo entre $z$ para obtener pares de tabla $\dfrac{z}{z-p_i}$:
+            $$\frac{Y(z)}{z} = \frac{2.5}{z-1} - \frac{5/3}{z-0.5} + \frac{1/6}{z-0.2}$$
+          </p>
+          <div class="iub-eq-box eq-green">
+            <span class="iub-eq-badge">SOLUCIÓN ANALÍTICA CERRADA</span>
+            $$y[k] = 2.5 - \frac{5}{3}(0.5)^k + \frac{1}{6}(0.2)^k$$
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================================== -->
+    <!-- MÓDULO 5: ESTABILIDAD (JURY) Y CONTROLADOR PI DIGITAL EN MICROCONTROLADOR -->
+    <!-- =============================================================================== -->
+    <section id="mod-5-apps" data-milestone="mod_apps" class="space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-iub-amarillo/40 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-iub-amarillo flex items-center justify-center text-iub-oscuro font-black text-lg">5</div>
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">
+              Estabilidad de Jury y Aplicaciones en Control Digital (PI en Forma de Velocidad)
+            </h2>
+            <p class="text-xs text-iub-azulClaro font-semibold">
+              Criterio algebraico de Jury e implementación embebida en Arduino UNO con saturación Anti-Windup
+            </p>
+          </div>
+        </div>
+        <span data-milestone-badge="mod_apps" class="px-3 py-1 rounded-full text-xs font-bold bg-space-800 text-slate-400">Pendiente</span>
+      </div>
+
+      <!-- Derivación del PI en forma de velocidad y código C -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="card-academic p-6 space-y-4 text-xs sm:text-sm text-slate-200">
+          <h3 class="text-lg font-black text-iub-amarillo">5.1 Algoritmo PI Digital en Forma de Velocidad (Incremental)</h3>
+          <p>
+            Partiendo de un controlador PI continuo $u(t) = K_p e(t) + K_i \int_0^t e(\tau)\,d\tau$ y discretizando la integral mediante Euler hacia atrás, la ley de control se convierte en la siguiente ecuación en diferencias de primer orden:
+          </p>
+          <div class="iub-eq-box eq-yellow">
+            <span class="iub-eq-badge">ECUACIÓN EN DIFERENCIAS DEL CONTROLADOR PI</span>
+            $$u[k] = u[k-1] + q_0\,e[k] + q_1\,e[k-1]$$
+            $$q_0 = K_p + K_i T, \qquad q_1 = -K_p$$
+          </div>
+          <p>
+            <strong>Protección Anti-Windup intrínseca:</strong> Si el valor calculado $u[k]$ supera los límites físicos del actuador ($[0\text{ V}, 5\text{ V}]$ en el PWM de Arduino), se recorta inmediatamente y se almacena en $u[k-1]$ el valor <strong>ya saturado</strong>, impidiendo que el integrador se desborde.
+          </p>
+        </div>
+
+        <div class="card-academic p-6 space-y-3">
+          <h3 class="text-lg font-black text-iub-azulClaro">5.2 Rutina en C/C++ para Microcontrolador (Interrupción Timer1)</h3>
+          <pre class="p-4 rounded-xl bg-space-950 border border-slate-800 text-xs font-mono text-cyan-200 overflow-x-auto leading-relaxed"><code>// Se ejecuta exactamente cada T segundos (ej. T = 0.02 s -> 50 Hz)
+float y = analogRead(PIN_ADC) * (5.0f / 1023.0f); // Muestreo ADC 10 bits
+float e = r - y;                                  // Error actual e[k]
+
+// Ecuación en diferencias del PI en forma de velocidad:
+float u = u1 + Q0 * e + Q1 * e1;
+
+// Saturación física del actuador PWM y prevención de Windup:
+if (u > 5.0f) u = 5.0f;
+if (u < 0.0f) u = 0.0f;
+analogWrite(PIN_PWM, (uint8_t)(u * 255.0f / 5.0f + 0.5f));
+
+// Desplazamiento de registros de memoria para el siguiente ciclo k+1:
+e1 = e;   // e[k-1] <- e[k]
+u1 = u;   // u[k-1] <- u[k] (ya saturado)</code></pre>
+        </div>
+      </div>
+
+      <!-- GRÁFICA DINÁMICAS 4: SIMULADOR DEL CONTROLADOR PI DIGITAL SOBRE PLANTA RC -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <div class="lg:col-span-8 chart-wrapper">
+          <div class="chart-header">
+            <div>
+              <h3 class="text-base sm:text-lg font-black text-emerald-400">
+                Gráfica 4: Simulador en Tiempo Real del Controlador PI Digital sobre Planta RC ($\tau = 1.0\text{ s}$)
+              </h3>
+              <p class="text-xs text-slate-300">
+                Incluye cuantización de ADC (10 bits), PWM (8 bits), cambio de referencia $2.5\text{ V} \to 1.5\text{ V}$ y comparación con/sin Anti-Windup.
+              </p>
+            </div>
+          </div>
+          <div id="chart-pi-digital-loop" class="chart-canvas"></div>
+        </div>
+
+        <div class="lg:col-span-4 border-glass rounded-2xl p-5 flex flex-col justify-between space-y-4">
+          <div class="space-y-4">
+            <h4 class="text-xs font-extrabold uppercase tracking-wider text-emerald-400 border-b border-emerald-400/30 pb-2">
+              Sintonización del PI Digital ($K_p, K_i, T$)
+            </h4>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderPiKp" class="text-slate-200 font-semibold">Ganancia Proporcional $K_p$:</label>
+                <span id="valPiKp" class="font-mono text-iub-amarillo font-bold">2.00</span>
+              </div>
+              <input id="sliderPiKp" type="range" min="0.5" max="8.0" step="0.25" value="2.0"
+                     oninput="window.IUBApp.updatePILoopLab()" class="w-full slider-track">
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderPiKi" class="text-slate-200 font-semibold">Ganancia Integral $K_i$ [1/s]:</label>
+                <span id="valPiKi" class="font-mono text-iub-azulClaro font-bold">2.00</span>
+              </div>
+              <input id="sliderPiKi" type="range" min="0.2" max="8.0" step="0.2" value="2.0"
+                     oninput="window.IUBApp.updatePILoopLab()" class="w-full slider-track">
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs">
+                <label for="sliderPiT" class="text-slate-200 font-semibold">Periodo de Muestreo $T$ [s]:</label>
+                <span id="valPiT" class="font-mono text-emerald-300 font-bold">0.04 s</span>
+              </div>
+              <input id="sliderPiT" type="range" min="0.02" max="0.25" step="0.02" value="0.04"
+                     oninput="window.IUBApp.updatePILoopLab()" class="w-full slider-track">
+            </div>
+
+            <label class="flex items-center gap-2.5 pt-2 cursor-pointer text-xs text-iub-blanco font-semibold">
+              <input id="chkAntiWindup" type="checkbox" checked onchange="window.IUBApp.updatePILoopLab()"
+                     class="w-4 h-4 rounded border-slate-600 bg-space-900 text-iub-amarillo">
+              <span>Guardar $u[k-1]$ saturado (Anti-Windup activo)</span>
+            </label>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-1.5 text-xs">
+            <div class="font-bold text-emerald-400 pb-1 border-b border-slate-800">Coeficientes Programados en C:</div>
+            <div class="flex justify-between"><span>Coeficiente $q_0 = K_p + K_i T$:</span><span id="piCoeffQ0" class="font-mono font-bold text-iub-amarillo">2.0800</span></div>
+            <div class="flex justify-between"><span>Coeficiente $q_1 = -K_p$:</span><span id="piCoeffQ1" class="font-mono font-bold text-iub-azulClaro">-2.0000</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================================== -->
+    <!-- SECCIÓN DE EJEMPLOS RESUELTOS PASO A PASO -->
+    <!-- =============================================================================== -->
+    <section id="ejemplos-resueltos" data-milestone="examples_reviewed" class="space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-iub-azulClaro/40 pb-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">
+            Catálogo de Ejemplos Académicos Resueltos Paso a Paso
+          </h2>
+          <p class="text-xs text-iub-amarillo font-semibold">
+            Casos completos de examen y diseño mecatrónico con vinculación directa al simulador 3D
+          </p>
+        </div>
+        <span data-milestone-badge="examples_reviewed" class="px-3 py-1 rounded-full text-xs font-bold bg-space-800 text-slate-400">Pendiente</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Ejemplo Resuelto 1 -->
+        <article class="card-academic p-6 flex flex-col justify-between space-y-4">
+          <div class="space-y-3 text-xs sm:text-sm text-slate-200">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded bg-iub-amarillo text-iub-oscuro font-black text-xs">EJEMPLO RESUELTO 1</span>
+              <span class="font-mono text-xs text-iub-azulClaro">Condiciones Iniciales No Nulas</span>
+            </div>
+            <h3 class="text-lg font-black text-iub-blanco">
+              Respuesta Completa de un Servomecanismo Discreto de 2.º Orden
+            </h3>
+            <p>
+              <strong>Enunciado:</strong> Resolver $y[k] - 1.3y[k-1] + 0.4y[k-2] = u[k]$ para un escalón unitario $u[k]=1$ ($k\ge 0$) partiendo de condiciones iniciales $y[-1] = 2$ e $y[-2] = 1$.
+            </p>
+            <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2 text-xs">
+              <p><strong>1. Transformación con CI:</strong> $(1 - 1.3z^{-1} + 0.4z^{-2})Y(z) - 2.2 + 0.8z^{-1} = U(z)$.</p>
+              <p><strong>2. Separación Libre + Forzada:</strong>
+                $$Y(z) = \underbrace{\frac{2.2z^2 - 0.8z}{(z-0.8)(z-0.5)}}_{Y_{\text{libre}}(z)} + \underbrace{\frac{z^3}{(z-1)(z-0.8)(z-0.5)}}_{Y_{\text{forzada}}(z)}$$
+              </p>
+              <p><strong>3. Expansión de $Y(z)/z$ y Residuos:</strong>
+                $$\frac{Y(z)}{z} = \frac{3.2z^2 - 3.0z + 0.8}{(z-1)(z-0.8)(z-0.5)} = \frac{10}{z-1} - \frac{7.4667}{z-0.8} + \frac{0.6667}{z-0.5}$$
+              </p>
+              <p class="text-emerald-300 font-bold">
+                <strong>4. Solución cerrada:</strong> $y[k] = 10.0 - 7.4667(0.8)^k + 0.6667(0.5)^k$.
+              </p>
+            </div>
+          </div>
+          <button onclick="window.IUBApp.applySystemPreset('servo_ci'); document.getElementById('laboratorio-3d-graficas').scrollIntoView({behavior:'smooth'});"
+                  class="w-full py-2.5 rounded-xl bg-iub-amarillo hover:brightness-110 text-iub-oscuro font-black text-xs uppercase tracking-wider transition">
+            🚀 Cargar Ejemplo 1 en el Simulador 3D y Gráficas
+          </button>
+        </article>
+
+        <!-- Ejemplo Resuelto 2 -->
+        <article class="card-academic p-6 flex flex-col justify-between space-y-4">
+          <div class="space-y-3 text-xs sm:text-sm text-slate-200">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded bg-iub-azulClaro text-iub-oscuro font-black text-xs">EJEMPLO RESUELTO 2</span>
+              <span class="font-mono text-xs text-iub-amarillo">Discretización Motor DC</span>
+            </div>
+            <h3 class="text-lg font-black text-iub-blanco">
+              Modelo en Diferencias de un Motor DC ($G(s) = \frac{20}{0.5s+1}$)
+            </h3>
+            <p>
+              <strong>Enunciado:</strong> Obtener la ecuación en diferencias exacta con retenedor ZOH ($T = 0.05\text{ s}$) y calcular la respuesta de velocidad ante un escalón de $v = 6\text{ V}$.
+            </p>
+            <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2 text-xs">
+              <p><strong>1. Parámetros ZOH:</strong> $a = e^{-T/\tau} = e^{-0.05/0.5} = e^{-0.1} = 0.904837$, y $b = K(1-a) = 20(1 - 0.904837) = 1.903252$.</p>
+              <p><strong>2. Ecuación en diferencias:</strong>
+                $$\omega[k] = 0.904837\,\omega[k-1] + 1.903252\,v[k-1]$$
+              </p>
+              <p><strong>3. Solución ante escalón de $6\text{ V}$ ($V(z) = \frac{6z}{z-1}$):</strong>
+                $$\omega[k] = 120\left(1 - 0.904837^k\right)\text{ rad/s}$$
+              </p>
+              <p class="text-emerald-300 font-bold">
+                <strong>4. Verificación:</strong> $\omega[0]=0$, $\omega[1]=11.4195\text{ rad/s}$, $\omega(\infty)=120\text{ rad/s}$.
+              </p>
+            </div>
+          </div>
+          <button onclick="document.getElementById('mod-3-phys').scrollIntoView({behavior:'smooth'});"
+                  class="w-full py-2.5 rounded-xl bg-iub-azulClaro hover:brightness-110 text-iub-oscuro font-black text-xs uppercase tracking-wider transition">
+            📊 Ver en el Comparador de Discretización (Gráfica 3)
+          </button>
+        </article>
+
+        <!-- Ejemplo Resuelto 3 -->
+        <article class="card-academic p-6 flex flex-col justify-between space-y-4">
+          <div class="space-y-3 text-xs sm:text-sm text-slate-200">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded bg-iub-naranja text-iub-blanco font-black text-xs">EJEMPLO RESUELTO 3</span>
+              <span class="font-mono text-xs text-iub-amarillo">Raíces Complejas Conjugadas</span>
+            </div>
+            <h3 class="text-lg font-black text-iub-blanco">
+              Oscilaciones Amortiguadas en Sistemas de 2.º Orden Subamortiguados
+            </h3>
+            <p>
+              <strong>Enunciado:</strong> Resolver la ecuación homogénea $y[k] - y[k-1] + 0.5y[k-2] = 0$ con condiciones iniciales $y[0] = 1$ e $y[1] = 0.5$.
+            </p>
+            <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2 text-xs">
+              <p><strong>1. Polinomio característico:</strong> $r^2 - r + 0.5 = 0 \implies r_{1,2} = 0.5 \pm j0.5$.</p>
+              <p><strong>2. Conversión polar:</strong> Módulo $\rho = \sqrt{0.5^2 + 0.5^2} = 0.7071$, ángulo $\theta = \arctan(1) = \pi/4\text{ rad}$ ($45^\circ$).</p>
+              <p><strong>3. Plantilla modal:</strong> $y[k] = (0.7071)^k [C_1\cos(\pi k/4) + C_2\sin(\pi k/4)]$.</p>
+              <p class="text-emerald-300 font-bold">
+                <strong>4. Con $y[0]=1, y[1]=0.5$:</strong> $C_1 = 1, C_2 = 0 \implies y[k] = (0.7071)^k \cos\left(\frac{\pi k}{4}\right)$.
+              </p>
+            </div>
+          </div>
+          <button onclick="window.IUBApp.applySystemPreset('complex_underdamped'); document.getElementById('laboratorio-3d-graficas').scrollIntoView({behavior:'smooth'});"
+                  class="w-full py-2.5 rounded-xl bg-iub-naranja hover:brightness-110 text-iub-blanco font-black text-xs uppercase tracking-wider transition">
+            🌀 Cargar Polos Complejos en el Simulador 3D
+          </button>
+        </article>
+
+        <!-- Ejemplo Resuelto 4 -->
+        <article class="card-academic p-6 flex flex-col justify-between space-y-4">
+          <div class="space-y-3 text-xs sm:text-sm text-slate-200">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded bg-iub-verde text-iub-blanco font-black text-xs">EJEMPLO RESUELTO 4</span>
+              <span class="font-mono text-xs text-emerald-300">Criterio de Estabilidad de Jury</span>
+            </div>
+            <h3 class="text-lg font-black text-iub-blanco">
+              Rango Crítico de Ganancia $K$ en Lazo Cerrado Discreto
+            </h3>
+            <p>
+              <strong>Enunciado:</strong> Una planta $G(s) = \dfrac{K}{s(s+1)}$ con retenedor ZOH ($T = 1\text{ s}$) tiene función de transferencia de pulso $G(z) = \dfrac{K(0.3679z + 0.2642)}{(z-1)(z-0.3679)}$. Hallar el rango de $K$ estable en lazo cerrado.
+            </p>
+            <div class="p-3.5 rounded-xl bg-space-950 border border-slate-800 space-y-2 text-xs">
+              <p><strong>1. Ecuación característica $1 + G(z) = 0$:</strong>
+                $$P(z) = z^2 + (0.3679K - 1.3679)z + (0.3679 + 0.2642K) = 0$$
+              </p>
+              <p><strong>2. Condiciones de Jury de 2.º orden:</strong></p>
+              <ul class="list-disc list-inside space-y-0.5 font-mono">
+                <li>P(1) = 0.6321K &gt; 0  ⇒  K &gt; 0</li>
+                <li>P(-1) = 2.7358 - 0.1037K &gt; 0  ⇒  K &lt; 26.38</li>
+                <li>|a₀| = 0.3679 + 0.2642K &lt; 1  ⇒  K &lt; 2.3925</li>
+              </ul>
+              <p class="text-emerald-300 font-bold">
+                <strong>3. Rango de estabilidad:</strong> $0 &lt; K &lt; 2.39$.
+              </p>
+            </div>
+          </div>
+          <button onclick="selectManimScene('scene4'); document.getElementById('manim-studio').scrollIntoView({behavior:'smooth'});"
+                  class="w-full py-2.5 rounded-xl bg-iub-verde hover:brightness-110 text-iub-blanco font-black text-xs uppercase tracking-wider transition">
+            🎬 Ver Animación Manim de Estabilidad en el Plano Z
+          </button>
+        </article>
+      </div>
+    </section>
+
+    <!-- =============================================================================== -->
+    <!-- SECCIÓN DE EJERCICIOS PROPUESTOS Y AUTOEVALUACIÓN INTERACTIVA -->
+    <!-- =============================================================================== -->
+    <section id="ejercicios-propuestos" data-milestone="exercises_solved" class="space-y-8">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-iub-amarillo/40 pb-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-black text-iub-blanco tracking-tight">
+            Sección de Ejercicios Propuestos y Verificador Interactivo
+          </h2>
+          <p class="text-xs text-iub-azulClaro font-semibold">
+            Resuelve los problemas de ingeniería, verifica tu resultado numérico al instante y completa el cuestionario de autoevaluación
+          </p>
+        </div>
+        <span data-milestone-badge="exercises_solved" class="px-3 py-1 rounded-full text-xs font-bold bg-space-800 text-slate-400">Pendiente</span>
+      </div>
+
+      <!-- 4 Tarjetas de Ejercicios Numéricos con Verificador -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Ejercicio 1 -->
+        <div class="card-academic p-6 space-y-3 text-xs sm:text-sm">
+          <div class="flex justify-between items-center">
+            <span class="px-2.5 py-0.5 rounded bg-iub-azulClaro text-iub-oscuro font-black text-xs">EJERCICIO PROPUESTO 1</span>
+            <span class="text-xs text-slate-400 font-mono">Control Térmico ZOH</span>
+          </div>
+          <h3 class="text-base font-black text-iub-amarillo">Horno de Tratamiento Térmico Discretizado</h3>
+          <p class="text-slate-200">
+            Un horno industrial tiene modelo continuo $G(s) = \dfrac{0.8}{120s + 1}$ (°C por % de potencia) y se muestrea con $T = 6\text{ s}$. Si se aplica un escalón de $u = 50\%$ de potencia con condiciones iniciales nulas, calcule el incremento de temperatura $\theta[10]$ en la muestra $k = 10$ ($t = 60\text{ s}$).
+          </p>
+          <div class="flex items-center gap-2 pt-1">
+            <input id="input-ex1" type="number" step="0.01" placeholder="Ej: 15.74"
+                   class="flex-1 px-3 py-2 rounded-lg bg-space-950 border border-slate-700 text-white font-mono text-xs focus:outline-none focus:border-iub-amarillo">
+            <span class="text-xs font-mono text-slate-400">°C</span>
+            <button onclick="window.IUBApp.checkProposedExercise('ex1')"
+                    class="px-4 py-2 rounded-lg bg-iub-amarillo text-iub-oscuro font-black text-xs hover:brightness-110 transition">
+              Verificar
+            </button>
+          </div>
+          <div id="feedback-ex1"></div>
+          <details class="text-xs text-slate-300 pt-1">
+            <summary class="cursor-pointer font-bold text-iub-azulClaro">Ver pista y solución paso a paso</summary>
+            <div class="mt-2 p-3 rounded-lg bg-space-950 border border-slate-800 space-y-1">
+              <p>Con ZOH: $a = e^{-6/120} = e^{-0.05} = 0.951229$, $b = 0.8(1 - a) = 0.039017$.</p>
+              <p>Ecuación: $\theta[k] = 0.951229\,\theta[k-1] + 0.039017\,u[k-1]$.</p>
+              <p>Para $u = 50\%$: $\theta[k] = 40(1 - 0.951229^k) \implies \theta[10] = 40(1 - e^{-0.5}) = \mathbf{15.74\text{ °C}}$.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Ejercicio 2 -->
+        <div class="card-academic p-6 space-y-3 text-xs sm:text-sm">
+          <div class="flex justify-between items-center">
+            <span class="px-2.5 py-0.5 rounded bg-iub-naranja text-iub-blanco font-black text-xs">EJERCICIO PROPUESTO 2</span>
+            <span class="text-xs text-slate-400 font-mono">Condiciones Iniciales</span>
+          </div>
+          <h3 class="text-base font-black text-iub-amarillo">Evaluación Inicial con Memoria Histórica</h3>
+          <p class="text-slate-200">
+            Para el servomecanismo gobernado por $y[k] - 1.3y[k-1] + 0.4y[k-2] = u[k]$ con condiciones iniciales $y[-1] = 2$, $y[-2] = 1$ y entrada escalón unitario $u[0] = 1$, determine el valor exacto de la primera muestra de salida $y[0]$.
+          </p>
+          <div class="flex items-center gap-2 pt-1">
+            <input id="input-ex2" type="number" step="0.01" placeholder="Ej: 3.20"
+                   class="flex-1 px-3 py-2 rounded-lg bg-space-950 border border-slate-700 text-white font-mono text-xs focus:outline-none focus:border-iub-amarillo">
+            <span class="text-xs font-mono text-slate-400">rad</span>
+            <button onclick="window.IUBApp.checkProposedExercise('ex2')"
+                    class="px-4 py-2 rounded-lg bg-iub-amarillo text-iub-oscuro font-black text-xs hover:brightness-110 transition">
+              Verificar
+            </button>
+          </div>
+          <div id="feedback-ex2"></div>
+          <details class="text-xs text-slate-300 pt-1">
+            <summary class="cursor-pointer font-bold text-iub-azulClaro">Ver pista y solución paso a paso</summary>
+            <div class="mt-2 p-3 rounded-lg bg-space-950 border border-slate-800 space-y-1">
+              <p>Despejando para $k=0$: $y[0] = 1.3y[-1] - 0.4y[-2] + u[0]$.</p>
+              <p>Sustituyendo: $y[0] = 1.3(2) - 0.4(1) + 1 = 2.6 - 0.4 + 1 = \mathbf{3.2000}$.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Ejercicio 3 -->
+        <div class="card-academic p-6 space-y-3 text-xs sm:text-sm">
+          <div class="flex justify-between items-center">
+            <span class="px-2.5 py-0.5 rounded bg-iub-verde text-iub-blanco font-black text-xs">EJERCICIO PROPUESTO 3</span>
+            <span class="text-xs text-slate-400 font-mono">Controlador PI Digital</span>
+          </div>
+          <h3 class="text-base font-black text-iub-amarillo">Cálculo del Coeficiente $q_0$ en Forma de Velocidad</h3>
+          <p class="text-slate-200">
+            Se desea implementar en un Arduino UNO un controlador PI discreto $u[k] = u[k-1] + q_0 e[k] + q_1 e[k-1]$ con ganancias $K_p = 2.0$, $K_i = 2.0\text{ s}^{-1}$ y frecuencia de muestreo $f_s = 50\text{ Hz}$ ($T = 0.02\text{ s}$). Calcule el valor numérico del coeficiente $q_0$.
+          </p>
+          <div class="flex items-center gap-2 pt-1">
+            <input id="input-ex3" type="number" step="0.01" placeholder="Ej: 2.04"
+                   class="flex-1 px-3 py-2 rounded-lg bg-space-950 border border-slate-700 text-white font-mono text-xs focus:outline-none focus:border-iub-amarillo">
+            <button onclick="window.IUBApp.checkProposedExercise('ex3')"
+                    class="px-4 py-2 rounded-lg bg-iub-amarillo text-iub-oscuro font-black text-xs hover:brightness-110 transition">
+              Verificar
+            </button>
+          </div>
+          <div id="feedback-ex3"></div>
+          <details class="text-xs text-slate-300 pt-1">
+            <summary class="cursor-pointer font-bold text-iub-azulClaro">Ver pista y solución paso a paso</summary>
+            <div class="mt-2 p-3 rounded-lg bg-space-950 border border-slate-800 space-y-1">
+              <p>Con discretización Euler hacia atrás en la acción integral: $q_0 = K_p + K_i T = 2.0 + 2.0(0.02) = \mathbf{2.04}$.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Ejercicio 4 -->
+        <div class="card-academic p-6 space-y-3 text-xs sm:text-sm">
+          <div class="flex justify-between items-center">
+            <span class="px-2.5 py-0.5 rounded bg-red-500 text-white font-black text-xs">EJERCICIO PROPUESTO 4</span>
+            <span class="text-xs text-slate-400 font-mono">Estabilidad Numérica</span>
+          </div>
+          <h3 class="text-base font-black text-iub-amarillo">Periodo Crítico de Muestreo con Euler Adelante</h3>
+          <p class="text-slate-200">
+            Para el horno térmico con constante de tiempo $\tau = 120\text{ s}$, determine el periodo de muestreo máximo $T_{\text{máx}}$ (en segundos) antes de que la aproximación de Euler hacia adelante ($p = 1 - T/\tau$) vuelva inestable el modelo discreto.
+          </p>
+          <div class="flex items-center gap-2 pt-1">
+            <input id="input-ex4" type="number" step="1" placeholder="Ej: 240"
+                   class="flex-1 px-3 py-2 rounded-lg bg-space-950 border border-slate-700 text-white font-mono text-xs focus:outline-none focus:border-iub-amarillo">
+            <span class="text-xs font-mono text-slate-400">s</span>
+            <button onclick="window.IUBApp.checkProposedExercise('ex4')"
+                    class="px-4 py-2 rounded-lg bg-iub-amarillo text-iub-oscuro font-black text-xs hover:brightness-110 transition">
+              Verificar
+            </button>
+          </div>
+          <div id="feedback-ex4"></div>
+          <details class="text-xs text-slate-300 pt-1">
+            <summary class="cursor-pointer font-bold text-iub-azulClaro">Ver pista y solución paso a paso</summary>
+            <div class="mt-2 p-3 rounded-lg bg-space-950 border border-slate-800 space-y-1">
+              <p>La condición de estabilidad exige $|1 - T/120| &lt; 1 \implies -1 &lt; 1 - T/120 &lt; 1 \implies 0 &lt; T &lt; \mathbf{240\text{ s}}$.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Cuestionario Conceptual de Selección Múltiple (5 Preguntas) -->
+      <div class="card-academic p-6 sm:p-8 space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div>
+            <h3 class="text-xl font-black text-iub-amarillo">
+              Cuestionario de Verificación Conceptual (Preparación Primer Examen Parcial)
+            </h3>
+            <p class="text-xs text-slate-300">
+              Selecciona la respuesta correcta en cada una de las 5 preguntas y presiona "Calificar Cuestionario".
+            </p>
+          </div>
+          <div id="quizScoreSummary" class="text-xs font-mono text-slate-400">Sin calificar aún</div>
+        </div>
+
+        <div class="space-y-5 text-xs sm:text-sm">
+          <!-- Pregunta 1 -->
+          <div class="p-4 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+            <p class="font-bold text-iub-blanco">1. Al aplicar la Transformada Z unilateral a un término atrasado $y[k-1]$ con condición inicial $y[-1] \neq 0$, la expresión correcta es:</p>
+            <div class="space-y-1.5 text-slate-200 pl-2">
+              <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="q1" value="0"> <span>$z^{-1}Y(z) - z\,y[-1]$</span></label>
+              <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="q1" value="1"> <span>$z^{-1}Y(z) + y[-1]$</span></label>
+              <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="q1" value="2"> <span>$z\,Y(z) + y[-1]$</span></label>
+            </div>
+            <span id="quiz-fb-q1"></span>
+          </div>
+
+          <!-- Pregunta 2 -->
+          <div class="p-4 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+            <p class="font-bold text-iub-blanco">2. ¿Por qué en el método de inversión por fracciones parciales se expande $Y(z)/z$ en lugar de expandir directamente $Y(z)$?</p>
+            <div class="space-y-1.5 text-slate-200 pl-2">
+              <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="q2" value="0"> <span>Para eliminar las condiciones iniciales del sistema.</span></label>
+              <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="q2" value="1"> <span>Porque $Y(z)$ nunca es una función racional propia.</span></label>
+              <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="q2" value="2"> <span>Porque los pares básicos de la tabla de Transformada Z tienen la forma $\frac{z}{z - p_i} \leftrightarrow (p_i)^k$.</span></label>
+            </div>
+            <span id="quiz-fb-q2"></span>
+          </div>
+
+          <!-- Pregunta 3 -->
+          <div class="p-4 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+            <p class="font-bold text-iub-blanco">3. ¿Cuál método de discretización representa de forma exacta la planta física cuando es excitada por un convertidor D/A (DAC) con retención constante entre muestras?</p>
+            <div class="space-y-1.5 text-slate-200 pl-2">
+              <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="q3" value="0"> <span>Discretización con Retenedor de Orden Cero (ZOH — Invariante al Escalón).</span></label>
+              <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="q3" value="1"> <span>Diferencias hacia adelante de Euler ($s = (z-1)/T$).</span></label>
+              <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="q3" value="2"> <span>Transformación bilineal de Tustin sin prewarping.</span></label>
+            </div>
+            <span id="quiz-fb-q3"></span>
+          </div>
+
+          <!-- Pregunta 4 -->
+          <div class="p-4 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+            <p class="font-bold text-iub-blanco">4. Un sistema discreto de primer orden tiene un polo único en $z = -0.6$. ¿Cuál es el comportamiento de su respuesta libre?</p>
+            <div class="space-y-1.5 text-slate-200 pl-2">
+              <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="q4" value="0"> <span>Es inestable porque el polo es negativo.</span></label>
+              <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="q4" value="1"> <span>Decae de forma monótona sin cambiar de signo.</span></label>
+              <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="q4" value="2"> <span>Es estable ($|-0.6| &lt; 1$), pero su signo alterna muestra a muestra con amplitud decreciente.</span></label>
+            </div>
+            <span id="quiz-fb-q4"></span>
+          </div>
+
+          <!-- Pregunta 5 -->
+          <div class="p-4 rounded-xl bg-space-950 border border-slate-800 space-y-2">
+            <p class="font-bold text-iub-blanco">5. Para un polinomio característico mónico de segundo orden $P(z) = z^2 + a_1 z + a_2$, las condiciones necesarias y suficientes de estabilidad según el Criterio de Jury son:</p>
+            <div class="space-y-1.5 text-slate-200 pl-2">
+              <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="q5" value="0"> <span>$a_1 &gt; 0$ y $a_2 &gt; 0$.</span></label>
+              <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="q5" value="1"> <span>$P(1) &gt; 0$, $P(-1) &gt; 0$ y $|a_2| &lt; 1$.</span></label>
+              <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="q5" value="2"> <span>$|a_1| &lt; 1$ y $P(0) &gt; 1$.</span></label>
+            </div>
+            <span id="quiz-fb-q5"></span>
+          </div>
+        </div>
+
+        <button onclick="window.IUBApp.evaluateConceptualQuiz()"
+                class="px-6 py-3 rounded-xl bg-gradient-to-r from-iub-amarillo to-amber-400 text-iub-oscuro font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg hover:brightness-110 transition">
+          ✓ Calificar Cuestionario de Autoevaluación
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =================================================================================== -->
+  <!-- PIE DE PÁGINA INSTITUCIONAL OFICIAL IUB -->
+  <!-- =================================================================================== -->
+  <footer class="border-t-2 border-iub-amarillo/70 bg-space-950 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+      <div class="flex items-center gap-4">
+        <img src="assets/images/logo_iub_blanco.png" alt="Logo IUB" class="h-11 w-auto object-contain"
+             onerror="this.src='logo_iub_blanco.png'" />
+        <div>
+          <p class="text-sm font-black text-iub-blanco">Institución Universitaria de Barranquilla (IUB)</p>
+          <p class="text-xs text-iub-azulClaro font-semibold">Facultad de Ingeniería — Programa de Ingeniería Mecatrónica</p>
+          <p class="text-xs text-slate-400">MEC36 — Control II · Semana 4: Ecuaciones en Diferencias · Prof. Ricardo Buriticá</p>
+        </div>
+      </div>
+      <div class="text-xs text-slate-400 space-y-1 font-mono">
+        <p>Motor Matemático: Manim CE 0.22 + Three.js WebGL + Plotly.js</p>
+        <p>Preparado para despliegue directo en GitHub Pages · 2026</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts modulares ES6+ de la plataforma -->
+  <script src="assets/js/charts.js"></script>
+  <script src="assets/js/viewer3d.js"></script>
+  <script src="assets/js/manim_player.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
