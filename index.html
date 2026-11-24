@@ -96,7 +96,7 @@
       <!-- METRICAS / STATS -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto text-left">
         <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-          <p class="text-2xl font-black text-cyan-400">5</p>
+          <p class="text-2xl font-black text-cyan-400">6</p>
           <p class="text-xs text-slate-400 font-medium">Aplicaciones 3D Activas</p>
         </div>
         <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
@@ -128,6 +128,7 @@
         <button onclick="filtrar('transformada z', this)" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Transformada Z</button>
         <button onclick="filtrar('inversa', this)" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Inversa</button>
         <button onclick="filtrar('ecuaciones', this)" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Ecuaciones</button>
+        <button onclick="filtrar('topología', this)" class="filtro-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition">Topología 3D</button>
       </div>
     </div>
   </section>
@@ -167,14 +168,14 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
               <span>Abrir App Interactiva</span>
             </a>
-            <a href="./01-muestreo-y-cuantizacion/index.html#/capitulo/02-muestreo-zoh" target="_blank" title="Abrir Laboratorio Interactivo en pantalla completa" class="inline-flex items-center justify-center p-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 text-slate-300 hover:text-white border border-slate-700 hover:border-cyan-500/40 transition-all">
+            <a href="./01-muestreo-y-cuantizacion/index.html#/capitulo/02-muestreo-zoh" target="_blank" title="Abrir Visor 3D en pantalla completa" class="inline-flex items-center justify-center p-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 text-slate-300 hover:text-white border border-slate-700 hover:border-cyan-500/40 transition-all">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
             </a>
           </div>
         </div>
       </article>
 
-      <article class="app-card group relative flex flex-col justify-between rounded-2xl bg-slate-900/70 border border-slate-800/80 hover:border-cyan-500/50 p-6 sm:p-7 backdrop-blur-md transition-all duration-300 hover:shadow-[0_0_35px_rgba(0,163,224,0.2)] hover:-translate-y-1" data-tags="transformada z roc 3d plano z polos y ceros three.js 3d plotly 2d katex mecatrónica iub transformada z, funciones elementales y teoremas 3d semana 02">
+      <article class="app-card group relative flex flex-col justify-between rounded-2xl bg-slate-900/70 border border-slate-800/80 hover:border-cyan-500/50 p-6 sm:p-7 backdrop-blur-md transition-all duration-300 hover:shadow-[0_0_35px_rgba(0,163,224,0.2)] hover:-translate-y-1" data-tags="transformada z roc 3d plano z señales elementales tvi y tvf actividades three.js 3d plotly 2d transformada z, señales elementales y teoremas semana 02">
         <div>
           <div class="flex items-center justify-between gap-3 mb-4">
             <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-extrabold uppercase tracking-wider rounded-lg bg-iub-azul/30 text-iub-azulClaro border border-iub-azulClaro/30">
@@ -185,19 +186,19 @@
           </div>
 
           <h3 class="text-xl sm:text-2xl font-black text-white group-hover:text-cyan-300 transition-colors mb-2 leading-snug">
-            Transformada Z, Funciones Elementales y Teoremas 3D
+            Transformada Z, Señales Elementales y Teoremas
           </h3>
           <p class="text-xs font-semibold text-yellow-400/90 uppercase tracking-wide mb-3">
-            Plataforma Didáctica Modular: Mapeo s→z, Relieve 3D de la ROC, Señales Canónicas y Caso Mecatrónico
+            Plataforma Institucional IUB: Mapeo s→z, Relieve 3D de la ROC, Señales Canónicas y Caso Servomecanismo
           </p>
           <p class="text-sm text-slate-300/90 leading-relaxed mb-6">
-            Plataforma interactiva modular de última generación (Three.js WebGL + Plotly 2D + KaTeX) con redacción clara y agradable para estudiantes. Incluye el mapeo conforme s→z, relieve de magnitud con cilindro de ROC en 3D, plano Z interactivo con alerta de inestabilidad, catálogo stem de secuencias canónicas y análisis paso a paso del error en un servomecanismo mecatrónico.
+            Plataforma educativa institucional por capítulos (Vite + Three.js + Plotly + KaTeX) con lenguaje conciso y sistémico. Incluye laboratorio de muestreo, relieve 3D de |X(z)| con cilindro de ROC, catálogo interactivo de señales elementales, plano Z 3D, caso mecatrónico de servomecanismo, ejemplos resueltos, 6 actividades con corrección inmediata, progreso guardado y tema claro/oscuro.
           </p>
         </div>
 
         <div class="mt-4 pt-4 border-t border-slate-800/60">
           <div class="flex flex-wrap gap-1.5 mb-5">
-            <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Transformada Z</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">ROC 3D</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Plano Z</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Polos y Ceros</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Three.js 3D</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Plotly 2D</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">KaTeX</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Mecatrónica IUB</span>
+            <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Transformada Z</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">ROC 3D</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Plano Z</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Señales Elementales</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">TVI y TVF</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Actividades</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Three.js 3D</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Plotly 2D</span>
           </div>
 
           <div class="flex items-center gap-2.5">
@@ -205,7 +206,7 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
               <span>Abrir App Interactiva</span>
             </a>
-            <a href="./02-transformada-z/transformada_z_semana02_3d.html" target="_blank" title="Abrir Visor 3D en pantalla completa" class="inline-flex items-center justify-center p-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 text-slate-300 hover:text-white border border-slate-700 hover:border-cyan-500/40 transition-all">
+            <a href="./02-transformada-z/index.html#/capitulo/02-definicion-roc" target="_blank" title="Abrir Visor 3D en pantalla completa" class="inline-flex items-center justify-center p-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 text-slate-300 hover:text-white border border-slate-700 hover:border-cyan-500/40 transition-all">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
             </a>
           </div>
@@ -320,6 +321,44 @@
               <span>Abrir App Interactiva</span>
             </a>
             <a href="./04b-ecuaciones-diferencias-interactiva/index.html#/capitulo/05-aplicaciones" target="_blank" title="Abrir Visor 3D en pantalla completa" class="inline-flex items-center justify-center p-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 text-slate-300 hover:text-white border border-slate-700 hover:border-cyan-500/40 transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <article class="app-card group relative flex flex-col justify-between rounded-2xl bg-slate-900/70 border border-slate-800/80 hover:border-cyan-500/50 p-6 sm:p-7 backdrop-blur-md transition-all duration-300 hover:shadow-[0_0_35px_rgba(0,163,224,0.2)] hover:-translate-y-1" data-tags="topología energética mapeo s a z círculo unitario superficie 3d plotly 3d topología energética 3d de la transformada z tópico avanzado">
+        <div>
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-extrabold uppercase tracking-wider rounded-lg bg-iub-azul/30 text-iub-azulClaro border border-iub-azulClaro/30">
+              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+              Tópico Avanzado
+            </span>
+            <span class="text-xs font-mono text-slate-400 font-medium">/topologia-transformada-z/</span>
+          </div>
+
+          <h3 class="text-xl sm:text-2xl font-black text-white group-hover:text-cyan-300 transition-colors mb-2 leading-snug">
+            Topología Energética 3D de la Transformada Z
+          </h3>
+          <p class="text-xs font-semibold text-yellow-400/90 uppercase tracking-wide mb-3">
+            Mapeo del Plano Complejo S al Plano Z y Círculo Unitario
+          </p>
+          <p class="text-sm text-slate-300/90 leading-relaxed mb-6">
+            Superficie tridimensional inmersiva de la magnitud |X(z)| y fase de la Transformada Z. Permite explorar visualmente el Círculo Unitario (|z|=1), las trayectorias de polos/ceros y la relación directa con la estabilidad de sistemas en tiempo discreto.
+          </p>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-slate-800/60">
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Topología Energética</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Mapeo S a Z</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Círculo Unitario</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Superficie 3D</span><span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800/80 text-cyan-300 border border-cyan-500/20">Plotly 3D</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <a href="./topologia-transformada-z/" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400 text-white text-xs sm:text-sm font-bold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              <span>Abrir App Interactiva</span>
+            </a>
+            <a href="./topologia-transformada-z/transformada_z_experiencia_3d.html" target="_blank" title="Abrir Visor 3D en pantalla completa" class="inline-flex items-center justify-center p-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 text-slate-300 hover:text-white border border-slate-700 hover:border-cyan-500/40 transition-all">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
             </a>
           </div>

@@ -19,6 +19,7 @@ Cada aplicación cuenta con su propia carpeta independiente, con su `index.html`
 | [`03-transformada-z-inversa`](./03-transformada-z-inversa/) | Semana 03 | Expansión en Fracciones Parciales (Heaviside), División Larga, Integral de Inversión y Residuos de Cauchy | 🚀 **[Abrir App](https://buritica06.github.io/control-digital-web/03-transformada-z-inversa/)** |
 | [`04-ecuaciones-en-diferencias`](./04-ecuaciones-en-diferencias/) | Semana 04 | Respuesta libre y forzada, animaciones Manim, discretización ZOH/Tustin/Euler, Jury, PI digital | 🚀 **[Abrir App](https://buritica06.github.io/control-digital-web/04-ecuaciones-en-diferencias/)** |
 | [`04b-ecuaciones-diferencias-interactiva`](./04b-ecuaciones-diferencias-interactiva/) | Semana 04 | Plataforma por capítulos: plano z y \|G(z)\| en 3D, solución paso a paso, lugar de raíces 3D, Bode, Nyquist, ejercicios con verificación | 🚀 **[Abrir App](https://buritica06.github.io/control-digital-web/04b-ecuaciones-diferencias-interactiva/)** |
+| [`topologia-transformada-z`](./topologia-transformada-z/) | Tópico Avanzado | Mapeo continuo-discreto $s 	o z$, Círculo Unitario ($|z|=1$), Superficie 3D de Magnitud y Análisis de Estabilidad | 🚀 **[Abrir App](https://buritica06.github.io/control-digital-web/topologia-transformada-z/)** |
 
 > 💡 **Portal Principal:** Puedes acceder al Hub completo con buscador dinámico en: **[https://buritica06.github.io/control-digital-web/](https://buritica06.github.io/control-digital-web/)**
 
@@ -45,10 +46,15 @@ control-digital-web/
 │   ├── transformada_z_semana02_3d.html       # Visualizador Plotly 3D
 │   ├── semana02_3d_experience.py             # Generador simbólico y numérico
 │   └── README.md
-└── 03-transformada-z-inversa/                # Semana 3: Transformada Z Inversa
-    ├── index.html                            # App interactiva con Three.js y HUD
-    ├── transformada_z_inversa_semana03_3d.html # Visualizador 3D
-    ├── semana03_3d_experience.py             # Métodos analíticos y numéricos
+├── 03-transformada-z-inversa/                # Semana 3: Transformada Z Inversa
+│   ├── index.html                            # App interactiva con Three.js y HUD
+│   ├── transformada_z_inversa_semana03_3d.html # Visualizador 3D
+│   ├── semana03_3d_experience.py             # Métodos analíticos y numéricos
+│   └── README.md
+└── topologia-transformada-z/                 # Topología Energética 3D
+    ├── index.html                            # Visualizador interactivo integrado
+    ├── transformada_z_experiencia_3d.html    # Superficie tridimensional
+    ├── z_transform_3d_experience.py          # Script matemático
     └── README.md
 ```
 

@@ -1,708 +1,86 @@
-<!DOCTYPE html>
-<html lang="es" data-theme="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
+<!doctype html>
+<html lang="es" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- El título, la descripción, la cabecera y el pie se completan desde src/content/curso.js -->
+    <title>Plataforma educativa · IUB</title>
+    <meta
+      name="description"
+      content="Plataforma educativa interactiva de la Institución Universitaria de Barranquilla."
+    />
+    <meta name="theme-color" content="#121023" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <!-- Aplica el tema guardado antes del primer pintado (evita el destello claro/oscuro). -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('iub:tema');
+          if (t !== 'light' && t !== 'dark') {
+            t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {
+          /* almacenamiento bloqueado: se queda el tema por defecto */
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="./assets/index-uhtQTqkC.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BzvjgxOz.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
-  <title>MEC36 - Semana 2: Transformada Z, Funciones Elementales y Teoremas | IUB</title>
-  
-  <!-- Tailwind CSS CDN para maquetación rápida y responsiva -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- KaTeX CSS & JS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="if(window.renderMathInElement){window.renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});}"></script>
-
-  <!-- Three.js + OrbitControls -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-
-  <!-- Plotly.js -->
-  <script src="https://cdn.plot.ly/plotly-2.34.0.min.js"></script>
-
-  <!-- lil-gui -->
-  <script src="https://cdn.jsdelivr.net/npm/lil-gui@0.19"></script>
-
-  <!-- math.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/13.0.3/math.js"></script>
-
-  <!-- GSAP -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-
-  <!-- Hoja de estilos principal -->
-  <link rel="stylesheet" href="./src/styles/main.css">
-</head>
-<body class="bg-iub-oscuro text-white antialiased font-sans">
-
-  <!-- ======================================================================= -->
-  <!-- BARRA INSTITUCIONAL SUPERIOR IUB -->
-  <!-- ======================================================================= -->
-  <header class="site-header">
-    <div class="header-inner">
-      <div class="header-brand">
-        <a href="#" class="flex items-center gap-3">
-          <img src="assets/logos/logo_iub_blanco.png" alt="Logo Institución Universitaria de Barranquilla" class="header-logo" onerror="this.src='public/logo_iub_blanco.png'">
-        </a>
-        <div class="h-8 w-[1.5px] bg-yellow-400/40 hidden sm:block"></div>
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="font-extrabold text-white text-sm sm:text-base">MEC36 — Control II</span>
-            <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-yellow-400 text-slate-950 font-black uppercase tracking-wider">Semana 2 de 14</span>
-          </div>
-          <p class="text-[11px] text-sky-400 font-medium hidden sm:block">
-            Institución Universitaria de Barranquilla · Ingeniería Mecatrónica · Prof. Ricardo Buriticá
-          </p>
+    <header class="site-header" role="banner">
+      <button
+        class="icon-btn menu-toggle"
+        type="button"
+        aria-controls="nav-capitulos"
+        aria-expanded="false"
+        aria-label="Abrir menú de capítulos"
+        data-action="toggle-nav"
+      ></button>
+      <a class="brand" href="#/" aria-label="Inicio">
+        <img class="brand__logo" src="./assets/images/logo_iub_blanco.png" alt="IUB" width="96" height="32" />
+        <span class="brand__text">
+          <span class="brand__title"></span>
+          <span class="brand__subtitle"></span>
+        </span>
+      </a>
+      <div class="header-progress" aria-live="polite">
+        <div
+          class="progress"
+          role="progressbar"
+          aria-label="Progreso del curso"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+        >
+          <div class="progress__bar"></div>
         </div>
+        <span class="progress__label">0 %</span>
       </div>
+      <button class="icon-btn theme-toggle" type="button" data-action="toggle-theme" aria-pressed="false"></button>
+    </header>
 
-      <nav class="hidden lg:flex items-center gap-2">
-        <a href="#mod-01" class="nav-link">1. Mapeo s→z</a>
-        <a href="#mod-02" class="nav-link">2. ROC y Magnitud</a>
-        <a href="#mod-03" class="nav-link">3. Elementales</a>
-        <a href="#mod-04" class="nav-link">4. Teoremas y Plano Z</a>
-        <a href="#mod-05" class="nav-link">5. Caso Servo</a>
-        <a href="#mod-06" class="nav-link">6. Ejemplos</a>
-        <a href="#mod-07" class="nav-link">7. Taller</a>
-      </nav>
+    <div class="layout">
+      <aside class="sidebar" id="nav-capitulos" aria-label="Capítulos">
+        <nav class="chapter-nav" aria-label="Navegación por capítulos"></nav>
+      </aside>
+      <div class="sidebar-backdrop" data-action="close-nav" hidden></div>
 
-      <div class="flex items-center gap-3">
-        <a href="transformada_z_semana02_3d.html" target="_blank" class="hidden sm:inline-flex px-3 py-1.5 rounded-lg bg-space-850 hover:bg-space-800 border border-sky-400/50 text-sky-400 text-xs font-bold items-center gap-1.5 transition">
-          <span>Visor 3D Completo</span>
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-        </a>
-        <button id="themeToggleBtn" class="p-2 rounded-lg bg-space-850 hover:bg-space-800 border border-slate-700 text-sm" title="Cambiar tema claro/oscuro">
-          <span id="themeToggleIcon">☀️</span>
-        </button>
-      </div>
+      <main id="contenido" class="main" tabindex="-1">
+        <div class="view" data-view></div>
+      </main>
     </div>
-  </header>
 
-  <!-- ======================================================================= -->
-  <!-- BARRA DE PROGRESO DE APRENDIZAJE GUIADO -->
-  <!-- ======================================================================= -->
-  <div class="progress-container">
-    <div class="progress-inner">
-      <div class="flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span class="font-bold text-slate-300">Progreso Guiado:</span>
-        <span id="learningProgressText" class="font-black text-yellow-400">0% Completado</span>
-        <span class="text-slate-500">|</span>
-        <span id="learningProgressCount" class="font-mono text-sky-400">0 / 10 Hitos</span>
-      </div>
-      <div class="progress-track">
-        <div id="learningProgressBar" class="progress-fill"></div>
-      </div>
-      <button onclick="window.IUBApp.resetProgress()" class="text-xs text-slate-400 hover:text-yellow-400 transition">
-        ↺ Reiniciar
-      </button>
-    </div>
-  </div>
+    <footer class="site-footer">
+      <p data-curso="pie"></p>
+      <p class="site-footer__refs" data-curso="referencias"></p>
+    </footer>
 
-  <!-- ======================================================================= -->
-  <!-- HERO BANNER INSTITUCIONAL -->
-  <!-- ======================================================================= -->
-  <section class="border-b-4 border-sky-500 bg-space-950 py-10 px-6">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-      <div class="space-y-3 max-w-3xl">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-yellow-400/40 bg-space-850 text-xs text-yellow-400 font-bold">
-          <span>🎯 RESULTADO DE APRENDIZAJE: <strong>MEC36-RA2</strong> · CRITERIO CE1 · CORTE 1</span>
-        </div>
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight">
-          Transformada Z: <span class="text-yellow-400">Fundamentos</span>, <span class="text-sky-400">ROC</span> y <span class="text-emerald-400">Teoremas en 3D</span>
-        </h1>
-        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
-          Bienvenido al laboratorio digital de la Semana 2. Aquí transformarás sumatorias infinitas en álgebra interactiva, explorarás en 3D el relieve complejo de la Región de Convergencia (ROC) y analizarás el error real de un servomecanismo mecatrónico.
-        </p>
-      </div>
-      <div class="p-6 rounded-2xl bg-space-850 border border-yellow-400/30 text-center shrink-0 w-48 shadow-xl">
-        <div class="text-[11px] font-black uppercase tracking-widest text-sky-400">MEC36 CONTROL II</div>
-        <div class="text-5xl font-black text-white my-1">02</div>
-        <div class="text-xs text-yellow-400 font-bold">de 14 Semanas</div>
-        <div class="text-[10px] text-slate-400 mt-2">IUB Barranquilla</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ======================================================================= -->
-  <!-- CONTENIDO PRINCIPAL POR MÓDULOS -->
-  <!-- ======================================================================= -->
-  <div class="main-layout">
-    <!-- BARRA LATERAL NAVEGACIÓN -->
-    <aside class="sidebar-sticky hidden lg:block">
-      <div class="edu-card p-4 space-y-2 text-xs">
-        <div class="font-extrabold uppercase text-yellow-400 text-[11px] mb-2 tracking-wider flex items-center justify-between">
-          <span>Índice del Capítulo</span>
-          <span class="text-[9px] px-1.5 py-0.5 rounded bg-space-850 text-sky-400 font-mono">7 Módulos</span>
-        </div>
-        <a href="#mod-01" class="sidebar-link block p-2 rounded hover:bg-space-800 text-slate-200 transition" onclick="window.IUBApp?.goToModule('mod-01', event)">1. Mapeo Conforme s → z</a>
-        <a href="#mod-02" class="sidebar-link block p-2 rounded hover:bg-space-800 text-slate-200 transition" onclick="window.IUBApp?.goToModule('mod-02', event)">2. Definición y ROC 3D</a>
-        <a href="#mod-03" class="sidebar-link block p-2 rounded hover:bg-space-800 text-slate-200 transition" onclick="window.IUBApp?.goToModule('mod-03', event)">3. Señales Elementales</a>
-        <a href="#mod-04" class="sidebar-link block p-2 rounded hover:bg-space-800 text-slate-200 transition" onclick="window.IUBApp?.goToModule('mod-04', event)">4. Teoremas y Plano Z</a>
-        <a href="#mod-05" class="sidebar-link block p-2 rounded hover:bg-space-800 text-slate-200 transition" onclick="window.IUBApp?.goToModule('mod-05', event)">5. Caso Servomecanismo</a>
-        <a href="#mod-06" class="sidebar-link block p-2 rounded hover:bg-space-800 text-slate-200 transition" onclick="window.IUBApp?.goToModule('mod-06', event)">6. Ejemplos Resueltos</a>
-        <a href="#mod-07" class="sidebar-link block p-2 rounded hover:bg-space-800 text-slate-200 transition" onclick="window.IUBApp?.goToModule('mod-07', event)">7. Taller de Autoevaluación</a>
-      </div>
-    </aside>
-
-    <!-- ÁREA DE CAPÍTULOS CARGADOS POR EL ROUTER -->
-    <main id="app-content" class="content-area">
-
-    <section id="mod-01" class="module-section">
-      <div class="module-header">
-        <span class="edu-badge">Capítulo 01 · Fundamentación</span>
-        <h2 class="module-title">El Puente entre Laplace y el Plano Z: <span>Mapeo Conforme $z = e^{sT}$</span></h2>
-        <p class="module-intro">
-          ¿Por qué necesitamos una nueva herramienta si ya conocíamos la Transformada de Laplace? Descubre cómo una simple sustitución algebraica transforma sumatorias infinitas de impulsos en elegantes polinomios.
-        </p>
-      </div>
-
-      <div class="box-callout box-intuition">
-        <div class="box-title">💡 ¿Cómo pensarlo intuitivamente?</div>
-        <p>
-          Imagina que tomas una muestra de un sensor cada $T$ segundos. En el mundo de Laplace, cada muestra introduce un factor $e^{-s T}$, $e^{-2s T}$, $e^{-3s T}dots$ Trabajar con estas exponenciales infinitas es una pesadilla algebraica. La <strong>Transformada Z</strong> hace un truco de magia: define una nueva variable $z = e^{sT}$. De un solo golpe, $e^{-ksT}$ se convierte en $z^{-k}$, transformando un problema trascendente intratable en un polinomio común y corriente que puedes factorizar.
-        </p>
-      </div>
-
-      <div class="edu-card my-6">
-        <h3 class="text-lg font-bold text-iub-amarillo mb-3">1.1 Del Tren de Impulsos a la Variable Z</h3>
-        <p class="text-sm text-slate-200 leading-relaxed">
-          Al muestrear periódicamente una señal continua $x(t)$ con un tren de impulsos ideales se obtiene:
-        </p>
-        <div class="math-display">
-          $$x^*(t) = \sum_{k=0}^{\infty} x(kT) \,\delta(t - kT)$$
-        </div>
-        <p class="text-sm text-slate-200 leading-relaxed mt-3">
-          Aplicando la Transformada de Laplace $\mathcal{L}\{x^*(t)\}$ a cada impulso desplazado:
-        </p>
-        <div class="math-display">
-          $$X^*(s) = \sum_{k=0}^{\infty} x(kT) \,e^{-skT}$$
-        </div>
-        <p class="text-sm text-slate-200 leading-relaxed mt-3">
-          Introduciendo el mapeo conforme $z = e^{sT}$ y $z^{-1} = e^{-sT}$, nace la <strong>Transformada Z</strong>:
-        </p>
-        <div class="math-display">
-          $$X(z) = \mathcal{Z}\{x[k]\} = \sum_{k=0}^{\infty} x[k] \,z^{-k}$$
-        </div>
-      </div>
-
-      <div class="box-callout box-practice">
-        <div class="box-title">⚙️ En la práctica mecatrónica: El significado de $z^{-1}$</div>
-        <p>
-          En la memoria de tu microcontrolador (ESP32, STM32, Arduino), <strong>$z^{-1}$ representa exactamente un registro de retardo</strong> (un buffer que almacena la lectura tomada en el ciclo anterior $k-1$). Si una ecuación dice $y[k] = 0.8 y[k-1] + u[k]$, en tu código C simplemente guardas la variable anterior en memoria: <code>y_prev = y;</code>.
-        </p>
-      </div>
-
-      <!-- VISOR INTERACTIVO 2D DE MUESTREO -->
-      <div class="edu-card mt-8">
-        <div class="edu-card-header">
-          <span class="font-bold text-white text-base">🔬 Laboratorio Interactivo: Efecto del Período de Muestreo $T$</span>
-          <span class="text-xs text-iub-azulClaro font-mono">Plotly 2D Engine</span>
-        </div>
-        <p class="text-xs text-slate-300 mb-4">
-          Modifica el período de muestreo $T$ con el control lateral para experimentar cómo la señal continua analógica se convierte en la secuencia discreta $x[k]$.
-        </p>
-        <div class="viz-layout">
-          <div id="chart-muestreo-container" class="viz-canvas-area" role="img" aria-label="Gráfica de muestreo continuo contra discreto"></div>
-          <aside id="gui-muestreo-container" class="viz-controls-area"></aside>
-        </div>
-      </div>
-    </section>
-  
-
-
-    <section id="mod-02" class="module-section">
-      <div class="module-header">
-        <span class="edu-badge">Capítulo 02 · Dominio Complejo</span>
-        <h2 class="module-title">Definición Formal y la <span>Región de Convergencia (ROC)</span></h2>
-        <p class="module-intro">
-          Una sumatoria infinita sólo tiene sentido si converge a un valor finito. Conoce la Región de Convergencia (ROC) y por qué el Círculo Unitario es la frontera sagrada de los sistemas discretos.
-        </p>
-      </div>
-
-      <div class="box-callout box-intuition">
-        <div class="box-title">💡 La Región de Convergencia explicada sin dolor</div>
-        <p>
-          Piensa en la ROC como el "territorio seguro" del plano complejo. Para señales causales (que inician en $k=0$), las potencias negativas $z^{-k} = 1/z^k$ se vuelven pequeñísimas a medida que te alejas del origen ($|z|$ grande). Por eso, <strong>la ROC de una señal causal es siempre el exterior de un círculo</strong>: $|z| > R$. Si intentas evaluar $X(z)$ dentro de ese círculo prohibido, la sumatoria explota hacia el infinito.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-        <div class="edu-card">
-          <h3 class="text-base font-bold text-iub-amarillo mb-2">Definición de Serie de Potencias</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Para una secuencia causal acotada $x[k]$, la transformada Z unilateral se expande como:
-          </p>
-          <div class="math-display text-xs">
-            $$X(z) = x[0] + x[1]z^{-1} + x[2]z^{-2} + x[3]z^{-3} + \dots$$
-          </div>
-          <p class="text-xs text-slate-400 mt-2">
-            La variable compleja $z$ tiene magnitud y ángulo: $z = r e^{j\omega}$. Su módulo $r = |z|$ determina la convergencia, mientras que $\omega$ representa la frecuencia angular discreta.
-          </p>
-        </div>
-
-        <div class="edu-card">
-          <h3 class="text-base font-bold text-iub-azulClaro mb-2">Criterio del Cociente (Radio R)</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            El radio mínimo de convergencia $R$ se calcula evaluando el límite de la razón de términos sucesivos:
-          </p>
-          <div class="math-display text-xs">
-            $$\text{ROC}: |z| > R = \lim_{k\to\infty} \left| \frac{x[k+1]}{x[k]} \right|$$
-          </div>
-          <p class="text-xs text-slate-400 mt-2">
-            <strong>Regla de oro:</strong> Ningún polo puede estar dentro de la ROC. La frontera del círculo de convergencia siempre choca con el polo más alejado del origen.
-          </p>
-        </div>
-      </div>
-
-      <!-- VISOR 3D DE SUPERFICIE |X(z)| Y CILINDRO DE ROC -->
-      <div class="edu-card mt-8">
-        <div class="edu-card-header">
-          <span class="font-bold text-white text-base">🌐 Explorador 3D: Relieve de Magnitud $|X(z)|$ y Cilindro de ROC</span>
-          <span class="text-xs text-iub-amarillo font-mono">Three.js WebGL Engine</span>
-        </div>
-        <p class="text-xs text-slate-300 mb-3">
-          El terreno 3D muestra la magnitud $|X(z)|$. Observa los polos como altas agujas que tocan el infinito y el cilindro translúcido verde que delimita la Región de Convergencia: <strong id="roc-indicator-val" class="text-iub-verde">|z| > 0.819</strong>.
-        </p>
-        <div class="viz-layout">
-          <div id="three-roc-container" class="viz-canvas-area" role="img" aria-label="Visualizador 3D de la superficie de magnitud y cilindro de ROC"></div>
-          <aside id="gui-roc-container" class="viz-controls-area"></aside>
-        </div>
-      </div>
-    </section>
-  
-
-
-    <section id="mod-03" class="module-section">
-      <div class="module-header">
-        <span class="edu-badge">Capítulo 03 · Señales Canónicas</span>
-        <h2 class="module-title">El "Diccionario" de <span>Señales Elementales</span></h2>
-        <p class="module-intro">
-          Igual que en Laplace aprendiste que el escalón es $1/s$, en el mundo discreto existen 5 funciones fundamentales que componen casi cualquier respuesta de control.
-        </p>
-      </div>
-
-      <div class="edu-card overflow-x-auto my-6">
-        <table class="w-full text-left text-xs text-slate-200">
-          <thead class="border-b-2 border-iub-amarillo text-iub-amarillo font-extrabold uppercase">
-            <tr>
-              <th class="p-3">Señal en el Tiempo $x[k]$</th>
-              <th class="p-3">Transformada $X(z)$</th>
-              <th class="p-3">Forma Racional</th>
-              <th class="p-3">Región de Convergencia (ROC)</th>
-              <th class="p-3">Ubicación de Polos</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-800">
-            <tr class="hover:bg-space-850">
-              <td class="p-3 font-semibold text-white">Impulso Unitario $\delta[k]$</td>
-              <td class="p-3 font-mono">1</td>
-              <td class="p-3 font-mono">1</td>
-              <td class="p-3 text-iub-verde">Todo el plano $z$</td>
-              <td class="p-3 text-slate-400">Sin polos finitos</td>
-            </tr>
-            <tr class="hover:bg-space-850">
-              <td class="p-3 font-semibold text-white">Escalón Unitario $u[k]$</td>
-              <td class="p-3 font-mono">$\frac{1}{1 - z^{-1}}$</td>
-              <td class="p-3 font-mono text-iub-azulClaro">$\frac{z}{z - 1}$</td>
-              <td class="p-3 text-iub-verde">$|z| > 1$</td>
-              <td class="p-3 text-iub-amarillo">$z = 1$</td>
-            </tr>
-            <tr class="hover:bg-space-850">
-              <td class="p-3 font-semibold text-white">Secuencia Geométrica $a^k$</td>
-              <td class="p-3 font-mono">$\frac{1}{1 - a z^{-1}}$</td>
-              <td class="p-3 font-mono text-iub-azulClaro">$\frac{z}{z - a}$</td>
-              <td class="p-3 text-iub-verde">$|z| > |a|$</td>
-              <td class="p-3 text-iub-amarillo">$z = a$</td>
-            </tr>
-            <tr class="hover:bg-space-850">
-              <td class="p-3 font-semibold text-white">Rampa Unitaria $k T$</td>
-              <td class="p-3 font-mono">$\frac{T z^{-1}}{(1 - z^{-1})^2}$</td>
-              <td class="p-3 font-mono text-iub-azulClaro">$\frac{T z}{(z - 1)^2}$</td>
-              <td class="p-3 text-iub-verde">$|z| > 1$</td>
-              <td class="p-3 text-iub-naranja">$z = 1$ (doble)</td>
-            </tr>
-            <tr class="hover:bg-space-850">
-              <td class="p-3 font-semibold text-white">Senoidal Amortiguada $a^k \cos(\omega_0 k)$</td>
-              <td class="p-3 font-mono">-</td>
-              <td class="p-3 font-mono text-iub-azulClaro">$\frac{z(z - a\cos\omega_0)}{z^2 - 2az\cos\omega_0 + a^2}$</td>
-              <td class="p-3 text-iub-verde">$|z| > |a|$</td>
-              <td class="p-3 text-iub-coral">$z = a e^{\pm j\omega_0}$</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="box-callout box-warning">
-        <div class="box-title">⚠️ Trampa clásica de examen: El factor $z$ en el numerador</div>
-        <p>
-          En Laplace, el escalón es $1/s$. Pero en Z, el escalón causal es $\frac{z}{z - 1}$, ¡con una $z$ arriba! No olvides ese cero en el origen: proviene de que la señal comienza exactamente en $k=0$ y vale $x[0]=1$. Cuando hagas expansión en fracciones parciales en la Semana 3, la técnica estándar será expandir $\frac{X(z)}{z}$ para luego volver a multiplicar por $z$.
-        </p>
-      </div>
-
-      <!-- VISOR INTERACTIVO 2D DEL CATÁLOGO STEM -->
-      <div class="edu-card mt-8">
-        <div class="edu-card-header">
-          <span class="font-bold text-white text-base">📊 Laboratorio de Formas de Onda Canónicas (Stem Plot)</span>
-          <span class="text-xs text-iub-azulClaro font-mono">Plotly 2D Engine</span>
-        </div>
-        <p class="text-xs text-slate-300 mb-3">
-          Selecciona una señal canónica y varía el parámetro de base $a$. Observa cómo la señal oscila y alterna de signo cuando $a < 0$, decae suavemente cuando $0 < a < 1$, o explota cuando $|a| > 1$.
-        </p>
-        <div class="viz-layout">
-          <div id="chart-secuencias-container" class="viz-canvas-area" role="img" aria-label="Catálogo interactivo de secuencias discretas"></div>
-          <aside id="gui-secuencias-container" class="viz-controls-area"></aside>
-        </div>
-      </div>
-    </section>
-  
-
-
-    <section id="mod-04" class="module-section">
-      <div class="module-header">
-        <span class="edu-badge">Capítulo 04 · Propiedades Matemáticas</span>
-        <h2 class="module-title">Teoremas Operacionales y <span>Estabilidad en el Plano Z</span></h2>
-        <p class="module-intro">
-          Los teoremas operacionales son tus herramientas de cálculo. Te permiten resolver sistemas complejos sin tener que calcular sumatorias infinitas a mano.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-        <div class="edu-card">
-          <h3 class="text-base font-bold text-iub-amarillo mb-2">1. Desplazamiento Temporal (Retardo y Avance)</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Multiplicar por $z^{-1}$ retarda la señal un período $T$; multiplicar por $z$ avanza la muestra:
-          </p>
-          <div class="math-display text-xs">
-            $$\mathcal{Z}\{x[k - 1]\} = z^{-1} X(z) + x[-1]$$
-            $$\mathcal{Z}\{x[k + 1]\} = z X(z) - z x[0]$$
-          </div>
-          <p class="text-xs text-slate-400 mt-2">
-            Para sistemas con condiciones iniciales nulas en reposo ($x[-1]=0, x[0]=0$), los operadores se reducen a potencias limpias $z^{-n}$ y $z^n$.
-          </p>
-        </div>
-
-        <div class="edu-card">
-          <h3 class="text-base font-bold text-iub-azulClaro mb-2">2. Teoremas de Límites (Valor Inicial y Final)</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            Permiten conocer el inicio y el régimen permanente directamente en el dominio $Z$:
-          </p>
-          <div class="math-display text-xs">
-            $$\text{TVI:} \quad x[0] = \lim_{z \to \infty} X(z)$$
-            $$\text{TVF:} \quad \lim_{k \to \infty} x[k] = \lim_{z \to 1} (1 - z^{-1}) X(z)$$
-          </div>
-          <p class="text-xs text-iub-coral font-semibold mt-2">
-            ⚠️ Condición crítica del TVF: Solo es válido si todos los polos de $(1-z^{-1})X(z)$ están estrictamente dentro del círculo unitario ($|z_i| < 1$).
-          </p>
-        </div>
-      </div>
-
-      <!-- VISOR INTERACTIVO 3D DEL PLANO Z -->
-      <div class="edu-card mt-8">
-        <div class="edu-card-header">
-          <span class="font-bold text-white text-base">🎯 Laboratorio 3D: Polos, Ceros y Estabilidad Dinámica</span>
-          <span class="text-xs text-iub-amarillo font-mono">Three.js WebGL Engine</span>
-        </div>
-        <p class="text-xs text-slate-300 mb-3">
-          Mueve los coeficientes $a_1, a_2$ para desplazar los polos en vivo. Si algún polo cruza el borde del Círculo Unitario ($|p| \ge 1$), verás la advertencia visual inmediata de inestabilidad.
-        </p>
-        <div id="zplane-status" class="p-3 mb-3 rounded bg-space-850 border border-slate-700 text-xs"></div>
-        <div class="viz-layout">
-          <div id="three-planoz-container" class="viz-canvas-area" role="img" aria-label="Plano Z 3D interactivo con polos y ceros"></div>
-          <aside id="gui-planoz-container" class="viz-controls-area"></aside>
-        </div>
-      </div>
-    </section>
-  
-
-
-    <section id="mod-05" class="module-section">
-      <div class="module-header">
-        <span class="edu-badge">Capítulo 05 · Caso de Estudio Aplicado</span>
-        <h2 class="module-title">Análisis de Error en un <span>Servomecanismo Mecatrónico</span></h2>
-        <p class="module-intro">
-          Apliquemos la teoría a un caso de ingeniería real: el análisis de la señal de error muestreada de un lazo cerrado de posición angular.
-        </p>
-      </div>
-
-      <div class="box-callout box-practice">
-        <div class="box-title">🎯 Enunciado del Problema</div>
-        <p>
-          En un actuador mecatrónico de precisión ante una entrada escalón, la señal de error continuo en lazo cerrado responde a la dinámica biexponencial:
-        </p>
-        <div class="math-display">
-          $$e(t) = 4 e^{-2t} - 3 e^{-5t} \quad (t \ge 0)$$
-        </div>
-        <p class="mt-2">
-          El microcontrolador muestrea el encoder mediante una interrupción a frecuencia de muestreo $f_s = 10\text{ Hz}$ ($T = 0.1\text{ s}$). Se requiere formular la secuencia muestreada $e[k]$, calcular su Transformada Z analítica $E(z)$ y verificar los límites $e[0]$ y $e[\infty]$.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-        <div class="edu-card">
-          <h3 class="text-base font-bold text-iub-amarillo mb-2">Paso 1: Secuencia Muestreada $e[k]$</h3>
-          <p class="text-xs text-slate-300">
-            Sustituyendo $t = k T = 0.1 k$:
-          </p>
-          <div class="math-display text-xs">
-            $$a_1 = e^{-2(0.1)} = e^{-0.2} \approx 0.81873$$
-            $$a_2 = e^{-5(0.1)} = e^{-0.5} \approx 0.60653$$
-            $$e[k] = 4(0.81873)^k - 3(0.60653)^k$$
-          </div>
-          <p class="text-xs text-slate-400 mt-2">
-            Ambas bases exponenciales están dentro del rango $(0, 1)$, lo que garantiza un decaimiento monótono sin oscilaciones alternantes.
-          </p>
-        </div>
-
-        <div class="edu-card">
-          <h3 class="text-base font-bold text-iub-azulClaro mb-2">Paso 2: Transformada Z Racional $E(z)$</h3>
-          <p class="text-xs text-slate-300">
-            Por superposición y la transformada de $a^k$:
-          </p>
-          <div class="math-display text-xs">
-            $$E(z) = \frac{4z}{z - 0.81873} - \frac{3z}{z - 0.60653}$$
-            $$E(z) = \frac{z(z + 0.02997)}{z^2 - 1.42526z + 0.49658}$$
-          </div>
-          <p class="text-xs text-iub-verde font-semibold mt-2">
-            Polos: $p_1 = 0.81873, p_2 = 0.60653$ | Cero: $z_0 = -0.02997$ | $\text{ROC}: |z| > 0.81873$
-          </p>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-        <div class="edu-card">
-          <h3 class="text-sm font-bold text-white mb-2">Paso 3: Verificación con el TVI</h3>
-          <div class="math-display text-xs">
-            $$e[0] = \lim_{z \to \infty} \frac{z^2 + 0.02997z}{z^2 - 1.42526z + 0.49658} = 1.0$$
-          </div>
-          <p class="text-xs text-slate-300 mt-1">
-            Comprobación temporal: $e(0) = 4 e^0 - 3 e^0 = 4 - 3 = 1$ (¡Coincidencia exacta!).
-          </p>
-        </div>
-
-        <div class="edu-card">
-          <h3 class="text-sm font-bold text-white mb-2">Paso 4: Verificación con el TVF</h3>
-          <div class="math-display text-xs">
-            $$e[\infty] = \lim_{z \to 1} \frac{z - 1}{z} \cdot \frac{z(z + 0.02997)}{(z - 0.81873)(z - 0.60653)} = 0.0$$
-          </div>
-          <p class="text-xs text-slate-300 mt-1">
-            Como ambos polos están estrictamente dentro de $|z| < 1$, el error en régimen permanente se extingue por completo.
-          </p>
-        </div>
-      </div>
-
-      <!-- VISOR INTERACTIVO 2D DEL CASO SERVO -->
-      <div class="edu-card mt-8">
-        <div class="edu-card-header">
-          <span class="font-bold text-white text-base">📈 Simulación Dinámica del Error e[k]</span>
-          <span class="text-xs text-iub-amarillo font-mono">Plotly 2D Engine</span>
-        </div>
-        <p class="text-xs text-slate-300 mb-3">
-          Observa la trayectoria temporal del error $e[k]$, el marcador inicial en $k=0$ y la asíntota cero validando ambos teoremas operacionales.
-        </p>
-        <div class="viz-layout">
-          <div id="chart-servo-container" class="viz-canvas-area" role="img" aria-label="Gráfica interactiva de la señal de error del servomecanismo"></div>
-          <aside id="gui-servo-container" class="viz-controls-area"></aside>
-        </div>
-      </div>
-    </section>
-  
-
-
-    <section id="mod-06" class="module-section">
-      <div class="module-header">
-        <span class="edu-badge">Capítulo 06 · Práctica Guiada</span>
-        <h2 class="module-title">Ejemplos Resueltos <span>Paso a Paso</span></h2>
-        <p class="module-intro">
-          Ejercicios modelo resueltos con total detalle para afianzar el cálculo analítico y preparar tus parciales.
-        </p>
-      </div>
-
-      <!-- EJEMPLO 1 -->
-      <div class="edu-card my-6">
-        <div class="flex items-center justify-between">
-          <h3 class="font-bold text-white text-base">Ejemplo 1: Señal Compuesta con Impulso y Exponenciales</h3>
-          <span class="text-xs px-2 py-1 rounded bg-space-850 text-iub-amarillo font-mono">Dificultad: Básica</span>
-        </div>
-        <p class="text-xs text-slate-300 mt-2">
-          Calcule la Transformada Z unilateral y determine la Región de Convergencia (ROC) de:
-        </p>
-        <div class="math-display text-xs">
-          $$x[k] = 2(0.5)^k - 3(0.2)^k + 4\delta[k] \quad (k \ge 0)$$
-        </div>
-        
-        <details class="mt-4 p-4 rounded-xl bg-space-850 border border-slate-700 text-xs">
-          <summary class="font-bold text-iub-azulClaro cursor-pointer hover:text-iub-amarillo transition">
-            ▶ Ver Solución Paso a Paso
-          </summary>
-          <div class="mt-3 space-y-2 text-slate-200 leading-relaxed border-t border-slate-700 pt-3">
-            <p><strong>Paso 1: Aplicar Linealidad:</strong> $\mathcal{Z}\{x[k]\} = 2\mathcal{Z}\{(0.5)^k\} - 3\mathcal{Z}\{(0.2)^k\} + 4\mathcal{Z}\{\delta[k]\}$.</p>
-            <p><strong>Paso 2: Sustituir transformadas canónicas:</strong></p>
-            <div class="math-display text-xs">
-              $$X(z) = 2\left(\frac{z}{z - 0.5}\right) - 3\left(\frac{z}{z - 0.2}\right) + 4(1)$$
-            </div>
-            <p><strong>Paso 3: Determinar la ROC:</strong></p>
-            <p>La ROC de $(0.5)^k$ es $|z| > 0.5$; la de $(0.2)^k$ es $|z| > 0.2$; la de $\delta[k]$ es todo el plano. La intersección de las tres regiones está dominada por el polo más externo:</p>
-            <p class="font-mono text-iub-verde font-bold">$$\text{ROC: } |z| > 0.5$$</p>
-          </div>
-        </details>
-      </div>
-
-      <!-- EJEMPLO 2 -->
-      <div class="edu-card my-6">
-        <div class="flex items-center justify-between">
-          <h3 class="font-bold text-white text-base">Ejemplo 2: Multiplicación por la Variable Temporal k</h3>
-          <span class="text-xs px-2 py-1 rounded bg-space-850 text-iub-azulClaro font-mono">Dificultad: Intermedia</span>
-        </div>
-        <p class="text-xs text-slate-300 mt-2">
-          Calcule la Transformada Z de la secuencia $x[k] = k \,(0.4)^k$ utilizando el teorema de diferenciación en Z.
-        </p>
-        
-        <details class="mt-4 p-4 rounded-xl bg-space-850 border border-slate-700 text-xs">
-          <summary class="font-bold text-iub-azulClaro cursor-pointer hover:text-iub-amarillo transition">
-            ▶ Ver Solución Paso a Paso
-          </summary>
-          <div class="mt-3 space-y-2 text-slate-200 leading-relaxed border-t border-slate-700 pt-3">
-            <p><strong>Paso 1: Identificar la señal base $x_0[k] = (0.4)^k$:</strong> Su transformada es $X_0(z) = \frac{z}{z - 0.4}$.</p>
-            <p><strong>Paso 2: Aplicar el Teorema de Diferenciación en Z:</strong> $\mathcal{Z}\{k \cdot x_0[k]\} = -z \frac{d}{dz} X_0(z)$.</p>
-            <p><strong>Paso 3: Calcular la derivada del cociente:</strong></p>
-            <div class="math-display text-xs">
-              $$\frac{d}{dz}\left(\frac{z}{z - 0.4}\right) = \frac{1(z - 0.4) - z(1)}{(z - 0.4)^2} = \frac{-0.4}{(z - 0.4)^2}$$
-            </div>
-            <p><strong>Paso 4: Multiplicar por $-z$:</strong></p>
-            <div class="math-display text-xs">
-              $$X(z) = -z \left[\frac{-0.4}{(z - 0.4)^2}\right] = \frac{0.4 z}{(z - 0.4)^2} \quad (|z| > 0.4)$$
-            </div>
-            <p class="text-slate-300">¡Nota que la presencia de $k$ genera un polo doble en $z = 0.4$!</p>
-          </div>
-        </details>
-      </div>
-
-      <!-- EJEMPLO 3 -->
-      <div class="edu-card my-6">
-        <div class="flex items-center justify-between">
-          <h3 class="font-bold text-white text-base">Ejemplo 3: Análisis de Límites con TVI y TVF</h3>
-          <span class="text-xs px-2 py-1 rounded bg-space-850 text-iub-verde font-mono">Dificultad: Aplicada</span>
-        </div>
-        <p class="text-xs text-slate-300 mt-2">
-          Dada la función $X(z) = \frac{z(2z - 1)}{(z - 0.8)(z - 0.5)}$, encuentre $x[0]$ y el valor en régimen permanente $x[\infty]$.
-        </p>
-        
-        <details class="mt-4 p-4 rounded-xl bg-space-850 border border-slate-700 text-xs">
-          <summary class="font-bold text-iub-azulClaro cursor-pointer hover:text-iub-amarillo transition">
-            ▶ Ver Solución Paso a Paso
-          </summary>
-          <div class="mt-3 space-y-2 text-slate-200 leading-relaxed border-t border-slate-700 pt-3">
-            <p><strong>Paso 1: Valor Inicial $x[0]$ vía TVI:</strong></p>
-            <div class="math-display text-xs">
-              $$x[0] = \lim_{z \to \infty} \frac{2z^2 - z}{z^2 - 1.3z + 0.4} = \frac{2}{1} = 2$$
-            </div>
-            <p><strong>Paso 2: Verificar la condición del TVF:</strong> Los polos están en $z_1 = 0.8$ y $z_2 = 0.5$. Ambos tienen módulo menor a 1 ($|z_i| < 1$). Por lo tanto, el sistema es asintóticamente estable y el TVF es estrictamente aplicable.</p>
-            <p><strong>Paso 3: Valor Final $x[\infty]$ vía TVF:</strong></p>
-            <div class="math-display text-xs">
-              $$x[\infty] = \lim_{z \to 1} \left(\frac{z - 1}{z}\right) \frac{z(2z - 1)}{(z - 0.8)(z - 0.5)} = \frac{(0)(1)}{(0.2)(0.5)} = 0$$
-            </div>
-          </div>
-        </details>
-      </div>
-    </section>
-  
-
-
-    <section id="mod-07" class="module-section">
-      <div class="module-header">
-        <span class="edu-badge">Capítulo 07 · Autoevaluación</span>
-        <h2 class="module-title">Taller Interactivo de <span>Ejercicios Propuestos</span></h2>
-        <p class="module-intro">
-          Pon a prueba tu comprensión conceptual con retroalimentación inmediata. Cada respuesta correcta sumará puntos a tu barra de progreso guiado.
-        </p>
-      </div>
-
-      <!-- EJERCICIO 1 -->
-      <div class="edu-card my-6" id="quiz-card-1">
-        <div class="flex items-center justify-between">
-          <span class="font-bold text-white text-sm">Pregunta 1: Región de Convergencia</span>
-          <span class="text-xs text-iub-amarillo font-mono">Hito #1</span>
-        </div>
-        <p class="text-xs text-slate-200 mt-2">
-          Si una secuencia causal $x[k]$ tiene como polos $p_1 = 0.3$, $p_2 = -0.7$ y $p_3 = 0.6 + 0.4j$, ¿cuál es su Región de Convergencia (ROC)?
-        </p>
-        <div class="space-y-2 mt-4 text-xs">
-          <button class="quiz-opt w-full text-left p-3 rounded-lg bg-space-850 hover:bg-space-800 border border-slate-700 transition" onclick="window.IUBApp.checkQuiz(1, 0)">
-            A) $|z| > 0.3$
-          </button>
-          <button class="quiz-opt w-full text-left p-3 rounded-lg bg-space-850 hover:bg-space-800 border border-slate-700 transition" onclick="window.IUBApp.checkQuiz(1, 1)">
-            B) $|z| > 0.721$ (pues $|0.6 + 0.4j| = \sqrt{0.36 + 0.16} \approx 0.721$)
-          </button>
-          <button class="quiz-opt w-full text-left p-3 rounded-lg bg-space-850 hover:bg-space-800 border border-slate-700 transition" onclick="window.IUBApp.checkQuiz(1, 2)">
-            C) $|z| < 0.7$
-          </button>
-        </div>
-        <div id="quiz-feedback-1" class="mt-3 p-3 rounded text-xs hidden"></div>
-      </div>
-
-      <!-- EJERCICIO 2 -->
-      <div class="edu-card my-6" id="quiz-card-2">
-        <div class="flex items-center justify-between">
-          <span class="font-bold text-white text-sm">Pregunta 2: Teorema del Valor Final</span>
-          <span class="text-xs text-iub-amarillo font-mono">Hito #2</span>
-        </div>
-        <p class="text-xs text-slate-200 mt-2">
-          Dada la función $X(z) = \frac{z}{z - 1.2}$, ¿es válido aplicar el Teorema del Valor Final para calcular $\lim_{k\to\infty} x[k]$?
-        </p>
-        <div class="space-y-2 mt-4 text-xs">
-          <button class="quiz-opt w-full text-left p-3 rounded-lg bg-space-850 hover:bg-space-800 border border-slate-700 transition" onclick="window.IUBApp.checkQuiz(2, 0)">
-            A) Sí, porque la fórmula $(1 - z^{-1})X(z)$ siempre puede evaluarse en $z=1$.
-          </button>
-          <button class="quiz-opt w-full text-left p-3 rounded-lg bg-space-850 hover:bg-space-800 border border-slate-700 transition" onclick="window.IUBApp.checkQuiz(2, 1)">
-            B) No, porque el polo está en $z = 1.2$ ($|z| > 1$, inestable); la señal diverge hacia el infinito.
-          </button>
-          <button class="quiz-opt w-full text-left p-3 rounded-lg bg-space-850 hover:bg-space-800 border border-slate-700 transition" onclick="window.IUBApp.checkQuiz(2, 2)">
-            C) Sí, pero el resultado es cero.
-          </button>
-        </div>
-        <div id="quiz-feedback-2" class="mt-3 p-3 rounded text-xs hidden"></div>
-      </div>
-
-      <!-- EJERCICIO 3 -->
-      <div class="edu-card my-6" id="quiz-card-3">
-        <div class="flex items-center justify-between">
-          <span class="font-bold text-white text-sm">Pregunta 3: Interpretación de Polos Reales Negativos</span>
-          <span class="text-xs text-iub-amarillo font-mono">Hito #3</span>
-        </div>
-        <p class="text-xs text-slate-200 mt-2">
-          ¿Qué tipo de respuesta temporal produce un polo ubicado en el semieje real negativo $z = -0.75$?
-        </p>
-        <div class="space-y-2 mt-4 text-xs">
-          <button class="quiz-opt w-full text-left p-3 rounded-lg bg-space-850 hover:bg-space-800 border border-slate-700 transition" onclick="window.IUBApp.checkQuiz(3, 0)">
-            A) Un decaimiento monótono suave sin cambio de signo.
-          </button>
-          <button class="quiz-opt w-full text-left p-3 rounded-lg bg-space-850 hover:bg-space-800 border border-slate-700 transition" onclick="window.IUBApp.checkQuiz(3, 1)">
-            B) Una oscilación alternada que cambia de signo muestra a muestra ($(-0.75)^k$) mientras decae.
-          </button>
-          <button class="quiz-opt w-full text-left p-3 rounded-lg bg-space-850 hover:bg-space-800 border border-slate-700 transition" onclick="window.IUBApp.checkQuiz(3, 2)">
-            C) Una rampa continua creciente.
-          </button>
-        </div>
-        <div id="quiz-feedback-3" class="mt-3 p-3 rounded text-xs hidden"></div>
-      </div>
-    </section>
-  
-    </main>
-  </div>
-
-  <!-- PIE DE PÁGINA INSTITUCIONAL -->
-  <footer class="border-t border-slate-800 bg-space-950 py-8 px-6 text-center text-xs text-slate-400">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p>Institución Universitaria de Barranquilla (IUB) · Facultad de Ingeniería · Programa de Ingeniería Mecatrónica</p>
-      <p>MEC36 — Control II · Prof. Ricardo Buriticá · Desarrollado con Three.js, Plotly y KaTeX</p>
-    </div>
-  </footer>
-
-  <!-- Script principal modular de la aplicación -->
-  <script type="module" src="./src/main.js?v=20261025-v3"></script>
-</body>
+    <noscript>
+      <p class="noscript">Esta plataforma necesita JavaScript para las visualizaciones interactivas.</p>
+    </noscript>
+  </body>
 </html>
