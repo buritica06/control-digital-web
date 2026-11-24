@@ -44,10 +44,20 @@ import{t as e}from"./chapter-scZPzzfv.js";var t=e({html:`<h2 id="enunciado">1. E
 \\[ e[\\infty] = \\lim_{z \\to 1} \\left(\\frac{z - 1}{z}\\right) \\frac{z(z + 0.02997)}{(z - 0.81873)(z - 0.60653)} = 0.0 \\]
 <p>El error de posición en estado estacionario se anula por completo: el actuador alcanza la referencia deseada.</p>
 
-<h2 id="simulacion-servo">3. Simulación interactiva del error \\(e[k]\\)</h2>
+<h2 id="animacion-servo-3d">3. Animación 3D: del eje físico al muestreo del encoder</h2>
 <p>
-  Varía el período de muestreo \\(T\\) para observar cómo cambian los polos discretos \\(p_1, p_2\\), la expresión racional
-  \\(E(z)\\) y la velocidad en muestras con la que el servomecanismo extingue el error.
+  Antes de leer la gráfica temporal, mira el sistema completo en movimiento. El <strong>brazo sólido</strong> muestra la
+  posición física continua \\(\\theta(t) = \\theta_{\\text{ref}}\\bigl(1 - e(t)\\bigr)\\), mientras el
+  <strong>brazo translúcido</strong> retiene la última lectura que el microcontrolador capturó del encoder óptico cada
+  \\(T\\) segundos (el LED verde destella en cada muestra \\(k\\)). Usa el menú lateral para pausar, avanzar muestra a
+  muestra, cambiar \\(T\\) o modificar el ángulo de referencia \\(\\theta_{\\text{ref}}\\).
+</p>
+<div data-viz="servomecanismo3D" data-preset="servo3d"></div>
+
+<h2 id="simulacion-servo">4. Gráfica temporal del error muestreado \\(e[k]\\)</h2>
+<p>
+  Complementa la vista 3D observando la curva exacta del error \\(e[k]\\). Comprueba cómo el arranque en \\(k = 0\\) coincide
+  con el TVI (\\(e[0] = 1\\)) y la asíntota en \\(0\\) valida el TVF (\\(e[\\infty] = 0\\)).
 </p>
 <div data-viz="errorServomecanismo" data-preset="base"></div>
-`,objetivos:[`Discretizar una señal de error continua mediante sustitución t = kT y calcular sus bases exponenciales.`,`Obtener la función racional E(z), sus polos, ceros y Región de Convergencia.`,`Validar el comportamiento inicial y estacionario de un servomecanismo usando el TVI y el TVF.`],presets:{base:{params:{T:.1,N:28}}}});export{t as default};
+`,objetivos:[`Discretizar una señal de error continua mediante sustitución t = kT y calcular sus bases exponenciales.`,`Obtener la función racional E(z), sus polos, ceros y Región de Convergencia.`,`Validar el comportamiento inicial y estacionario de un servomecanismo usando el TVI y el TVF.`],presets:{servo3d:{params:{reproducir:!0,T:.1,thetaRef:90,velocidad:1,mostrarEncoder:!0,mostrarArcoError:!0}},base:{params:{T:.1,N:28}}}});export{t as default};

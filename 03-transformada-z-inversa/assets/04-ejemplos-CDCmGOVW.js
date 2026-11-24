@@ -1,4 +1,4 @@
-import{t as e}from"./chapter-scZPzzfv.js";var t=e({html:`<h2 id="caso-brazo">1. Caso integrador: posicionamiento de un brazo robótico</h2>
+import{t as e}from"./chapter-scZPzzfv.js";var t=e({html:`<h2 id="caso-brazo">1. Caso integrador en 3D: posicionamiento de un brazo robótico</h2>
 
 <div class="callout callout--ex" role="note">
   <span class="callout__title">Enunciado</span>
@@ -8,10 +8,21 @@ import{t as e}from"./chapter-scZPzzfv.js";var t=e({html:`<h2 id="caso-brazo">1. 
   </p>
   \\[ Y(z) = \\frac{0.3678\\,z^2 + 0.2642\\,z}{(z - 1)(z^2 - 0.8\\,z + 0.36)} \\]
   <p>
-    1) Ubica los polos y verifica estabilidad. 2) Halla la expresión cerrada \\(y[k]\\) por fracciones parciales.
-    3) Evalúa \\(y[0], y[1], y[2], y[3]\\) y contrástalos con la división polinomial directa.
+    1) Observa en el simulador 3D cómo oscila el eslabón y cómo cambia al variar sus polos. 2) Halla la expresión
+    cerrada \\(y[k]\\) por fracciones parciales. 3) Evalúa \\(y[0], y[1], y[2], y[3]\\) y contrástalos con la división
+    polinomial directa.
   </p>
 </div>
+
+<h3>Simulación 3D interactiva del comportamiento oscilatorio</h3>
+<p>
+  Antes de hacer el álgebra, mira el fenómeno físico. En el panel derecho elige distintos regímenes en
+  <strong>Caso / Régimen</strong> (brazo robótico estable, muy oscilatorio, marginal o inestable) o mueve directamente
+  el radio \\(r\\) y el ángulo \\(\\theta\\): verás al mismo tiempo cómo responde el eslabón 3D frente a la línea verde de
+  referencia \\(c_1\\) y cómo se construye la secuencia discreta \\(y[k]\\). Si desactivas <strong>Animar en vivo</strong>,
+  podrás inspeccionar manualmente cada muestra \\(k\\).
+</p>
+<div data-viz="brazoRobotico3D" data-preset="brazo"></div>
 
 <h3>Paso 1 — Polos y forma polar</h3>
 <ul>
@@ -123,4 +134,4 @@ r, p, k_dir = residuez(b, a)
 print("División directa y[0..5]:", np.round(y_div[:6], 4))
 print("Polos:", np.round(p, 4))
 print("Residuos:", np.round(r, 4))</code></pre>
-`,objetivos:[`Resolver de principio a fin la Transformada Z inversa de un sistema con polos complejos conjugados.`,`Aplicar la regla de derivación para invertir funciones con polos reales repetidos.`,`Contrastar resultados analíticos con división directa y validación numérica en Python.`]});export{t as default};
+`,objetivos:[`Observar en 3D cómo la ubicación polar (r, θ) gobierna el sobrepaso, la oscilación y la estabilidad de un brazo robótico.`,`Resolver de principio a fin la Transformada Z inversa de un sistema con polos complejos conjugados.`,`Aplicar la regla de derivación para invertir funciones con polos reales repetidos y validar en Python.`],presets:{brazo:{titulo:`Simulador 3D: brazo robótico y secuencia discreta y[k]`,descripcion:`Arrastra para rotar la escena 3D. Usa el menú de parámetros para alternar entre respuesta estable, oscilatoria, marginal o inestable, o pausar e inspeccionar muestra a muestra.`,params:{regimen:`brazo`,r:.6,thetaDeg:48.19,animar:!0,velocidad:2.2,muestraK:3}}}});export{t as default};
