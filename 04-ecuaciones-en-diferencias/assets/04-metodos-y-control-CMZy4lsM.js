@@ -96,4 +96,4 @@ u1 = u;   // Guardar u saturado evita el windup</code></pre>
   el integrador saturado dispara el sobrepaso al cambiar la referencia de \\(2.5\\text{ V}\\) a \\(1.5\\text{ V}\\).
 </p>
 <div data-viz="simuladorPi" data-preset="piRc"></div>
-`,objetivos:[`Resolver una ecuación en diferencias por iteración recursiva, método clásico y Transformada Z verificando su equivalencia.`,`Aplicar las tres condiciones del criterio de Jury para diagnosticar estabilidad en sistemas de segundo orden.`,`Implementar un controlador PI digital en forma de velocidad con saturación y protección anti-windup.`],presets:{piRc:{Kp:2,Ki:2,T:.04,antiWindup:!0}}});export{t as default};
+`,objetivos:[`Resolver una ecuación en diferencias por iteración recursiva, método clásico y Transformada Z verificando su equivalencia.`,`Aplicar las tres condiciones del criterio de Jury para diagnosticar estabilidad en sistemas de segundo orden.`,`Implementar un controlador PI digital en forma de velocidad con saturación y protección anti-windup.`],presets:{piRc:{params:{Kp:2,Ki:2,T:.04,antiWindup:!0}}}});export{t as default};
