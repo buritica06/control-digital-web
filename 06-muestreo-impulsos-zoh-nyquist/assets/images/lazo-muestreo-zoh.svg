@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 270" width="920" height="270" role="img" aria-label="Diagrama de bloques del lazo de control digital con filtro antialiasing, muestreador ideal de impulsos, controlador digital y retenedor de orden cero ZOH">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#00A3E0"/>
+    </marker>
+    <style>
+      .box { fill: #0F172A; stroke: #00A3E0; stroke-width: 2; rx: 10; }
+      .box-hl { fill: #102A43; stroke: #FFC72C; stroke-width: 2.2; rx: 10; }
+      .box-plant { fill: #0F2922; stroke: #10B981; stroke-width: 2; rx: 10; }
+      .lbl { font-family: 'Inter', system-ui, sans-serif; font-size: 13px; font-weight: 700; fill: #F8FAFC; text-anchor: middle; }
+      .sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: #93C5FD; text-anchor: middle; }
+      .sub-y { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: #FDE68A; text-anchor: middle; }
+      .sub-g { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: #6EE7B7; text-anchor: middle; }
+      .sig { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: #CBD5E1; text-anchor: middle; }
+      .wire { fill: none; stroke: #00A3E0; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <rect width="920" height="270" rx="14" fill="#0B1220"/>
+
+  <!-- Referencia r[k] -->
+  <text x="42" y="84" class="sig">r[k]</text>
+  <line x1="20" y1="95" x2="72" y2="95" class="wire" marker-end="url(#arr)"/>
+
+  <!-- Sumador -->
+  <circle cx="90" cy="95" r="14" fill="#0F172A" stroke="#00A3E0" stroke-width="2"/>
+  <text x="90" y="99" class="lbl" font-size="14">Σ</text>
+  <text x="72" y="84" class="sig">+</text>
+  <text x="102" y="122" class="sig">−</text>
+
+  <!-- e[k] -->
+  <line x1="104" y1="95" x2="152" y2="95" class="wire" marker-end="url(#arr)"/>
+  <text x="128" y="84" class="sig">e[k]</text>
+
+  <!-- Controlador Digital D(z) -->
+  <rect x="155" y="63" width="130" height="64" class="box"/>
+  <text x="220" y="90" class="lbl">Controlador</text>
+  <text x="220" y="110" class="sub">D(z) · CPU</text>
+
+  <!-- u[k] -->
+  <line x1="285" y1="95" x2="342" y2="95" class="wire" marker-end="url(#arr)"/>
+  <text x="314" y="84" class="sig">u[k]</text>
+
+  <!-- ZOH -->
+  <rect x="345" y="63" width="165" height="64" class="box-hl"/>
+  <text x="427" y="88" class="lbl">Retenedor ZOH</text>
+  <text x="427" y="110" class="sub-y">(1 − e⁻ˢᵀ) / s</text>
+
+  <!-- u_ZOH(t) -->
+  <line x1="510" y1="95" x2="572" y2="95" class="wire" marker-end="url(#arr)"/>
+  <text x="541" y="84" class="sig">u_ZOH(t)</text>
+
+  <!-- Planta Continua Gp(s) -->
+  <rect x="575" y="63" width="190" height="64" class="box-plant"/>
+  <text x="670" y="88" class="lbl">Planta Continua</text>
+  <text x="670" y="110" class="sub-g">G_p(s) = 2.5e⁻²ˢ/(15s+1)</text>
+
+  <!-- Salida y(t) -->
+  <line x1="765" y1="95" x2="885" y2="95" class="wire" marker-end="url(#arr)"/>
+  <text x="858" y="84" class="sig">y(t)</text>
+
+  <!-- Rama de realimentación -->
+  <polyline points="825,95 825,205 692,205" class="wire" marker-end="url(#arr)"/>
+
+  <!-- Filtro Antialiasing -->
+  <rect x="515" y="173" width="174" height="64" class="box"/>
+  <text x="602" y="198" class="lbl">Filtro Antialiasing</text>
+  <text x="602" y="218" class="sub">Butterworth 2.º orden (f_c ≤ f_s/2)</text>
+
+  <!-- y_f(t) -->
+  <line x1="515" y1="205" x2="435" y2="205" class="wire" marker-end="url(#arr)"/>
+  <text x="475" y="194" class="sig">y_f(t)</text>
+
+  <!-- Muestreador de Impulsos -->
+  <rect x="255" y="173" width="176" height="64" class="box-hl"/>
+  <text x="343" y="196" class="lbl">Muestreador (ADC)</text>
+  <text x="343" y="217" class="sub-y">δ_T(t) = Σ δ(t − kT)</text>
+
+  <!-- Retorno y[k] al sumador -->
+  <polyline points="255,205 90,205 90,111" class="wire" marker-end="url(#arr)"/>
+  <text x="172" y="194" class="sig">y*(t) ↔ y[k]</text>
+
+  <!-- Nota periodo T -->
+  <text x="460" y="28" class="sub-y">Sincronización periódica con periodo de muestreo T = 1 / f_s</text>
+</svg>
