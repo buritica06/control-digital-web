@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 260" width="920" height="260" role="img" aria-label="Diagrama de bloques de función de transferencia de pulso en lazo cerrado con muestreador sincronizado, controlador D(z), ZOH y planta Gp(s)">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#00A3E0"/>
+    </marker>
+    <style>
+      .box { fill: #0F172A; stroke: #00A3E0; stroke-width: 2; rx: 10; }
+      .box-hl { fill: #102A43; stroke: #FFC72C; stroke-width: 2.2; rx: 10; }
+      .box-g { fill: #0F2922; stroke: #10B981; stroke-width: 2; rx: 10; }
+      .dash { fill: rgba(16,185,129,0.06); stroke: #10B981; stroke-width: 1.5; stroke-dasharray: 6 5; rx: 14; }
+      .lbl { font-family: 'Inter', system-ui, sans-serif; font-size: 13px; font-weight: 700; fill: #F8FAFC; text-anchor: middle; }
+      .sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: #93C5FD; text-anchor: middle; }
+      .sub-y { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: #FDE68A; text-anchor: middle; }
+      .sub-g { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: #6EE7B7; text-anchor: middle; }
+      .sig { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: #CBD5E1; text-anchor: middle; }
+      .wire { fill: none; stroke: #00A3E0; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <rect width="920" height="260" rx="14" fill="#0B1220"/>
+
+  <!-- Agrupación G(z) -->
+  <rect x="360" y="34" width="445" height="114" class="dash"/>
+  <text x="582" y="54" class="sub-g">Planta Discretizada G(z) = (1 − z⁻¹)·Z{ G_p(s) / s }</text>
+
+  <!-- Referencia -->
+  <text x="40" y="88" class="sig">R(z)</text>
+  <line x1="18" y1="100" x2="72" y2="100" class="wire" marker-end="url(#arr)"/>
+
+  <!-- Sumador -->
+  <circle cx="90" cy="100" r="14" fill="#0F172A" stroke="#00A3E0" stroke-width="2"/>
+  <text x="90" y="104" class="lbl">Σ</text>
+  <text x="72" y="88" class="sig">+</text>
+  <text x="103" y="126" class="sig">−</text>
+
+  <!-- E(z) -->
+  <line x1="104" y1="100" x2="155" y2="100" class="wire" marker-end="url(#arr)"/>
+  <text x="130" y="88" class="sig">E(z)</text>
+
+  <!-- Controlador D(z) -->
+  <rect x="158" y="68" width="136" height="64" class="box"/>
+  <text x="226" y="94" class="lbl">Controlador</text>
+  <text x="226" y="114" class="sub">D(z) = K</text>
+
+  <!-- U(z) -->
+  <line x1="294" y1="100" x2="375" y2="100" class="wire" marker-end="url(#arr)"/>
+  <text x="334" y="88" class="sig">U*(s) ↔ U(z)</text>
+
+  <!-- ZOH -->
+  <rect x="378" y="68" width="146" height="64" class="box-hl"/>
+  <text x="451" y="94" class="lbl">Retenedor ZOH</text>
+  <text x="451" y="114" class="sub-y">(1 − e⁻ˢᵀ) / s</text>
+
+  <!-- u(t) -->
+  <line x1="524" y1="100" x2="575" y2="100" class="wire" marker-end="url(#arr)"/>
+  <text x="550" y="88" class="sig">v(t)</text>
+
+  <!-- Planta Gp(s) -->
+  <rect x="578" y="68" width="154" height="64" class="box-g"/>
+  <text x="655" y="94" class="lbl">Servomotor DC</text>
+  <text x="655" y="114" class="sub-g">G_p(s) = 10/[s(s+2)]</text>
+
+  <!-- Muestreador de salida -->
+  <line x1="732" y1="100" x2="762" y2="100" class="wire"/>
+  <line x1="762" y1="100" x2="788" y2="82" stroke="#FFC72C" stroke-width="2.5"/>
+  <circle cx="762" cy="100" r="3.5" fill="#FFC72C"/>
+  <circle cx="790" cy="100" r="3.5" fill="#FFC72C"/>
+  <text x="776" y="122" class="sub-y">T</text>
+  <line x1="790" y1="100" x2="890" y2="100" class="wire" marker-end="url(#arr)"/>
+  <text x="854" y="88" class="sig">Y(z) = Θ(z)</text>
+
+  <!-- Realimentación unitaria -->
+  <polyline points="835,100 835,205 90,205 90,116" class="wire" marker-end="url(#arr)"/>
+  <rect x="395" y="180" width="190" height="48" class="box"/>
+  <text x="490" y="201" class="lbl">Encoder / Realimentación</text>
+  <text x="490" y="218" class="sub">H(z) = 1 (muestreo sincronizado)</text>
+</svg>
