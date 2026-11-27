@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 280" width="900" height="280" role="img" aria-label="Correspondencia geométrica entre el semiplano izquierdo del plano S y el interior del círculo unitario del plano Z mediante z = e^(sT)">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#FFC72C"/>
+    </marker>
+    <style>
+      .bg { fill: #0B1220; }
+      .axis { stroke: #64748B; stroke-width: 1.5; }
+      .band { fill: rgba(0,163,224,0.16); stroke: #00A3E0; stroke-width: 1.5; stroke-dasharray: 5 4; }
+      .uc { fill: rgba(16,185,129,0.12); stroke: #10B981; stroke-width: 2.2; }
+      .rc { fill: rgba(0,163,224,0.16); stroke: #00A3E0; stroke-width: 1.6; stroke-dasharray: 5 4; }
+      .lbl { font-family: 'Inter', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #F8FAFC; text-anchor: middle; }
+      .sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: #93C5FD; text-anchor: middle; }
+      .sub-y { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; fill: #FFC72C; text-anchor: middle; }
+      .sub-g { font-family: 'JetBrains Mono', monospace; font-size: 11px; fill: #6EE7B7; text-anchor: middle; }
+    </style>
+  </defs>
+  <rect width="900" height="280" rx="14" class="bg"/>
+
+  <!-- Plano S -->
+  <text x="210" y="30" class="lbl">Plano S (Tiempo Continuo)</text>
+  <rect x="65" y="75" width="185" height="140" class="band"/>
+  <line x1="55" y1="145" x2="355" y2="145" class="axis"/>
+  <line x1="250" y1="45" x2="250" y2="245" class="axis"/>
+  <text x="348" y="138" class="sub">σ</text>
+  <text x="268" y="58" class="sub">jω</text>
+  <text x="155" y="68" class="sub">Banda Primaria (−ω_s/2 ≤ ω ≤ ω_s/2)</text>
+  <circle cx="170" cy="108" r="5" fill="#FFC72C"/>
+  <circle cx="170" cy="182" r="5" fill="#FFC72C"/>
+  <text x="148" y="102" class="sub-y">s₁</text>
+  <text x="148" y="198" class="sub-y">s₂</text>
+
+  <!-- Flecha de mapeo -->
+  <line x1="385" y1="145" x2="505" y2="145" stroke="#FFC72C" stroke-width="2.8" marker-end="url(#arr)"/>
+  <text x="445" y="128" class="sub-y">z = e^(sT)</text>
+  <text x="445" y="168" class="sub">|z| = e^(σT)</text>
+  <text x="445" y="185" class="sub">∠z = ωT</text>
+
+  <!-- Plano Z -->
+  <text x="690" y="30" class="lbl">Plano Z (Tiempo Discreto)</text>
+  <circle cx="690" cy="145" r="88" class="uc"/>
+  <circle cx="690" cy="145" r="62" class="rc"/>
+  <line x1="565" y1="145" x2="815" y2="145" class="axis"/>
+  <line x1="690" y1="45" x2="690" y2="245" class="axis"/>
+  <text x="808" y="138" class="sub">Re(z)</text>
+  <text x="716" y="58" class="sub">Im(z)</text>
+  <text x="690" y="254" class="sub-g">Interior |z| &lt; 1: Región Estable</text>
+  <circle cx="745" cy="118" r="5" fill="#FFC72C"/>
+  <circle cx="745" cy="172" r="5" fill="#FFC72C"/>
+  <text x="762" y="114" class="sub-y">z₁</text>
+  <text x="762" y="182" class="sub-y">z₂</text>
+</svg>
